@@ -136,6 +136,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/task_planner_node.cpp)
 add_executable(add_two_ints_client src/add_two_ints_client.cpp)
+add_executable(ask_inverse_kinematic_node src/ask_inversKinematic.cpp)
 
 
 ## Rename C++ executable without prefix
@@ -144,6 +145,7 @@ add_executable(add_two_ints_client src/add_two_ints_client.cpp)
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
 # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
 target_link_libraries(add_two_ints_client ${catkin_LIBRARIES})
+target_link_libraries(ask_inverse_kinematic_node ${catkin_LIBRARIES})
 
 
 ## Add cmake target dependencies of the executable

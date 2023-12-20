@@ -57,6 +57,7 @@ add_message_files(
 add_service_files(
    FILES
    AddTwoInts.srv
+   InverseKinematic.srv
 ) 
 
 
@@ -136,6 +137,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 
 add_executable(motion_planner_node src/motions.cpp)
+add_executable(inverse_kinematic_node src/inversKinematic.cpp)
 
 
 ## Rename C++ executable without prefix
@@ -150,6 +152,7 @@ add_executable(motion_planner_node src/motions.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(motion_planner_node ${catkin_LIBRARIES})
+target_link_libraries(inverse_kinematic_node ${catkin_LIBRARIES})
 
 #############
 ## Install ##
