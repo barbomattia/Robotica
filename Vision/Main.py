@@ -4,6 +4,9 @@ from sensor_msgs.msg import Image
 from std_msgs.msg import String  # Import the String message type
 from your_yolo_module import detect_lego_blocks  # Import your YOLO module
 
+
+
+
 def image_callback(msg):
     # Process the image using YOLO
     detected_blocks = detect_lego_blocks(msg)
