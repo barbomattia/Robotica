@@ -56,7 +56,6 @@ add_message_files(
 ## Generate services in the 'srv' folder
 add_service_files(
    FILES
-   AddTwoInts.srv
    InverseKinematic.srv
 ) 
 
@@ -136,7 +135,6 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 
-add_executable(motion_planner_node src/motions.cpp)
 add_executable(inverse_kinematic_node src/inversKinematic.cpp)
 
 
@@ -151,7 +149,6 @@ add_executable(inverse_kinematic_node src/inversKinematic.cpp)
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(motion_planner_node ${catkin_LIBRARIES})
 target_link_libraries(inverse_kinematic_node ${catkin_LIBRARIES})
 
 #############
