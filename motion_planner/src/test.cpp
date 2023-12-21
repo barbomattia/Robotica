@@ -1,14 +1,14 @@
-#include "ros/ros.h"
-#include "motion_planner/InverseKinematic.h"
 #include <iostream>
-#include <Eigen/Dense>
-
+#include "Eigen/Dense"
 using namespace Eigen;
+using namespace std;
 
 struct TransformationMatrices {
     Matrix4d T10, T21, T32, T43, T54, T65, T60;
 };
 
+
+//CINEMATICA DIRETTA
 void CinematicaDiretta(const VectorXd& Th, double scaleFactor, Vector3d& pe, Matrix3d& Re, TransformationMatrices& Tm) {
     // Inizializzazione dei vettori A e D e del vettore Alpha (che contiene gli angoli) con i dati del braccio nella posizione di partenza. 
     VectorXd A(6), D(6), Alpha(6);
@@ -40,17 +40,25 @@ void CinematicaDiretta(const VectorXd& Th, double scaleFactor, Vector3d& pe, Mat
     Re = Tm.T60.block<3, 3>(0, 0);
 }
 
-bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::InverseKinematic::Response &res){
-    res.q = req.x + req.y + req.z;
-    ROS_INFO("request: x=%f, y=%f, z=%f", req.x, req.y, req.z);
-    ROS_INFO("sending back response: [%f]", res.q);
-    return true;
-}
 
-int main(int argc, char **argv){
-    ros::init(argc, argv, "inverse_kinemtic_node");
-    ros::NodeHandle n;
-    ros::ServiceServer service = n.advertiseService("calculate_inverse_kinematics", inverse);
-    ros::spin();
+int main() {
+
+    VectorXd Th(6);
+    Th << 0.1, 0.2, 0.3, 0.4, 0.5, 0.6;
+
+    double scaleFactor = 10.0;
+
+    Vector3d pe;
+    Matrix3d Re;
+    TransformationMatrices Tm;
+
+    
+    //TEST CINEMATICA DIRETTA
+    CinematicaDiretta(Th, scaleFactor, pe, Re, Tm);
+
+    cout << "Position (pe): " << pe.transpose() << endl;
+    cout << "Orientation (Re): " << endl << Re << endl;
+    
+
     return 0;
-} 
+}
