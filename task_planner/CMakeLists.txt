@@ -106,7 +106,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES task_planner
-#  CATKIN_DEPENDS roscpp rospy std_msgs
+  CATKIN_DEPENDS roscpp rospy std_msgs
 #  DEPENDS system_lib
 )
 
@@ -137,6 +137,7 @@ include_directories(
 # add_executable(${PROJECT_NAME}_node src/task_planner_node.cpp)
 add_executable(ask_inverse_kinematic_node src/ask_inversKinematic.cpp)
 add_executable(ask_object_detection_node src/ask_objectDetection.cpp)
+add_executable(control_gazebo_arm_node src/control_gazebo_arm.cpp)
 
 
 ## Rename C++ executable without prefix
@@ -146,6 +147,7 @@ add_executable(ask_object_detection_node src/ask_objectDetection.cpp)
 # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
 target_link_libraries(ask_inverse_kinematic_node ${catkin_LIBRARIES})
 target_link_libraries(ask_object_detection_node ${catkin_LIBRARIES})
+target_link_libraries(control_gazebo_arm_node ${catkin_LIBRARIES})
 
 
 ## Add cmake target dependencies of the executable
