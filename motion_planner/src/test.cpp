@@ -1,25 +1,24 @@
 #include <iostream>
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
-using namespace Eigen;
-using namespace std;
+
 
 struct TransformationMatrices {
-    Matrix4d T10, T21, T32, T43, T54, T65, T60;
+    Eigen::Matrix4d T10, T21, T32, T43, T54, T65, T60;
 };
 
 
 //CINEMATICA DIRETTA
-void CinematicaDiretta(const VectorXd& Th, double scaleFactor, Vector3d& pe, Matrix3d& Re, TransformationMatrices& Tm) {
+void CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor, Eigen::Vector3d& pe, Eigen::Matrix3d& Re, TransformationMatrices& Tm) {
     // Inizializzazione dei vettori A e D e del vettore Alpha (che contiene gli angoli) con i dati del braccio nella posizione di partenza. 
-    VectorXd A(6), D(6), Alpha(6);
-    A << 0*scaleFactor, -0.425*scaleFactor, -0.3922*scaleFactor, 0, 0, 0;
-    D << 0.1625*scaleFactor, 0, 0, 0.1333*scaleFactor, 0.0997*scaleFactor, 0.0996*scaleFactor;
+    Eigen::VectorXd A(6), D(6), Alpha(6);
+    A << 0 * scaleFactor, -0.425 * scaleFactor, -0.3922 * scaleFactor, 0, 0, 0;
+    D << 0.1625 * scaleFactor, 0, 0, 0.1333 * scaleFactor, 0.0997 * scaleFactor, 0.0996 * scaleFactor;
     Alpha << M_PI / 2, 0, 0, M_PI / 2, -M_PI / 2, 0;
 
     // Questa funzione calcola le matrici di trasformazione
-    auto Tij = [](double th, double alpha, double d, double a) -> Matrix4d {
-        Matrix4d result;
+    auto Tij = [](double th, double alpha, double d, double a) -> Eigen::Matrix4d {
+        Eigen::Matrix4d result;
         result << cos(th), -sin(th) * cos(alpha), sin(th) * sin(alpha), a * cos(th),
                   sin(th), cos(th) * cos(alpha), -cos(th) * sin(alpha), a * sin(th),
                   0, sin(alpha), cos(alpha), d,
@@ -41,22 +40,23 @@ void CinematicaDiretta(const VectorXd& Th, double scaleFactor, Vector3d& pe, Mat
     Re = Tm.T60.block<3, 3>(0, 0);
 }
 
-MatrixXd cinematicaInversa(Vector3d p60, Matrix3d R60, double scaleFactor) {
+
+ Eigen::MatrixXd cinematicaInversa(Eigen::Vector3d p60, Eigen::Matrix3d R60, double scaleFactor) {
     // Inizializzazione vettori
-    VectorXd A(6);
+    Eigen::VectorXd A(6);
     A << 0, -0.425, -0.3922, 0, 0, 0;
     A *= scaleFactor;
 
-    VectorXd D(6);
+    Eigen::VectorXd D(6);
     D << 0.1625, 0, 0, 0.1333, 0.0997, 0.0996;
     D *= scaleFactor;
 
-    VectorXd Alpha(6);
+    Eigen::VectorXd Alpha(6);
     Alpha << M_PI / 2, 0, 0, M_PI / 2, -M_PI / 2, 0;
 
     // Matrice di trasformazione
-    auto Tij = [](double th, double alpha, double d, double a) {
-        Matrix4d result;
+    auto Tij = [](double th, double alpha, double d, double a) -> Eigen::Matrix4d {
+        Eigen::Matrix4d result;
         result << cos(th), -sin(th) * cos(alpha), sin(th) * sin(alpha), a * cos(th),
                   sin(th), cos(th) * cos(alpha), -cos(th) * sin(alpha), a * sin(th),
                   0, sin(alpha), cos(alpha), d,
@@ -67,19 +67,19 @@ MatrixXd cinematicaInversa(Vector3d p60, Matrix3d R60, double scaleFactor) {
     auto almzero = [](double x) { return std::abs(x) < 1e-7; };
 
 
-    Matrix4d T60;
+    Eigen::Matrix4d T60;
     T60.block<3, 3>(0, 0) = R60;
     T60.col(3).head(3) = p60;
     T60.row(3) << 0, 0, 0, 1;
 
     // Calcolo th1
-    Vector4d p50 = T60 * Vector4d(0, 0, -D(5), 1);
+    Eigen::Vector4d p50 = T60 * Eigen::Vector4d(0, 0, -D(5), 1);
     double psi = atan2(p50(1), p50(0));
     double p50xy = hypot(p50(1), p50(0));
     
     if (p50xy < D(3)) {
-        cerr << "Posizione non raggiungibile" << endl;
-        return VectorXd::Constant(6, NAN);
+        std::cerr << "Posizione non raggiungibile" << std::endl;
+        return Eigen::VectorXd::Constant(6, NAN);
     }
 
     // Calcolo phi1_1 e phi1_2
@@ -101,12 +101,12 @@ MatrixXd cinematicaInversa(Vector3d p60, Matrix3d R60, double scaleFactor) {
     double th5_2_2 = -acos((p61z_2 - D(3)) / D(5));
 
     // Caloclo T10_1 e T10_2
-    Matrix4d T10_1 = Tij(th1_1, Alpha(0), D(0), A(0));
-    Matrix4d T10_2 = Tij(th1_2, Alpha(0), D(0), A(0));
+    Eigen::Matrix4d T10_1 = Tij(th1_1, Alpha(0), D(0), A(0));
+    Eigen::Matrix4d T10_2 = Tij(th1_2, Alpha(0), D(0), A(0));
 
     // Calcolo T16_1 e T16_2
-    Matrix4d T16_1 = (T10_1.inverse() * T60).inverse();
-    Matrix4d T16_2 = (T10_2.inverse() * T60).inverse();
+    Eigen::Matrix4d T16_1 = (T10_1.inverse() * T60).inverse();
+    Eigen::Matrix4d T16_2 = (T10_2.inverse() * T60).inverse();
 
     // Calcolo zy_1, zx_1, zy_2, zx_2
     double zy_1 = T16_1(1, 2);
@@ -117,7 +117,7 @@ MatrixXd cinematicaInversa(Vector3d p60, Matrix3d R60, double scaleFactor) {
 
     double th6_1_1;
     if (almzero(sin(th5_1_1)) || (almzero(zy_1) && almzero(zx_1))) {
-        cerr << "singola configurazione" << endl;
+        std::cerr << "singola configurazione" << std::endl;
         th6_1_1 = 0;
     } else {
         th6_1_1 = atan2((-zy_1 / sin(th5_1_1)), (zx_1 / sin(th5_1_1)));
@@ -126,7 +126,7 @@ MatrixXd cinematicaInversa(Vector3d p60, Matrix3d R60, double scaleFactor) {
     // Calcolo th6_1_2
     double th6_1_2;
     if (almzero(sin(th5_1_2)) || (almzero(zy_1) && almzero(zx_1))) {
-        cerr << "singola configurazione" << endl;
+        std::cerr << "singola configurazione" << std::endl;
         th6_1_2 = 0;
     } else {
         th6_1_2 = atan2((-zy_1 / sin(th5_1_2)), (zx_1 / sin(th5_1_2)));
@@ -135,7 +135,7 @@ MatrixXd cinematicaInversa(Vector3d p60, Matrix3d R60, double scaleFactor) {
     // Calcolo th6_2_1
     double th6_2_1;
     if (almzero(sin(th5_2_1)) || (almzero(zy_2) && almzero(zx_2))) {
-        cerr << "singola configurazione" << endl;
+        std::cerr << "singola configurazione" << std::endl;
         th6_2_1 = 0;
     } else {
         th6_2_1 = atan2((-zy_2 / sin(th5_2_1)), (zx_2 / sin(th5_2_1)));
@@ -144,47 +144,47 @@ MatrixXd cinematicaInversa(Vector3d p60, Matrix3d R60, double scaleFactor) {
     // Calcolo th6_2_2
     double th6_2_2;
     if (almzero(sin(th5_2_2)) || (almzero(zy_2) && almzero(zx_2))) {
-        cerr << "singola configurazione" << endl;
+        std::cerr << "singola configurazione" << std::endl;
         th6_2_2 = 0;
     } else {
         th6_2_2 = atan2((-zy_2 / sin(th5_2_2)), (zx_2 / sin(th5_2_2)));
     }
 
-    Matrix4d T61_1 = T16_1.inverse();
-    Matrix4d T61_2 = T16_2.inverse();
+    Eigen::Matrix4d T61_1 = T16_1.inverse();
+    Eigen::Matrix4d T61_2 = T16_2.inverse();
 
     // Calcolo T54_1_1, T54_1_2, T54_2_1, T54_2_2
-    Matrix4d T54_1_1 = Tij(th5_1_1, Alpha(4), D(4), A(4));
-    Matrix4d T54_1_2 = Tij(th5_1_2, Alpha(4), D(4), A(4));
-    Matrix4d T54_2_1 = Tij(th5_2_1, Alpha(4), D(4), A(4));
-    Matrix4d T54_2_2 = Tij(th5_2_2, Alpha(4), D(4), A(4));
+    Eigen::Matrix4d T54_1_1 = Tij(th5_1_1, Alpha(4), D(4), A(4));
+    Eigen::Matrix4d T54_1_2 = Tij(th5_1_2, Alpha(4), D(4), A(4));
+    Eigen::Matrix4d T54_2_1 = Tij(th5_2_1, Alpha(4), D(4), A(4));
+    Eigen::Matrix4d T54_2_2 = Tij(th5_2_2, Alpha(4), D(4), A(4));
 
     // Calcolo T65_1_1, T65_1_2, T65_2_1, T65_2_2
-    Matrix4d T65_1_1 = Tij(th6_1_1, Alpha(5), D(5), A(5));
-    Matrix4d T65_1_2 = Tij(th6_1_2, Alpha(5), D(5), A(5));
-    Matrix4d T65_2_1 = Tij(th6_2_1, Alpha(5), D(5), A(5));
-    Matrix4d T65_2_2 = Tij(th6_2_2, Alpha(5), D(5), A(5));
+    Eigen::Matrix4d T65_1_1 = Tij(th6_1_1, Alpha(5), D(5), A(5));
+    Eigen::Matrix4d T65_1_2 = Tij(th6_1_2, Alpha(5), D(5), A(5));
+    Eigen::Matrix4d T65_2_1 = Tij(th6_2_1, Alpha(5), D(5), A(5));
+    Eigen::Matrix4d T65_2_2 = Tij(th6_2_2, Alpha(5), D(5), A(5));
 
     // Calcolo T41_1_1, T41_1_2, T41_2_1, T41_2_2
-    Matrix4d T41_1_1 = T61_1 * (T54_1_1 * T65_1_1).inverse();
-    Matrix4d T41_1_2 = T61_1 * (T54_1_2 * T65_1_2).inverse();
-    Matrix4d T41_2_1 = T61_2 * (T54_2_1 * T65_2_1).inverse();
-    Matrix4d T41_2_2 = T61_2 * (T54_2_2 * T65_2_2).inverse();
+    Eigen::Matrix4d T41_1_1 = T61_1 * (T54_1_1 * T65_1_1).inverse();
+    Eigen::Matrix4d T41_1_2 = T61_1 * (T54_1_2 * T65_1_2).inverse();
+    Eigen::Matrix4d T41_2_1 = T61_2 * (T54_2_1 * T65_2_1).inverse();
+    Eigen::Matrix4d T41_2_2 = T61_2 * (T54_2_2 * T65_2_2).inverse();
 
     // Calcolo P31_1_1, P31_1_2, P31_2_1, P31_2_2
-    Vector4d inputVector(0, -D[3], 0, 1);
+    Eigen::Vector4d inputVector(0, -D[3], 0, 1);
 
-    Vector3d P31_1_1 = (T41_1_1 * inputVector).head<3>();
-    Vector3d P31_1_2 = (T41_1_2 * inputVector).head<3>();
-    Vector3d P31_2_1 = (T41_2_1 * inputVector).head<3>();
-    Vector3d P31_2_2 = (T41_2_2 * inputVector).head<3>();
+    Eigen::Vector3d P31_1_1 = (T41_1_1 * inputVector).head<3>();
+    Eigen::Vector3d P31_1_2 = (T41_1_2 * inputVector).head<3>();
+    Eigen::Vector3d P31_2_1 = (T41_2_1 * inputVector).head<3>();
+    Eigen::Vector3d P31_2_2 = (T41_2_2 * inputVector).head<3>();
 
     // Calcolo th3_1_1_1 e th3_1_1_2
     double C = (P31_1_1.squaredNorm() - (A(1) * A(1)) - (A(2) * A(2))) / (2 * A(1) * A(2));
     double th3_1_1_1, th3_1_1_2;
 
     if (std::abs(C) > 1) {
-        cerr << "Punto fuori dal workspace" << endl;
+        std::cerr << "Punto fuori dal workspace" << std::endl;
         th3_1_1_1 = th3_1_1_2 = NAN;
     } else {
         th3_1_1_1 = acos(C);
@@ -196,7 +196,7 @@ MatrixXd cinematicaInversa(Vector3d p60, Matrix3d R60, double scaleFactor) {
     double th3_1_2_1, th3_1_2_2;
 
     if (std::abs(C) > 1) {
-        cerr << "Punto fuori dal workspace" << endl;
+        std::cerr << "Punto fuori dal workspace" << std::endl;
         th3_1_2_1 = th3_1_2_2 = NAN;
     } else {
         th3_1_2_1 = acos(C);
@@ -208,7 +208,7 @@ MatrixXd cinematicaInversa(Vector3d p60, Matrix3d R60, double scaleFactor) {
     double th3_2_1_1, th3_2_1_2;
 
     if (std::abs(C) > 1) {
-        cerr << "Punto fuori dal workspace" << endl;
+        std::cerr << "Punto fuori dal workspace" << std::endl;
         th3_2_1_1 = th3_2_1_2 = NAN;
     } else {
         th3_2_1_1 = acos(C);
@@ -220,7 +220,7 @@ MatrixXd cinematicaInversa(Vector3d p60, Matrix3d R60, double scaleFactor) {
     double th3_2_2_1, th3_2_2_2;
 
     if (std::abs(C) > 1) {
-        cerr << "Punto fuori dal workspace" << endl;
+        std::cerr << "Punto fuori dal workspace" << std::endl;
         th3_2_2_1 = th3_2_2_2 = NAN;
     } else {
         th3_2_2_1 = acos(C);
@@ -244,10 +244,10 @@ MatrixXd cinematicaInversa(Vector3d p60, Matrix3d R60, double scaleFactor) {
     double th2_2_2_2 = -atan2(P31_2_2(1), -P31_2_2(0)) + asin((A(2) * sin(th3_2_2_2)) / P31_2_2.norm());
 
     // Calcolo th4_1_1_1
-    Matrix4d T21 = Tij(th2_1_1_1, Alpha(1), D(1), A(1));
-    Matrix4d T32 = Tij(th3_1_1_1, Alpha(2), D(2), A(2));
-    Matrix4d T41 = T41_1_1;
-    Matrix4d T43 = (T21 * T32).inverse() * T41;
+    Eigen::Matrix4d T21 = Tij(th2_1_1_1, Alpha(1), D(1), A(1));
+    Eigen::Matrix4d T32 = Tij(th3_1_1_1, Alpha(2), D(2), A(2));
+    Eigen::Matrix4d T41 = T41_1_1;
+    Eigen::Matrix4d T43 = (T21 * T32).inverse() * T41;
     
     double xy = T43(1, 0);
     double xx = T43(0, 0);
@@ -324,7 +324,7 @@ MatrixXd cinematicaInversa(Vector3d p60, Matrix3d R60, double scaleFactor) {
     double th4_2_2_2 = atan2(xy, xx);
 
     // Calcolo matrice delle configurazioni
-    MatrixXd Th(6, 8); 
+    Eigen::MatrixXd Th(6, 8); 
 
     Th << th1_1, th1_1, th1_1, th1_1, th1_2, th1_2, th1_2, th1_2,
         th2_1_1_1, th2_1_1_2, th2_1_2_1, th2_1_2_2, th2_2_2_1, th2_2_1_2, th2_2_2_1, th2_2_2_2,
@@ -341,30 +341,30 @@ int main() {
 
     //CINEMATICA DIRETTA
     
-    VectorXd Th(6);
+    Eigen::VectorXd Th(6);
     Th << 0.1,0.2,0.3,0.4,0.5,0.6;
     double scaleFactor = 10.0;
 
-    Vector3d pe;
-    Matrix3d Re;
+    Eigen::Vector3d pe;
+    Eigen::Matrix3d Re;
     TransformationMatrices Tm;
-    cout << "configurazione iniziale: " << Th.transpose() << endl << endl;
+    std::cout << "configurazione iniziale: " << Th.transpose() << std::endl << std::endl;
 
-    cout << "CINEMATICA DIRETTA" << endl;
+    std::cout << "CINEMATICA DIRETTA" << std::endl;
     CinematicaDiretta(Th, scaleFactor, pe, Re, Tm);
 
-    cout << "vettore (pe): " << pe.transpose() << endl;
-    cout << "matrice orientamento (Re): " << endl << Re << endl;
+    std::cout << "vettore (pe): " << pe.transpose() << std::endl;
+    std::cout << "matrice orientamento (Re): " << std::endl << Re << std::endl;
 
-    cout << endl;
+    std::cout << std::endl;
     
     //CINEMATICA INVERSA
-    cout << "CINEMATICA INVERSA" << endl;
+    std::cout << "CINEMATICA INVERSA" << std::endl;
     //Vector3d p60(3.0, 3.0, 3.0);  
     //Matrix3d R60 = Eigen::Matrix3d::Identity();   
-    MatrixXd M = cinematicaInversa(pe, Re, scaleFactor);
+    Eigen::MatrixXd M = cinematicaInversa(pe, Re, scaleFactor);
     
-    cout << "Matrice delle variabili congiunte M:\n" << M << endl;
+    std::cout << "Matrice delle variabili congiunte M:\n" << M << std::endl;
     
 
     return 0;
