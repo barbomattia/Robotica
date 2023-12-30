@@ -2,6 +2,7 @@
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense>
 #include <eigen3/Eigen/Geometry>
+#include <vector>
 #include <functional>
 
 
@@ -9,21 +10,35 @@ struct TransformationMatrices {
     Eigen::Matrix4d T10, T21, T32, T43, T54, T65, T60;
 };
 
+//CONFIGURAZIONE END EFFECTOR
 struct CinDir{
-    Eigen::Vector3d pe;
-    Eigen::Matrix3d Re;
+    Eigen::Vector3d pe;     //POSIZIONE END EFFECTOR
+    Eigen::Matrix3d Re;     //ROTAZIONE END EFFECTOR
 };
 
 
-//CINEMATICA DIRETTA
+/*CINEMATICA DIRETTA --------------------------------------------------------------------------------------------------------- 
+    PARAMETRI:
+    - Th: vettore dei parametri q dei joints
+    - scaleFactor: variabile che consente di adattare le dimensioni del modello del robot UR5
+*/
 CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
-    // Inizializzazione dei vettori A e D e del vettore Alpha (che contiene gli angoli) con i dati del braccio nella posizione di partenza. 
+    /* Inizializzazione dei vettori A e D e del vettore Alpha con i valori del braccio robotico:
+
+    A: vettore di tutti i parametri a del sistema DH dei link
+    D: vettore di tutti i parametri d del sistema DH dei link
+    Alpha: vettore di tutti i parametri alpha del sistema DH dei link
+
+    A ed Alpha sono parametri costatni per loro natura, metre D lo consideriamo costante perchè non abbiamo prismatic joint
+
+    Con A, D noi forniamo delle proporzioni che devono essere rispettate, le dimensioni vere e proprie vengono definite in base a scaleFactor */
+
     Eigen::VectorXd A(6), D(6), Alpha(6);
     A << 0 * scaleFactor, -0.425 * scaleFactor, -0.3922 * scaleFactor, 0, 0, 0;
     D << 0.1625 * scaleFactor, 0, 0, 0.1333 * scaleFactor, 0.0997 * scaleFactor, 0.0996 * scaleFactor;
     Alpha << M_PI / 2, 0, 0, M_PI / 2, -M_PI / 2, 0;
 
-    // Questa funzione calcola le matrici di trasformazione
+    //FUNZIONE per definire LE MATRICI DI TRASFORMAZIONE di un link 
     auto Tij = [](double th, double alpha, double d, double a) -> Eigen::Matrix4d {
         Eigen::Matrix4d result;
         result << cos(th), -sin(th) * cos(alpha), sin(th) * sin(alpha), a * cos(th),
@@ -33,6 +48,7 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
         return result;
     };
 
+    //CALCOLO delle MATRICI DI TRASPORTO usando la funzione Tij appena definita
     TransformationMatrices Tm;   
     Tm.T10 = Tij(Th(0), Alpha(0), D(0), A(0));
     Tm.T21 = Tij(Th(1), Alpha(1), D(1), A(1));
@@ -41,9 +57,10 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     Tm.T54 = Tij(Th(4), Alpha(4), D(4), A(4));
     Tm.T65 = Tij(Th(5), Alpha(5), D(5), A(5));
 
-    // Calcola la cinematica totale e restituisce il vettore di traslazione Pe e l'orientamento Re dell'end effector nella posizione finale
+    //CALCOLO LA MATRICE DI TRASPORTO FINALE 
     Tm.T60 = Tm.T10 * Tm.T21 * Tm.T32 * Tm.T43 * Tm.T54 * Tm.T65;
 
+    //ESTRAGGO DALLA MATRICE T60 la POSIZIONE pe, e la ROTAZIONE Re dell'END EFFECTOR 
     Eigen::Vector3d pe = Tm.T60.block<3, 1>(0, 3);
     Eigen::Matrix3d Re = Tm.T60.block<3, 3>(0, 0);
 
@@ -54,8 +71,15 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
 }
 
 
- Eigen::MatrixXd cinematicaInversa(Eigen::Vector3d p60, Eigen::Matrix3d R60, double scaleFactor) {
-    // Inizializzazione vettori
+/*CINEMATICA INVERSA --------------------------------------------------------------------------------------------------------- 
+    PARAMETRI:
+    - p60: posizione end-effector
+    - R60: rotazione end-effector
+    - scaleFactor: variabile che consente di adattare le dimensioni del modello del robot UR5
+*/
+Eigen::MatrixXd cinematicaInversa(Eigen::Vector3d p60, Eigen::Matrix3d R60, double scaleFactor) {
+
+    // Inizializzazione dei vettori A e D e del vettore Alpha con i valori del braccio robotico:
     Eigen::VectorXd A(6);
     A << 0, -0.425, -0.3922, 0, 0, 0;
     A *= scaleFactor;
@@ -67,7 +91,7 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     Eigen::VectorXd Alpha(6);
     Alpha << M_PI / 2, 0, 0, M_PI / 2, -M_PI / 2, 0;
 
-    // Matrice di trasformazione
+    //FUNZIONE per definire LE MATRICI DI TRASFORMAZIONE di un link
     auto Tij = [](double th, double alpha, double d, double a) -> Eigen::Matrix4d {
         Eigen::Matrix4d result;
         result << cos(th), -sin(th) * cos(alpha), sin(th) * sin(alpha), a * cos(th),
@@ -349,6 +373,11 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     return Th;
 }
 
+/*FUNZIONE CALCOLO JACOBIANA ---------------------------------------------------------------------------------------------------
+    PARAMETRI:
+    - Th: vettore dei parametri q dei joints
+    - scaleFactor: variabile che consente di adattare le dimensioni del modello del robot UR5
+*/
 Eigen::MatrixXd ur5Jac(const Eigen::VectorXd& Th, double scaleFactor) {
     Eigen::VectorXd A(6);
     A << 0, -0.425*scaleFactor, -0.3922*scaleFactor, 0, 0, 0;
@@ -419,85 +448,125 @@ Eigen::MatrixXd ur5Jac(const Eigen::VectorXd& Th, double scaleFactor) {
     return J;
 }
 
-// Funzione per calcolare la coniugata di un quaternione
+//FUNZIONE per CALCOLO CONIUGATA di un QUATERNIONE -------------------------------------------------------------------------------------
 Eigen::Quaterniond quatconj(const Eigen::Quaterniond& q) {
     return Eigen::Quaterniond(q.w(), -q.x(), -q.y(), -q.z());
 }
 
+//FUNZIONE per CALCOLO PRODOTTO tra QUATERNIONI --------------------------------------------------------------------------------------
 Eigen::Quaterniond quatmultiply(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2) {
     return q1 * q2;
 }
 
+//FUNZIONE che RITORNA la PARTE VETTORIALE di un QUATERNION --------------------------------------------------------------------------
 Eigen::Vector3d parts(const Eigen::Quaterniond& q) {
     return q.vec();
 }
 
-// Funzione per calcolare la velocità di giunto controllata per il movimento completo
+
+//FUNZIONE per CALCOLO la DERIVATA dei QUATERNIONI dei joints ------------------------------------------------------------------------
 Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
-    const Eigen::VectorXd& q,           //posizione joint   
-    const Eigen::VectorXd& xe,          //posizione end effector corrente
-    const Eigen::VectorXd& xd,          //posizione end effector desiderata
-    const Eigen::VectorXd& vd,          //velocità desiderata
+    const Eigen::VectorXd& q,           //vettore parametri attuali dei joint   
+    const Eigen::VectorXd& xe,          //configurazione end effector corrente
+    const Eigen::VectorXd& xd,          //configurazione end effector desiderata
+    const Eigen::VectorXd& vd,          //velocità lineare desiderata
     const Eigen::VectorXd& omegad,      //velocità angolare desiderata
-    const Eigen::Quaterniond& qe,       //quaternione corrente
-    const Eigen::Quaterniond& qd,       //cogniugato quaternione
+    const Eigen::Quaterniond& qe,       //quaternione configurazione end effector corrente 
+    const Eigen::Quaterniond& qd,       //quaternione configurazione end effector desiderata
     const Eigen::MatrixXd& Kp,          //matrice di errore lineare     
     const Eigen::MatrixXd& Kq,          //matrice di errore quaternione
     double scaleFactor
 ) {
+    // calcolo la Jacobiana per la configurazione attuale del braccio
     Eigen::MatrixXd J = ur5Jac(q, scaleFactor);
 
+    // controllo che il determinate della jacobiano sia uguale a zero, in questo caso abbiamo a che fare con singolarità
     if (std::abs(J.determinant()) < 1e-3) {
         std::cerr << "vicino ad una singolarità" << std::endl;
         //implementazione
     }
     
 
-     // Quaternion operations
+    //Calcolo l'errore di orientazione: Δq=qd * qe.coniugato 
     Eigen::Quaterniond qp = qd * qe.conjugate();
+
+    //Prendo la parte vettoriale del quaternioe errore 
     Eigen::Vector3d eo = qp.vec();
 
-    // Calculate dotQ
+    //Calcolo la derivata di q: dotQ usando la formula
     Eigen::VectorXd dotQ = J.inverse() * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
 
     return dotQ;
 }
 
 
-// Implementazioni delle funzioni
+/*INTERPOLAZIONE LINEARE tra due POSIZIONI dell'end effector su un tempo NORMALIZZATO ----------------------------------------
+    PARAMETRI:
+    - xe0: posizione iniziale end-effector
+    - xef: posizione finale end-effector
+    - tb: tempo attuale 
+    - Tf: tempo totale a disposizione per l'interpolazione
+*/
 Eigen::MatrixXd pd(double tb, double Tf, Eigen::MatrixXd xe0, Eigen::MatrixXd xef) {
-    double t = tb / Tf;
-    Eigen::MatrixXd result(3, 1);
-    if (t > 1) {
-        result = xef;
+
+    double t = tb / Tf;             // calcolo t: valore del tempo normalizzato tra 0 (inizio movimento) ed 1(fine movimento)
+
+    Eigen::MatrixXd result(3, 1);   // defnisco la matrice result
+
+    if (t > 1) {                    // se t > 1 vuol dire che il tempo attuale a superato il tempo a disposizione
+        result = xef;               // quindi ritono la posizione finale
     } else {
-        result = t * xef + (1 - t) * xe0;
+        result = t * xef + (1 - t) * xe0;   // altrimenti ritorno la nuova posizione interpolata tra xe0 e xef utilizzando l'interpolazione lineare
     }
     return result;
 }
 
+
+/*INTERPOLAZIONE LINEARE tra due ORIENTAZIONI dell'end effector su un tempo NORMALIZZATO ----------------------------------------
+    PARAMETRI:
+    - phie0: orientazione (angoli Eulero) iniziali end-effector
+    - phief: orientazione (angoli Eulero) finali end-effector
+    - tb: tempo attuale 
+    - Tf: tempo totale a disposizione per l'interpolazione
+*/
 Eigen::MatrixXd phid(double tb, double Tf, Eigen::MatrixXd phief, Eigen::MatrixXd phie0) {
-    double t = tb / Tf;
-    Eigen::MatrixXd result(3, 1);
-    if (t > 1) {
-        result = phief;
+    
+    double t = tb / Tf;             // calcolo t: valore del tempo normalizzato tra 0 (inizio movimento) ed 1(fine movimento)
+    
+    Eigen::MatrixXd result(3, 1);   // defnisco la matrice result
+    
+    if (t > 1) {                    // se t > 1 vuol dire che il tempo attuale a superato il tempo a disposizione
+        result = phief;             // quindi ritono l'orientazione finale
     } else {
-        result = t * phief + (1 - t) * phie0;
+        result = t * phief + (1 - t) * phie0;       // altrimenti ritorno la nuova orientazione interpolata tra xe0 e xef utilizzando l'interpolazione lineare
     }
     return result;
 }
 
+
+/*INTERPOLAZIONE SFERICA tra due CONFIGURAZIONE dell'end effector su un tempo NORMALIZZATO ----------------------------------------
+    PARAMETRI:
+    - q0: quaternione della configurazione iniziali end-effector
+    - phief: quaternione della configurazione finali end-effector
+    - tb: tempo attuale 
+    - Tf: tempo totale a disposizione per l'interpolazione
+*/
 Eigen::Quaterniond qd(double tb, double Tf, Eigen::Quaterniond q0, Eigen::Quaterniond qf) {
-    double t = tb / Tf;
-    Eigen::Quaterniond result;
-    if (t > 1) {
-        result = qf;
+
+    double t = tb / Tf;             // calcolo t: valore del tempo normalizzato tra 0 (inizio movimento) ed 1(fine movimento)
+
+    Eigen::Quaterniond result;      // defnisco la matrice result
+
+    if (t > 1) {                    // se t > 1 vuol dire che il tempo attuale a superato il tempo a disposizione
+        result = qf;                // quindi ritono il quaternione finale
     } else {
-        result = q0.slerp(t, qf);
+        result = q0.slerp(t, qf);   // altrimenti ritorno un nuovo quaternione derivato dall'interpolata sferica tra q0 e qf 
     }
     return result;
 }
 
+
+//FUNZIONE per CONVERTIRE una ORIENTAZIONE (angoli EULERO) in una MATRICE di ROTAZIONE ----------------------------------------------s
 Eigen::Matrix3d euler2RotationMatrix(const Eigen::Vector3d& euler_angles, const std::string& order) {
     Eigen::Matrix3d rotation_matrix;
 
