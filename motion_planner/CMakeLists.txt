@@ -4,8 +4,6 @@ project(motion_planner)
 ## Compile as C++11, supported in ROS Kinetic and newer
 add_compile_options(-std=c++11)
 
-set(Eigen_INCLUDE_DIRS /usr/include/eigen3)
-
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
 ## is used, also find other catkin packages
@@ -107,8 +105,8 @@ generate_messages(
 ## CATKIN_DEPENDS: catkin_packages dependent projects also need
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
-  #INCLUDE_DIRS include
-  #LIBRARIES ${PROJECT_NAME}
+#  INCLUDE_DIRS include
+#  LIBRARIES motion_planner
   CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
 #  DEPENDS system_lib
 )
@@ -125,12 +123,10 @@ include_directories(
   ${Eigen_INCLUDE_DIRS}
 )
 
-
 ## Declare a C++ library
-add_library(Kinematic
-  include/motion_planner/Kinematic.h
-  src/Kinematic.cpp
-)
+# add_library(${PROJECT_NAME}
+#   src/${PROJECT_NAME}/motion_planner.cpp
+# )
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -156,7 +152,6 @@ add_executable(inverse_kinematic_node src/inversKinematic.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(inverse_kinematic_node 
-Kinematic
 ${catkin_LIBRARIES}
 ${Eigen_LIBRARIES})
 
@@ -176,7 +171,9 @@ ${Eigen_LIBRARIES})
 
 ## Mark executables for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_executables.html
-
+# install(TARGETS ${PROJECT_NAME}_node
+#   RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+# )
 
 ## Mark libraries for installation
 ## See http://docs.ros.org/melodic/api/catkin/html/howto/format1/building_libraries.html

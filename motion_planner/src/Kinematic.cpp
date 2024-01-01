@@ -1,14 +1,4 @@
-#include "motion_planner/Kinematic.h"
-
-#pragma once
-#include <iostream>
-#include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Dense>
-#include <eigen3/Eigen/Geometry>
-#include <vector>
-#include <functional>
-
-using namespace std;
+#include "../include/Kinematic.h"
 
 // CINEMATICA DIRETTA --------------------------------------------------------------------------------------------------------- 
 CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
@@ -634,3 +624,19 @@ Eigen::VectorXd getFirstColumnWithoutNaN(const Eigen::MatrixXd& inputMatrix) {
 
     return firstColumnWithoutNaN;
 }
+
+
+Eigen::Quaterniond quatconj(const Eigen::Quaterniond& q) {
+    return Eigen::Quaterniond(q.w(), -q.x(), -q.y(), -q.z());
+}
+
+    
+Eigen::Quaterniond quatmultiply(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2) {
+    return q1 * q2;
+}
+
+    
+Eigen::Vector3d parts(const Eigen::Quaterniond& q) {
+    return q.vec();
+}
+

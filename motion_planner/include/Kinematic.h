@@ -6,8 +6,8 @@
 #include <vector>
 #include <functional>
 
-#ifndef _KINEMATIC_H
-#define _KINEMATIC_H
+#ifndef __KINEMATIC_H__
+#define __KINEMATIC_H__
 
     struct TransformationMatrices { Eigen::Matrix4d T10, T21, T32, T43, T54, T65, T60; };
 
@@ -41,19 +41,18 @@
 
 
     //FUNZIONE per CALCOLO CONIUGATA di un QUATERNIONE -------------------------------------------------------------------------------------
-    Eigen::Quaterniond quatconj(const Eigen::Quaterniond& q) {
-        return Eigen::Quaterniond(q.w(), -q.x(), -q.y(), -q.z());
-    }
+    Eigen::Quaterniond quatconj(const Eigen::Quaterniond& q);
+       
+
 
     //FUNZIONE per CALCOLO PRODOTTO tra QUATERNIONI --------------------------------------------------------------------------------------
-    Eigen::Quaterniond quatmultiply(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2) {
-        return q1 * q2;
-    }
+    Eigen::Quaterniond quatmultiply(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2);
+      
 
     //FUNZIONE che RITORNA la PARTE VETTORIALE di un QUATERNION --------------------------------------------------------------------------
-    Eigen::Vector3d parts(const Eigen::Quaterniond& q) {
-        return q.vec();
-    }
+    Eigen::Vector3d parts(const Eigen::Quaterniond& q); 
+        
+    
 
 
     //FUNZIONE per CALCOLO la DERIVATA dei QUATERNIONI dei joints ------------------------------------------------------------------------

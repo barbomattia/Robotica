@@ -58,5 +58,9 @@
         "streambuf": "cpp",
         "thread": "cpp",
         "typeinfo": "cpp"
+    },
+    
+    "code-runner.executorMap": {
+        "cpp": "cd $dir && g++ -o $fileNameWithoutExt $fileName Kinematic.cpp -I $dir/../include && $dir/$fileNameWithoutExt"
     }
 }

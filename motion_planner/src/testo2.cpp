@@ -1,13 +1,4 @@
-#include "motion_planner/Kinematic.h"
-
-#include <iostream>
-#include <eigen3/Eigen/Core>
-#include <eigen3/Eigen/Dense>
-#include <eigen3/Eigen/Geometry>
-#include <vector>
-#include <functional>
-
-
+#include "../include/Kinematic.h"
 
 int main() {
 

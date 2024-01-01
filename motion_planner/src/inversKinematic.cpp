@@ -1,13 +1,9 @@
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense> 
-#include "ros/ros.h"
+#include <ros/ros.h>
+#include "../include/Kinematic.h"
 #include "motion_planner/InverseKinematic.h"
 #include <iostream>
-
-
-struct TransformationMatrices {
-    Eigen::Matrix4d T10, T21, T32, T43, T54, T65, T60;
-};
 
 
 //CINEMATICA DIRETTA
@@ -350,11 +346,15 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
 
 
 int main(int argc, char **argv){
+
+    /*
     
     ros::init(argc, argv, "inverse_kinemtic_node");
     ros::NodeHandle n;
     ros::ServiceServer service = n.advertiseService("calculate_inverse_kinematics", inverse);
     ros::spin();
+
+    */
     
     return 0;
 } 
