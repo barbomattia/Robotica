@@ -9,14 +9,14 @@ project(vision_planner)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  rospy
   std_msgs
   message_generation
+  cv_bridge
 )
 
 ## System dependencies are found with CMake's conventions
 # find_package(Boost REQUIRED COMPONENTS system)
-
+find_package(OpenCV REQUIRED)
 
 ## Uncomment this if the package has a setup.py. This macro ensures
 ## modules and global scripts declared therein get installed
@@ -105,7 +105,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES vision_planner
-CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
+CATKIN_DEPENDS roscpp std_msgs message_runtime cv_bridge
 #  DEPENDS system_lib
 )
 
@@ -118,6 +118,7 @@ CATKIN_DEPENDS roscpp rospy std_msgs message_runtime
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${OpenCV_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
