@@ -1,13 +1,9 @@
-#ifndef INFERENCE_H
-#define INFERENCE_H
+#ifndef YOLO_DETECTOR_H
+#define YOLO_DETECTOR_H
 
 #define ONNX "./yolov8.onnx"
 #define SQUARE 640
 #define SIZE cv::Size(SQUARE, SQUARE)
-#define SCALEW 1024 / SQUARE
-#define SCALEH 1024 / SQUARE
-//#define SCALEW 1920 / SQUARE
-//#define SCALEH 1080 / SQUARE
 #define SCORETHRESH 0.35
 #define NMSTHRESH 0.50
 
@@ -15,6 +11,21 @@
 #include <vector>
 
 #include <opencv2/opencv.hpp>
+
+/**
+ * @brief Structure to get input image for neural network
+ * 
+ * This structure contains the cv::Mat object of the scaled and padded picture
+ * for coherent inputing in the neural network, and the scaler to transform the
+ * detected bboxes back to their original size on the image plane.
+*/
+struct Image{
+    cv::Mat img{}; /**< Scaled and padded image. */
+    double scaler; /**< Scale measure for bboxes. */
+
+    Image(cv::Mat _img, double _scaler);
+    ~Image();
+};
 
 /**
  * @brief Main structure encapsulating all useful information about a single deteceted entity
@@ -75,7 +86,7 @@ cv::dnn::Net loadONNX();
  * input = padAndResizeImage(input);
  * @endcode
 */
-cv::Mat padAndResizeImage(const cv::Mat frame);
+Image padAndResizeImage(const cv::Mat frame);
 
 /**
  * @brief Performs inference on an image based on a pre-trained YOLOv8 neural network

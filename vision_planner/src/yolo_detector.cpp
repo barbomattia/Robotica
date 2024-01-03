@@ -14,6 +14,13 @@ std::vector<std::string> classNames = {
     "X2-Y2-Z2-FILLET"
 };
 
+Image::Image(cv::Mat _img, double _scaler){
+    img = _img; 
+    scaler = _scaler;
+}
+
+Image::~Image(){}
+
 cv::dnn::Net loadONNX(){
     cv::dnn::Net net = cv::dnn::readNetFromONNX(ONNX);
 
@@ -28,29 +35,32 @@ cv::dnn::Net loadONNX(){
     return net;
 }
 
-cv::Mat padAndResizeImage(const cv::Mat frame){
+Image padAndResizeImage(const cv::Mat frame){
     cv::Mat resized = frame;
     int width  = frame.cols;
     int height = frame.rows;
+    int max = width > height ? width : height;
 
     if (width != height){
-        int max = width > height ? width : height;
-
         resized = cv::Mat::zeros(max, max, CV_8UC3);
         frame.copyTo(resized({0, 0, width, height}));
     }
     
     cv::resize(resized, resized, SIZE);
 
-    return resized;
+    Image image(resized, (double) max / SQUARE);
+
+    return image;
 }
 
 
 std::vector<Detection> Inference(const cv::Mat frame, cv::dnn::Net& net){
-    cv::Mat resize = padAndResizeImage(frame);
+    Image img = padAndResizeImage(frame);
+    cv::Mat resize = img.img;
+    double scale = img.scaler;
 
     cv::Mat blob;
-    cv::dnn::blobFromImage(resize, blob, 1.0/255.0, SIZE, cv::Scalar(), true, false);
+    cv::dnn::blobFromImage(resize, blob, 1.0/255.0, SIZE, cv::Scalar(104, 117, 123), true, false);
     net.setInput(blob);
     
     std::vector<cv::Mat> results;
@@ -66,7 +76,6 @@ std::vector<Detection> Inference(const cv::Mat frame, cv::dnn::Net& net){
     std::vector<cv::Rect> bboxes;
     std::vector<cv::Point> centroids;
 
-
     for (int i = 0; i < rows; ++i){
         cv::Mat scores(1, classNames.size(), CV_32FC1, data + 4);
 
@@ -76,10 +85,10 @@ std::vector<Detection> Inference(const cv::Mat frame, cv::dnn::Net& net){
 
         if (maxScore >= SCORETHRESH){
             //std::cout << "[" << data[0] << ", " << data[1] << ", " << data[2] << ", " << data[3] << "]\n";
-            float centerX = data[0] * SCALEW;
-            float centerY = data[1] * SCALEH;
-            float width   = data[2] * SCALEW;
-            float height  = data[3] * SCALEH;
+            float centerX = data[0] * scale;
+            float centerY = data[1] * scale;
+            float width   = data[2] * scale;
+            float height  = data[3] * scale;
             //std::cout << "[" << centerX << ", " << centerY << ", " << width << ", " << height << "]\n";
 
             int left = int(centerX - 0.5 * width);
@@ -116,6 +125,7 @@ std::vector<Detection> Inference(const cv::Mat frame, cv::dnn::Net& net){
 
 void showBboxes(cv::Mat& frame, const std::vector<Detection> detections, std::string window){
     for (auto &&detection : detections){
+        std::cout << "detect" << std::endl;
         cv::rectangle(frame, detection.bbox, cv::Scalar(0, 255, 0), 2);
 
         std::string classString = detection.className + ' ' + std::to_string(detection.confidence).substr(0, 4);
@@ -126,6 +136,7 @@ void showBboxes(cv::Mat& frame, const std::vector<Detection> detections, std::st
         cv::putText(frame, classString, cv::Point(detection.bbox.x + 5, detection.bbox.y - 10), cv::FONT_HERSHEY_DUPLEX, 1, cv::Scalar(0, 0, 0), 2, 0);
     }
 
+    cv::resize(frame, frame, SIZE);
     cv::imshow("Detection", frame);
     cv::waitKey(-1);
 }
