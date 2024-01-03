@@ -1,0 +1,13 @@
+# vision_planner parameters
+
+# Path to the YOLO model file
+yolo_model_path: "/path/to/your/yolo_model.weights"
+
+# Confidence threshold for YOLO detections
+yolo_confidence_threshold: 0.5
+
+# Camera calibration parameters
+camera_fx: 525.0
+camera_fy: 525.0
+camera_cx: 319.5
+camera_cy: 239.5

@@ -1,0 +1,11 @@
+<launch>
+  <!-- Launch the Zed2 camera node -->
+  <node pkg="zed_wrapper" type="zed2_camera_node" name="zed2_camera_node" output="screen">
+    <!-- Add camera node specific parameters if needed -->
+  </node>
+
+  <!-- Launch the vision_planner node -->
+  <node pkg="vision_planner" type="vision_planner_node" name="vision_planner_node" output="screen">
+    <!-- Add vision planner node specific parameters if needed -->
+  </node>
+</launch>

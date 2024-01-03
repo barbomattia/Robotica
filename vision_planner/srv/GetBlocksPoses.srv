@@ -1,0 +1,6 @@
+# GetBlocksPoses.srv
+
+---
+bool success
+string message
+vision_planner/BlockPose[] block_poses
