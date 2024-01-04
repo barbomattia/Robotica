@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   motion_planner
+  sensor_msgs
 )
 
 ## System dependencies are found with CMake's conventions
@@ -138,6 +139,7 @@ include_directories(
 add_executable(ask_inverse_kinematic_node src/ask_inversKinematic.cpp)
 add_executable(ask_object_detection_node src/ask_objectDetection.cpp)
 add_executable(control_gazebo_arm_node src/control_gazebo_arm.cpp)
+add_executable(ask_image_gazebo_camera_node src/ask_image_gazebo_camera.cpp)
 
 
 ## Rename C++ executable without prefix
@@ -148,6 +150,7 @@ add_executable(control_gazebo_arm_node src/control_gazebo_arm.cpp)
 target_link_libraries(ask_inverse_kinematic_node ${catkin_LIBRARIES})
 target_link_libraries(ask_object_detection_node ${catkin_LIBRARIES})
 target_link_libraries(control_gazebo_arm_node ${catkin_LIBRARIES})
+target_link_libraries(ask_image_gazebo_camera_node ${catkin_LIBRARIES})
 
 
 ## Add cmake target dependencies of the executable

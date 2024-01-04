@@ -5,7 +5,6 @@
 #include "motion_planner/InverseKinematic.h"
 #include <iostream>
 
-
 bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::InverseKinematic::Response &res){
     res.q = req.x + req.y + req.z;
     ROS_INFO("request: x=%f, y=%f, z=%f", req.x, req.y, req.z);
