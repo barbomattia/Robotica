@@ -20,7 +20,7 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     //FUNZIONE per definire LE MATRICI DI TRASFORMAZIONE di un link 
     auto Tij = [](double th, double alpha, double d, double a) -> Eigen::Matrix4d {
         Eigen::Matrix4d result;
-        result << cos(th), -sin(th) * cos(alpha), sin(th) * sin(alpha), a * cos(th),
+        result <<cos(th), -sin(th) * cos(alpha), sin(th) * sin(alpha), a * cos(th),
                   sin(th), cos(th) * cos(alpha), -cos(th) * sin(alpha), a * sin(th),
                   0, sin(alpha), cos(alpha), d,
                   0, 0, 0, 1;
@@ -28,7 +28,8 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     };
 
     //CALCOLO delle MATRICI DI TRASPORTO usando la funzione Tij appena definita
-    TransformationMatrices Tm;   
+    TransformationMatrices Tm; 
+    Eigen::Matrix4d T0W;
     Tm.T10 = Tij(Th(0), Alpha(0), D(0), A(0));
     Tm.T21 = Tij(Th(1), Alpha(1), D(1), A(1));
     Tm.T32 = Tij(Th(2), Alpha(2), D(2), A(2));
@@ -640,3 +641,21 @@ Eigen::Vector3d parts(const Eigen::Quaterniond& q) {
     return q.vec();
 }
 
+std::string vectorToString(const Eigen::VectorXd& vec) {
+    std::stringstream ss;
+    for (int i = 0; i < vec.size(); ++i) {
+        ss << vec[i] << " ";
+    }
+    return ss.str();
+}
+
+std::string matrixToString(const Eigen::Matrix3d& mat) {
+    std::stringstream ss;
+    for (int i = 0; i < mat.rows(); ++i) {
+        for (int j = 0; j < mat.cols(); ++j) {
+            ss << mat(i, j) << " ";
+        }
+        ss << "\n";  // a capo dopo ogni riga
+    }
+    return ss.str();
+}

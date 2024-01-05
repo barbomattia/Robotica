@@ -121,6 +121,12 @@
 
     Eigen::VectorXd getFirstColumnWithoutNaN(const Eigen::MatrixXd& inputMatrix);
 
+    // funzioni per facilitare lo sviluppo; non centrano con il puro calcolo della cinematica
+
+    std::string vectorToString(const Eigen::VectorXd& vec);
+    std::string matrixToString(const Eigen::Matrix3d& mat);
+
+
 
 
 

@@ -1,6 +1,6 @@
 #include "ros/ros.h"
 #include "std_msgs/Float64MultiArray.h"
-#include <sstream>
+#include <iostream>
 
 int main(int argc, char **argv){
     ros::init(argc, argv, "talker");

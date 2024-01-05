@@ -1,5 +1,5 @@
 #include "ros/ros.h"
-#include "sensor_msgs/PointCloud2.h" // Include il messaggio per la PointCloud2
+#include "sensor_msgs/PointCloud2.h"   // Include il messaggio per la PointCloud2
 #include "sensor_msgs/Image.h"         // Include il messaggio per le Immagini
 
 void pointCloudCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {

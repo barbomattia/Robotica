@@ -137,7 +137,7 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 
-add_executable(inverse_kinematic_node src/inversKinematic.cpp)
+add_executable(inverse_kinematic_node src/inversKinematic.cpp src/Kinematic.cpp)
 
 
 ## Rename C++ executable without prefix
