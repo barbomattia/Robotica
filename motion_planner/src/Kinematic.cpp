@@ -639,4 +639,3 @@ Eigen::Quaterniond quatmultiply(const Eigen::Quaterniond& q1, const Eigen::Quate
 Eigen::Vector3d parts(const Eigen::Quaterniond& q) {
     return q.vec();
 }
-
