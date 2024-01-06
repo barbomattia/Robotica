@@ -82,7 +82,7 @@ def generate_world_sdf():
 
     x_range = [0.25, 0.85]
     y_range = [0.25, 0.75]
-    z_value = 1.05  # Assuming a common z value for all blocks
+    z_value = 0.865  # Assuming a common z value for all blocks
 
     # Generate random poses for 11 blocks with random rotation about Z-axis
     for block_class in block_classes:
