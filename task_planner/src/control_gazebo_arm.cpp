@@ -2,6 +2,18 @@
 #include "std_msgs/Float64MultiArray.h"
 #include <iostream>
 
+/* JOINS ORDER 
+1 -> primo joint ( spalla )
+2 -> secondo joint ( spalla 2)
+3 -> terzo joint ( gomito)
+4 -> quarto joint ( polso 1 )
+5 -> quinti joitn ( polso 2 )
+6 -> sesto joitn ( polso 3 )
+7 -> grip 1
+8 -> grip 2
+
+*/
+
 int main(int argc, char **argv){
     ros::init(argc, argv, "talker");
     ros::NodeHandle n;
@@ -11,7 +23,7 @@ int main(int argc, char **argv){
 
     while (ros::ok()){
         std_msgs::Float64MultiArray jointPositions;
-        jointPositions.data = {1.8, -2, 2, 0, 0, 0, 1, 1}; // Posizioni desiderate dei joint in radianti
+        jointPositions.data = {0, 0 , 0, 0, 0, 0, 0, 0}; // Posizioni desiderate dei joint in radianti
         
         pub.publish(jointPositions);
         ros::spinOnce();

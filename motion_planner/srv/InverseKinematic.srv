@@ -1,3 +1,5 @@
 float64[] jointstate
+float64[3] xef
+float64[3] phief
 ---
-float64 q
+float64[6] q

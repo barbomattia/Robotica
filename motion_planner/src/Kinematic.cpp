@@ -652,10 +652,11 @@ std::string vectorToString(const Eigen::VectorXd& vec) {
 std::string matrixToString(const Eigen::Matrix3d& mat) {
     std::stringstream ss;
     for (int i = 0; i < mat.rows(); ++i) {
+        ss << "\n";  // a capo dopo ogni riga
         for (int j = 0; j < mat.cols(); ++j) {
             ss << mat(i, j) << " ";
         }
-        ss << "\n";  // a capo dopo ogni riga
+
     }
     return ss.str();
 }

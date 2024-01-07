@@ -3,6 +3,7 @@
 #include "sensor_msgs/JointState.h"             // includo il messaggio per le gli stati dei joint
 #include <cstdlib>
 
+
 bool received_message = false;
 std::vector<double> received_positions;
 
@@ -41,14 +42,29 @@ int main(int argc, char **argv){
     srv.request.jointstate.push_back(received_positions[5]);
     srv.request.jointstate.push_back(received_positions[6]);
     srv.request.jointstate.push_back(received_positions[7]);
+
+    //inizializzo nella richiesta i parametri finali della configurazione end effector
+    srv.request.xef[0]=0.5;
+    srv.request.xef[1]=0.5;
+    srv.request.xef[2]=0.5;
+
+    srv.request.phief[0]=0.0;
+    srv.request.phief[1]=0.0;
+    srv.request.phief[2]=0.0;
+
     
-    
+    /* TEST PRINT OF REQUEST MESSAGE 
     for (size_t i = 0; i < srv.request.jointstate.size(); ++i) {
         ROS_INFO("srv.request.jointstate[%zu]: %f", i, srv.request.jointstate[i]);
     }
+    */
 
     if (service_client.call(srv)){
-        ROS_INFO("q: %f", srv.response.q);
+        std::stringstream qs;
+        for(int i=0; i<6; i++){
+            qs << srv.response.q[i] << " ";
+        }
+        ROS_INFO("RESPONST SERVICE q: %s", qs.str().c_str());
     } else {
         ROS_ERROR("Failed to call service");
         return 1;
