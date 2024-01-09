@@ -3,14 +3,13 @@
 #include "sensor_msgs/JointState.h"             // includo il messaggio per le gli stati dei joint
 #include "std_msgs/Float64MultiArray.h"
 
-std::vector<double> received_positions;
-
-void callback(const sensor_msgs::JointState::ConstPtr& msg) {
-    received_positions = msg->position;
+void callback(const sensor_msgs::JointState::ConstPtr& msg, std::vector<double>* received_positions) {
+    
+    *received_positions = msg->position;
     std::stringstream jointposition;
     jointposition << "Joint Positions:\n";
-    for (int i = 0; i < received_positions.size(); i++) {
-        jointposition << "[ " << i << " ] " << received_positions[i] <<"\n";
+    for (int i = 0; i < received_positions->size(); i++) {
+        jointposition << "[ " << i << " ] " << (*received_positions)[i] <<"\n";
     }
     jointposition << "\n";
     std::cout << jointposition.str().c_str();
@@ -22,14 +21,17 @@ std::vector<double> ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], dou
     // client del service calculate_inverse_kinemaic gestito dal package motion_plan
     ros::ServiceClient service_client = n.serviceClient<motion_planner::InverseKinematic>("calculate_inverse_kinematics");
     // Crea un subscriber per il topic della joint state
-    ros::Subscriber sub1 = n.subscribe<sensor_msgs::JointState>("/ur5/joint_states", 1, callback);
+    std::vector<double> received_positions;
+    ros::Subscriber sub1 = n.subscribe<sensor_msgs::JointState>("/ur5/joint_states", 1, std::bind(callback, std::placeholders::_1, &received_positions));
 
     // Ciclo fino a quando non ricevi il messaggio joint state
     while (received_positions.empty()) {
         ros::spinOnce(); 
     }
 
-    motion_planner::InverseKinematic srv;   
+    motion_planner::InverseKinematic srv;  
+
+    
     /* l'ordine degli 8 joint sono: 0 - elbow_joint, 1 - hand_1_joint, 2 - hand_2_joint, 3 - shoulder_lift_joint, 
     4- shoulder_pan_joint, 5 - wrist_1_joint, 6 - wrist_2_joint, 7- wrist_3_joint
     
