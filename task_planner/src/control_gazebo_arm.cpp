@@ -23,7 +23,7 @@ int main(int argc, char **argv){
 
     while (ros::ok()){
         std_msgs::Float64MultiArray jointPositions;
-        jointPositions.data = {0, 0 , 0, 0, 0, 0, 0, 0}; // Posizioni desiderate dei joint in radianti
+        jointPositions.data = { 4.35681, -1.78591, 2.25505, -2.04009, 1.5714, -2.23041, 0, 0}; // Posizioni desiderate dei joint in radianti
         
         pub.publish(jointPositions);
         ros::spinOnce();

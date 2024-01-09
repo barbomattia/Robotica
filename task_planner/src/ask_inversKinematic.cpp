@@ -20,6 +20,7 @@ int main(int argc, char **argv){
 
     ros::init(argc, argv, "ask_invers_kinematic_node");
     ros::NodeHandle n;
+    //ROS_INFO("Start");
 
     // client del service calculate_inverse_kinemaic gestito dal package motion_plan
     ros::ServiceClient service_client = n.serviceClient<motion_planner::InverseKinematic>("calculate_inverse_kinematics");
@@ -28,6 +29,7 @@ int main(int argc, char **argv){
 
     // Ciclo fino a quando non ricevi il messaggio joint state
     while (received_positions.empty()) {
+        ROS_INFO("WAITING q FROM UR5");
         ros::spinOnce(); 
     }
 
@@ -44,13 +46,13 @@ int main(int argc, char **argv){
     srv.request.jointstate.push_back(received_positions[7]);
 
     //inizializzo nella richiesta i parametri finali della configurazione end effector
-    srv.request.xef[0]=0.5;
-    srv.request.xef[1]=0.5;
+    srv.request.xef[0]=0;
+    srv.request.xef[1]=0.382732;
     srv.request.xef[2]=0.5;
 
-    srv.request.phief[0]=0.0;
-    srv.request.phief[1]=0.0;
-    srv.request.phief[2]=0.0;
+    srv.request.phief[0]=0.000357;
+    srv.request.phief[1]=0.000509;
+    srv.request.phief[2]=0.555606;
 
     
     /* TEST PRINT OF REQUEST MESSAGE 

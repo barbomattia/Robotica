@@ -120,6 +120,7 @@ catkin_package(
 include_directories(
 # include
   ${catkin_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIR}/include
 )
 
 ## Declare a C++ library
@@ -140,6 +141,7 @@ add_executable(ask_inverse_kinematic_node src/ask_inversKinematic.cpp)
 add_executable(ask_object_detection_node src/ask_objectDetection.cpp)
 add_executable(control_gazebo_arm_node src/control_gazebo_arm.cpp)
 add_executable(ask_image_gazebo_camera_node src/ask_image_gazebo_camera.cpp)
+add_executable(state_machine_task_node src/state_machine_task.cpp src/TaskFunction.cpp)
 
 
 ## Rename C++ executable without prefix
@@ -151,6 +153,7 @@ target_link_libraries(ask_inverse_kinematic_node ${catkin_LIBRARIES})
 target_link_libraries(ask_object_detection_node ${catkin_LIBRARIES})
 target_link_libraries(control_gazebo_arm_node ${catkin_LIBRARIES})
 target_link_libraries(ask_image_gazebo_camera_node ${catkin_LIBRARIES})
+target_link_libraries(state_machine_task_node ${catkin_LIBRARIES})
 
 
 ## Add cmake target dependencies of the executable
