@@ -423,6 +423,25 @@ Eigen::MatrixXd ur5Jac(const Eigen::VectorXd& Th, double scaleFactor) {
 }
 
 
+// FUNZIONE per CALCOLO della PSEUDOINVERSA DESTRA SMORZATA
+Eigen::MatrixXd dampedPseudoInverse(const Eigen::MatrixXd& J) {
+
+    double dampingFactor = 0.0001;
+
+    Eigen::MatrixXd Jt = J.transpose();
+    Eigen::MatrixXd JJt = J * Jt;
+    
+    // Aggiungi termine di smorzamento alla diagonale della matrice JJt
+    Eigen::MatrixXd dampingMatrix = ( dampingFactor * dampingFactor ) * Eigen::MatrixXd::Identity(J.rows(), J.rows());
+    JJt += dampingMatrix;
+
+    Eigen::MatrixXd pseudoInverse = Jt * JJt.inverse();
+
+    return pseudoInverse;
+}
+
+
+
 
 //FUNZIONE per CALCOLO la DERIVATA dei QUATERNIONI dei joints ------------------------------------------------------------------------
 Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
@@ -440,23 +459,32 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     // calcolo la Jacobiana per la configurazione attuale del braccio
     Eigen::MatrixXd J = ur5Jac(q, scaleFactor);
 
-    // controllo che il determinate della jacobiano sia uguale a zero, in questo caso abbiamo a che fare con singolarità
-    if (std::abs(J.determinant()) < 1e-3) {
-        std::cerr << "vicino ad una singolarità" << std::endl;
-        //implementazione
-    }
-    
-
     //Calcolo l'errore di orientazione: Δq=qd * qe.coniugato 
     Eigen::Quaterniond qp = qd * qe.conjugate();
 
     //Prendo la parte vettoriale del quaternioe errore 
     Eigen::Vector3d eo = qp.vec();
 
-    //Calcolo la derivata di q: dotQ usando la formula
-    Eigen::VectorXd dotQ = J.inverse() * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
 
-    return dotQ;
+    // controllo che il determinate della jacobiano sia uguale a zero, in questo caso abbiamo a che fare con singolarità
+    if (std::abs(J.determinant()) < 1e-3) {
+        std::cerr << "vicino ad una singolarità" << std::endl;
+
+        //uso una damped psudo inverse per calcolare dotq
+        Eigen::MatrixXd pseudoInverse = dampedPseudoInverse(J);
+        Eigen::VectorXd dotQ = pseudoInverse * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
+
+        return dotQ;
+
+    }else{
+        //Calcolo la derivata di q: dotQ usando la formula
+        Eigen::VectorXd dotQ = J.inverse() * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
+
+        return dotQ;
+    }
+    
+
+    
 }
 
 
@@ -536,7 +564,7 @@ Eigen::Matrix3d euler2RotationMatrix(const Eigen::Vector3d& euler_angles, const 
 
 // FUNZIONE per CALCOLO CONFIGURAZIONI JOINT usando un Control basato sui QUATERNIONI e su INTERPOLAZIONE SFERICA --------------------
 Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
-    const Eigen::VectorXd& TH0,     // vettore q che contiene le configurazioni iniziali di joint
+    const Eigen::VectorXd& TH0,     // vettore q che contiene le configurazioni iniziale di joint
     const Eigen::MatrixXd& Kp,      // matrice di errore lineare
     const Eigen::MatrixXd& Kq,      // matrice di errore quaternione
     const Eigen::VectorXd& T,       // vettore che contiene i step temporali ( limite iniziale )
@@ -593,6 +621,14 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
         Eigen::VectorXd dotqk = invDiffKinematiControlCompleteQuaternion(
             qk, xe, pd(T[i],Tf, xe0, xef), vd, omegad, qe, qd(T[i],Tf, q0, qf), Kp, Kq, scaleFactor
         );
+        std::cout << "\ndock: [";
+        for (int i = 0; i < dotqk.size(); ++i) {
+            std::cout << dotqk(i);
+            if (i < dotqk.size() - 1) {
+                std::cout << ", ";
+            }
+        }
+        std::cout << "]" << std::endl;
 
         // calcolo con una funzione lineare le configurazioni dei joint a fine step e li inserisco nella matrice configurazioni q
         qk = qk + dotqk * Dt;
@@ -649,7 +685,7 @@ std::string vectorToString(const Eigen::VectorXd& vec) {
     return ss.str();
 }
 
-std::string matrixToString(const Eigen::Matrix3d& mat) {
+std::string matrix3dToString(const Eigen::Matrix3d& mat) {
     std::stringstream ss;
     for (int i = 0; i < mat.rows(); ++i) {
         ss << "\n";  // a capo dopo ogni riga
@@ -657,6 +693,24 @@ std::string matrixToString(const Eigen::Matrix3d& mat) {
             ss << mat(i, j) << " ";
         }
 
+    }
+    return ss.str();
+}
+
+std::string quaternionToString(const Eigen::Quaterniond& q){
+    std::stringstream ss;
+    ss << "x: " << q.x() << " y: " << q.y() << " z: " << q.z() << " w: " << q.w();
+    return ss.str();
+}
+
+std::string matrixToString(const Eigen::MatrixXd& matrice){
+    std::stringstream ss;
+    for (int i = 0; i < matrice.rows(); ++i) {
+        ss << "[q" << i <<"]: "; 
+        for (int j = 0; j < matrice.cols(); ++j) {
+            ss << matrice(i, j) << " ";
+        }
+        ss << "\n";
     }
     return ss.str();
 }

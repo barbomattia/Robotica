@@ -53,6 +53,8 @@
     Eigen::Vector3d parts(const Eigen::Quaterniond& q); 
         
     
+    // FUNZIONE per CALCOLO della PSEUDOINVERSA DESTRA SMORZATA
+    Eigen::MatrixXd dampedPseudoInverse(const Eigen::MatrixXd& J);
 
 
     //FUNZIONE per CALCOLO la DERIVATA dei QUATERNIONI dei joints ------------------------------------------------------------------------
@@ -103,7 +105,7 @@
 
     // FUNZIONE per CALCOLO CONFIGURAZIONI JOINT usando un Control basato sui QUATERNIONI e su INTERPOLAZIONE SFERICA --------------------
     Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
-        const Eigen::VectorXd& TH0,     // vettore q che contiene le configurazioni iniziali di joint
+        const Eigen::VectorXd& TH0,     // vettore q che contiene le configurazioni iniziale di joint
         const Eigen::MatrixXd& Kp,      // matrice di errore lineare
         const Eigen::MatrixXd& Kq,      // matrice di errore quaternione
         const Eigen::VectorXd& T,       // vettore che contiene i step temporali ( limite iniziale )
@@ -124,7 +126,9 @@
     // funzioni per facilitare lo sviluppo; non centrano con il puro calcolo della cinematica
 
     std::string vectorToString(const Eigen::VectorXd& vec);
-    std::string matrixToString(const Eigen::Matrix3d& mat);
+    std::string matrix3dToString(const Eigen::Matrix3d& mat);
+    std::string quaternionToString(const Eigen::Quaterniond& q);
+    std::string matrixToString(const Eigen::MatrixXd& matrice); 
 
 
 

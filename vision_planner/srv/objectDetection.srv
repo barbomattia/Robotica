@@ -1,5 +1,4 @@
-int64 img
 ---
-float64 x
-float64 y
-float64 z
+float64[] xBlocks
+float64[] phiBlocks
+string[] nameBlocks

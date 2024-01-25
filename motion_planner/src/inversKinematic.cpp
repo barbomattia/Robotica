@@ -7,6 +7,10 @@
 
 bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::InverseKinematic::Response &res){
     double scaleFactor = 1.0;
+    double Tf = 10.0;
+    double DeltaT = 0.5;
+    Eigen::VectorXd T;
+    T = Eigen::VectorXd::LinSpaced(static_cast<int>((Tf / DeltaT) + 1), 0, Tf);
 
     ROS_INFO("\n");
     ROS_INFO("REQUEST------------------------------\n");
@@ -18,21 +22,23 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     // converto il vettore di double req.jointstate in un vettore eigen joinstate
     Eigen::VectorXd jointstate = Eigen::Map<Eigen::VectorXd>(req.jointstate.data(), req.jointstate.size());
 
-    // calcolo la configurazione dell'end effector sapendo lo stato dei joint
+    // calcolo la configurazione attuale dell'end effector sapendo lo stato dei joint
     auto result = CinematicaDiretta(jointstate, scaleFactor);   
     Eigen::VectorXd xe = result.pe;     // posizione end effector 
     Eigen::Matrix3d Re = result.Re;     // rotazione end effector 
+    Eigen::Quaterniond q0(Re);          // quaternione configurazione iniziale 
 
     // Stampa del vettore xe e della matrice Re
     ROS_INFO("\n");
-    ROS_INFO("--DERIVE xe, Re and RPY of END EFFECTOR------");
+    ROS_INFO("--DERIVE INITIAL INFORMATION xe, Re, RPY, q0 of END EFFECTOR------");
     ROS_INFO("Vector xe: %s", vectorToString(xe).c_str());
-    ROS_INFO("Matrix Re:%s", matrixToString(Re).c_str());
-    ROS_INFO("Vector RPY: %s \n", vectorToString(Re.eulerAngles(0, 1, 2)).c_str());
+    ROS_INFO("Matrix Re:%s", matrix3dToString(Re).c_str());
+    ROS_INFO("Vector RPY: %s ", vectorToString(Re.eulerAngles(0, 1, 2)).c_str());
+    ROS_INFO("Quaternion q0: %s \n", quaternionToString(q0).c_str());
 
     ROS_INFO("--REQUEST DESIRED END EFFECTOR ----------");
-    ROS_INFO("xef : %f, %f, %f", req.xef[0], req.xef[1], req.xef[2]);
-    ROS_INFO("phief : %f, %f, %f", req.phief[0], req.phief[1], req.phief[2]);
+    ROS_INFO("Vector Location xef : %f, %f, %f", req.xef[0], req.xef[1], req.xef[2]);
+    ROS_INFO("Vector Euler phief : %f, %f, %f", req.phief[0], req.phief[1], req.phief[2]);
 
     // converto il vettore di double req.phief ed xef in vettori eigen phief e xef
     Eigen::VectorXd phief = Eigen::Map<Eigen::VectorXd>(req.phief.data(), req.phief.size());
@@ -41,39 +47,61 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     // derivo la matrice di rotazione desiderata dell'end effector da phief
     Eigen::Matrix3d Ref;
     Ref = euler2RotationMatrix(phief, "XYZ");
-    ROS_INFO("Matrix Ref:%s \n", matrixToString(Ref).c_str());
+    ROS_INFO("Matrix Ref:%s ", matrix3dToString(Ref).c_str());
 
     // assempblo la matrice di configurazione dell'end effector usando Ref e xef
     Eigen::Matrix4d Tt0 = Eigen::Matrix4d::Identity();
     Tt0.block<3, 3>(0, 0) = Ref;
     Tt0.block<3, 1>(0, 3) = xef;
+    Eigen::Quaterniond qf(Tt0.block<3, 3>(0, 0));
+    ROS_INFO("Quaternion qf: %s \n", quaternionToString(qf).c_str());
 
-    //prova temporanea semplice cinematica inversa
+    /*prova temporanea semplice cinematica inversa
     Eigen::MatrixXd THf = cinematicaInversa(xef, Ref, scaleFactor);
     Eigen::VectorXd M = getFirstColumnWithoutNaN(THf);
     ROS_INFO("--DERIVE the first possible JOIN CONFIGURATION to reach xef------");
-    ROS_INFO("Vector M: %s", vectorToString(M).c_str());
-    
-    std::stringstream qs;
-    for(int i=0; i<6; i++){
-        res.q[i] = M(i);
-        qs << res.q[i] << " ";
+    ROS_INFO("%s", vectorToString(M).c_str());
+    */
+
+    Eigen::Matrix3d Kp = 10.0 * Eigen::Matrix3d::Identity();
+    Eigen::Matrix3d Kq = -10.0 * Eigen::Matrix3d::Identity();
+
+    Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf);
+    ROS_INFO("--DERIVED q ------");
+    ROS_INFO("Dimensioni di Th: %ld %ld", Th.rows(), Th.cols());
+    ROS_INFO("%s", matrixToString(Th).c_str());
+
+    //copio la matrice th nella risposta
+    for (int i = 0; i < Th.rows(); i++) { 
+        for (int j = 0; j < Th.cols(); j++) {
+            //res.array_q.push_back(Th(i,j));
+            if (i >= 0 && i < Th.rows() && j >= 0 && j < Th.cols()) {
+                res.array_q.push_back(Th(i, j));
+            } else {
+                ROS_ERROR("Indici fuori dai limiti: i=%d, j=%d", i, j);
+            }
+        }
     }
-    ROS_INFO("sending back response: %s", qs.str().c_str());
+
+    for(int i=0; i < res.array_q.size(); i++){
+        std::cout << res.array_q[i] << " ";
+    }
+    std::cout<<"\n";
+
+    ROS_INFO("-- END REQUEST ------");
+
+    
     return true;
 }
 
-
 int main(int argc, char **argv){
 
-    
-    
     ros::init(argc, argv, "inverse_kinemtic_node");
     ros::NodeHandle n;
+
     ros::ServiceServer service = n.advertiseService("calculate_inverse_kinematics", inverse);
+
     ros::spin();
-    
-    
-    
+     
     return 0;
 } 

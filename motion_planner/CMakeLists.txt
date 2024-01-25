@@ -49,10 +49,10 @@ find_package(catkin REQUIRED COMPONENTS
 ##   * add every package in MSG_DEP_SET to generate_messages(DEPENDENCIES ...)
 
 ## Generate messages in the 'msg' folder
-add_message_files(
-   FILES
-   MotionInfo.msg
-)
+## add_message_files(
+##   FILES
+##   MotionInfo.msg
+## ) 
 
 ## Generate services in the 'srv' folder
 add_service_files(
@@ -149,6 +149,7 @@ add_executable(inverse_kinematic_node src/inversKinematic.cpp src/Kinematic.cpp)
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(inverse_kinematic_node motion_planner_gencpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(inverse_kinematic_node 
