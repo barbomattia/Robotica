@@ -38,4 +38,14 @@
     void control_gazebo_arm(ros::NodeHandle& n, std::vector<double> q);
 
 
+    /* DEFINIZIONE POSIZIONE ORDINATA BLOCCO
+    La funzione ritorna la posizione in cui mettere il blocco */
+    std::vector<double> define_end_position(std::string block);
+
+
+    /* FUNZIONI SECONDARIE */
+    bool isZero(const std::vector<double>& vettore);
+    std::stringstream stampaVector(const std::vector<double>& vec);
+
+
 #endif

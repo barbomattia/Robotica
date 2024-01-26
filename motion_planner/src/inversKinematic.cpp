@@ -40,6 +40,7 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     ROS_INFO("Vector Location xef : %f, %f, %f", req.xef[0], req.xef[1], req.xef[2]);
     ROS_INFO("Vector Euler phief : %f, %f, %f", req.phief[0], req.phief[1], req.phief[2]);
 
+   
     // converto il vettore di double req.phief ed xef in vettori eigen phief e xef
     Eigen::VectorXd phief = Eigen::Map<Eigen::VectorXd>(req.phief.data(), req.phief.size());
     Eigen::VectorXd xef = Eigen::Map<Eigen::VectorXd>(req.xef.data(), req.xef.size());

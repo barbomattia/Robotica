@@ -65,6 +65,7 @@ def generate_world_sdf():
     tavolo_pose = ET.SubElement(tavolo_include, "pose")
     tavolo_pose.text = "0.0 0.0 0.0 0 0 0"
 
+    
     # Generate random poses for 11 blocks
     block_classes = [
         "X1-Y1-Z2",
@@ -80,7 +81,7 @@ def generate_world_sdf():
         "X2-Y2-Z2-FILLET",
     ]
 
-    x_range = [0.25, 0.85]
+    x_range = [0.05, 0.60]
     y_range = [0.25, 0.75]
     z_value = 0.865  # Assuming a common z value for all blocks
 
@@ -104,6 +105,38 @@ def generate_world_sdf():
                 )
                 for other_block_pose in [tavolo_pose.text] + [include.find("pose").text if include.find("pose") is not None else "" for include in world.findall("include") if include != block_include and include.find("pose") is not None]
             )
+    
+
+    ''' CODICE USATO PER DEFINIRE LE POSIZIONI FINALI ED ORDINATE DEI BLOCCHI 
+    # Define end positions for each block manually
+    block_positions = {
+        "X1-Y4-Z2": "0.9 0.25 0.865 0 0 1.570795",  
+        "X1-Y4-Z1": "0.9 0.3 0.865 0 0 1.570795", 
+        "X1-Y1-Z2": "0.8 0.3 0.865", 
+
+        "X2-Y2-Z2": "0.92 0.4 0.865",
+        "X2-Y2-Z2-FILLET": "0.82 0.4 0.865",
+
+        "X1-Y3-Z2": "0.92 0.5 0.865 0 0 1.570795",
+        "X1-Y3-Z2-FILLET": "0.8 0.5 0.865 0 0 1.570795",
+       
+        "X1-Y2-Z2-TWINFILLET": "0.95 0.65 0.865",
+        "X1-Y2-Z2": "0.9 0.65 0.865",
+        "X1-Y2-Z1": "0.85 0.65 0.865",
+        "X1-Y2-Z2-CHAMFER": "0.8 0.65 0.865",
+               
+    }
+
+    # Add blocks with predefined positions
+    for block_class, position in block_positions.items():
+        block_include = ET.SubElement(world, "include")
+        block_name = ET.SubElement(block_include, "name")
+        block_name.text = block_class
+        block_uri = ET.SubElement(block_include, "uri")
+        block_uri.text = f"model://{block_class}"
+        block_pose = ET.SubElement(block_include, "pose")
+        block_pose.text = position
+    '''    
 
     # Add camera configuration
     gui = ET.SubElement(world, "gui")

@@ -4,6 +4,10 @@
 #include "sensor_msgs/JointState.h"             // includo il messaggio per le gli stati dei joint
 #include "std_msgs/Float64MultiArray.h"
 
+#define ARM_X 0.5
+#define ARM_Y 0.35
+#define ARM_Z 1.75
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*-------------------------------------------------------  FUNZIONI SECONDARIE ------------------------------------------------------------*/
@@ -95,6 +99,15 @@ void callback2(const sensor_msgs::JointState::ConstPtr& msg, std::vector<double>
     
 }
 
+bool isZero(const std::vector<double>& vettore) {
+    for (double elemento : vettore) {
+        if (elemento != 0.0) {
+            return false; 
+        }
+    }
+    return true; 
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /*------------------------------------------------  FUNZIONI X MACCHINA A STATI  ----------------------------------------------------------*/
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,12 +119,11 @@ std::vector<Block> ask_object_detection(ros::NodeHandle& n){
     vision_planner::objectDetection srv;
 
     if (client.call(srv)){
-        // Se la chiamata ha successo 
         blocchi = riordinaDatiBlocchi(srv.response.xBlocks, srv.response.phiBlocks, srv.response.nameBlocks);
         std::cout<<"Blocchi Trovati \n";
 
         for (const auto& blocco : blocchi) {
-            std::cout << "Blocco: " << blocco << std::endl;
+            std::cout << "\tBlocco: " << blocco << std::endl;
         }
         std::cout<< std::endl;
 
@@ -156,10 +168,11 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
     srv.request.jointstate.push_back(received_positions[6]);
     srv.request.jointstate.push_back(received_positions[7]);
 
-    //inizializzo nella richiesta i parametri finali della configurazione end effector
-    srv.request.xef[0]=xef[0];          srv.request.phief[0]=phief[0];
-    srv.request.xef[1]=xef[1];          srv.request.phief[1]=phief[1];
-    srv.request.xef[2]=xef[2];          srv.request.phief[2]=phief[2];
+    //inizializzo nella richiesta i parametri finali della configurazione end effector 
+    //per le coordinate conferto le coordinate originali nel world frame alla coordinate del UR5 fram 
+    srv.request.xef[0]=xef[0]-ARM_X;          srv.request.phief[0]=phief[0];
+    srv.request.xef[1]=xef[1]-ARM_Y;          srv.request.phief[1]=phief[1];
+    srv.request.xef[2]=xef[2]-ARM_Z;          srv.request.phief[2]=phief[2];
 
     
     /* TEST PRINT OF REQUEST MESSAGE 
@@ -179,7 +192,7 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
             
         std::stringstream q_received;
         for(int i=0; i < srv.response.array_q.size() / 6; i++){
-            q_received << "q[" << i << "]: ";
+            q_received << "\tq[" << i << "]: ";
             for(int j=0; j<6; j++){
                 ret(i,j) = srv.response.array_q[(i*6)+j];
                 q_received << srv.response.array_q[(i*6)+j] << "  ";
@@ -196,6 +209,7 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
     return ret;
   
 }
+
 
 
 
@@ -236,4 +250,25 @@ void control_gazebo_arm(ros::NodeHandle& n, std::vector<double> q){
 
     std::cout << "Configurazione Raggiunta \n";
 
+}
+
+
+
+
+std::vector<double> define_end_position(std::string block){
+    if(block == "X1-Y4-Z2")             return {0.9, 0.25, 0.865, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y4-Z1")             return {0.9, 0.3, 0.865, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y1-Z2")             return {0.8, 0.3, 0.865, 0.0, 0.0, 0.0};
+    if(block == "X2-Y2-Z2")             return {0.92, 0.4, 0.865, 0.0, 0.0, 0.0};
+    if(block == "X2-Y2-Z2-FILLET")      return {0.82, 0.4, 0.865, 0.0, 0.0, 0.0};
+    if(block == "X1-Y3-Z2")             return {0.92, 0.5, 0.865, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y3-Z2-FILLET")      return {0.8, 0.5, 0.865, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y2-Z2-TWINFILLET")  return {0.95, 0.65, 0.865, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y2-Z2")             return {0.9, 0.65, 0.865, 0.0, 0.0, 0.0};
+    if(block == "X1-Y2-Z1")             return {0.85, 0.65, 0.865, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y2-Z2-CHAMFER")     return {0.8, 0.65, 0.865, 0.0, 0.0, 1.570795};
+
+    return {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
+    
+    
 }

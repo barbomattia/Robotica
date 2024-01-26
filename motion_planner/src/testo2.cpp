@@ -32,6 +32,7 @@ int main() {
 
     // Chiamata alle funzioni
     Eigen::MatrixXd TH0 = cinematicaInversa(pd(0, Tf, xe0, xef), euler2RotationMatrix(phid(0, Tf, phief, phie0), "XYZ"), scaleFactor);
+    std::cout <<"Cinematica invers" <<TH0;
     Eigen::VectorXd M = getFirstColumnWithoutNaN(TH0);
     Eigen::Matrix3d Kp = 10.0 * Eigen::Matrix3d::Identity();
     Eigen::Matrix3d Kq = -10.0 * Eigen::Matrix3d::Identity();
