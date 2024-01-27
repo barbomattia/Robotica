@@ -20,7 +20,7 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     //FUNZIONE per definire LE MATRICI DI TRASFORMAZIONE di un link 
     auto Tij = [](double th, double alpha, double d, double a) -> Eigen::Matrix4d {
         Eigen::Matrix4d result;
-        result << cos(th), -sin(th) * cos(alpha), sin(th) * sin(alpha), a * cos(th),
+        result <<cos(th), -sin(th) * cos(alpha), sin(th) * sin(alpha), a * cos(th),
                   sin(th), cos(th) * cos(alpha), -cos(th) * sin(alpha), a * sin(th),
                   0, sin(alpha), cos(alpha), d,
                   0, 0, 0, 1;
@@ -28,7 +28,8 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     };
 
     //CALCOLO delle MATRICI DI TRASPORTO usando la funzione Tij appena definita
-    TransformationMatrices Tm;   
+    TransformationMatrices Tm; 
+    Eigen::Matrix4d T0W;
     Tm.T10 = Tij(Th(0), Alpha(0), D(0), A(0));
     Tm.T21 = Tij(Th(1), Alpha(1), D(1), A(1));
     Tm.T32 = Tij(Th(2), Alpha(2), D(2), A(2));
@@ -610,15 +611,18 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
 
 
 
-Eigen::VectorXd getFirstColumnWithoutNaN(const Eigen::MatrixXd& inputMatrix) {
+Eigen::VectorXd getFirstColumnWithoutNaN(Eigen::MatrixXd& inputMatrix) {
     Eigen::VectorXd firstColumnWithoutNaN;
 
     for (int col = 0; col < inputMatrix.cols(); ++col) {
-        // Verifica se ci sono valori NaN nella colonna corrente
+        //verifico se ci sono valori nan nella colonna, quindi nella configurazione
         if (!inputMatrix.col(col).array().isNaN().any()) {
-            // Estrai la prima colonna senza NaN
+            
             firstColumnWithoutNaN = inputMatrix.col(col);
+            inputMatrix.col(col).array().setConstant(std::numeric_limits<double>::quiet_NaN());
             break;
+        } else {
+            std::cout << "Nessuna configruazione valida trovata" << std::endl;
         }
     }
 
@@ -639,3 +643,4 @@ Eigen::Quaterniond quatmultiply(const Eigen::Quaterniond& q1, const Eigen::Quate
 Eigen::Vector3d parts(const Eigen::Quaterniond& q) {
     return q.vec();
 }
+

@@ -17,6 +17,11 @@
         Eigen::Matrix3d Re;     //ROTAZIONE END EFFECTOR
     };
 
+    struct Point{
+        double x;
+        double y;
+        double z;
+    };
 
     /*CINEMATICA DIRETTA --------------------------------------------------------------------------------------------------------- 
     PARAMETRI:
@@ -119,7 +124,16 @@
     );
 
 
-    Eigen::VectorXd getFirstColumnWithoutNaN(const Eigen::MatrixXd& inputMatrix);
+    Eigen::VectorXd getFirstColumnWithoutNaN(Eigen::MatrixXd& inputMatrix);
+
+    // funzioni per facilitare lo sviluppo; non centrano con il puro calcolo della cinematica
+
+    std::string vectorToString(const Eigen::VectorXd& vec);
+    std::string matrixToString(const Eigen::Matrix3d& mat);
+
+    Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor);
+    bool checkCollisioni(Eigen::MatrixXd Th, double offset, double altezza, Point A, Point B, Point C, Point D, Point G);
+
 
 
 
