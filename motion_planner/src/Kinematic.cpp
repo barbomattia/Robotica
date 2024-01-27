@@ -644,3 +644,112 @@ Eigen::Vector3d parts(const Eigen::Quaterniond& q) {
     return q.vec();
 }
 
+std::string vectorToString(const Eigen::VectorXd& vec) {
+    std::stringstream ss;
+    for (int i = 0; i < vec.size(); ++i) {
+        ss << vec[i] << " ";
+    }
+    return ss.str();
+}
+
+std::string matrixToString(const Eigen::Matrix3d& mat) {
+    std::stringstream ss;
+    for (int i = 0; i < mat.rows(); ++i) {
+        ss << "\n";  // a capo dopo ogni riga
+        for (int j = 0; j < mat.cols(); ++j) {
+            ss << mat(i, j) << " ";
+        }
+
+    }
+    return ss.str();
+}
+
+Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor){
+
+    // Inizializzazione dei vettori A e D e del vettore Alpha con i valori del braccio robotico:
+    Eigen::VectorXd A(6);
+    A << 0, -0.425, -0.3922, 0, 0, 0;
+    A *= scaleFactor;
+
+    Eigen::VectorXd D(6);
+    D << 0.1625, 0, 0, 0.1333, 0.0997, 0.0996;
+    D *= scaleFactor;
+
+    Eigen::VectorXd Alpha(6);
+    Alpha << M_PI / 2, 0, 0, M_PI / 2, -M_PI / 2, 0;
+
+    auto Tij = [](double th, double alpha, double d, double a) -> Eigen::Matrix4d {
+        Eigen::Matrix4d result;
+        result << cos(th), -sin(th) * cos(alpha), sin(th) * sin(alpha), a * cos(th),
+                  sin(th), cos(th) * cos(alpha), -cos(th) * sin(alpha), a * sin(th),
+                  0, sin(alpha), cos(alpha), d,
+                  0, 0, 0, 1;
+        return result;
+    };
+
+    Eigen::MatrixXd singolaConfigurazione(6, 3);
+
+    // Extract joint angles for the current configuration
+    double th1 = Th(0);
+    double th2 = Th(1);
+    double th3 = Th(2);
+    double th4 = Th(3);
+    double th5 = Th(4);
+    double th6 = Th(5);
+
+    // Calculate transformation matrices for each joint
+    Eigen::Matrix4d T10 = Tij(th1, Alpha(0), D(0), A(0));
+    Eigen::Matrix4d T21 = Tij(th2, Alpha(1), D(1), A(1));
+    Eigen::Matrix4d T32 = Tij(th3, Alpha(2), D(2), A(2));
+    Eigen::Matrix4d T43 = Tij(th4, Alpha(3), D(3), A(3));
+    Eigen::Matrix4d T54 = Tij(th5, Alpha(4), D(4), A(4));
+    Eigen::Matrix4d T65 = Tij(th6, Alpha(5), D(5), A(5));
+
+    // Calculate joint positions in world coordinates
+    Eigen::Vector3d joint1 = T10.topRightCorner<3, 1>().head<3>();
+    Eigen::Vector3d joint2 = (T10 * T21).topRightCorner<3, 1>().head<3>();
+    Eigen::Vector3d joint3 = (T10 * T21 * T32).topRightCorner<3, 1>().head<3>();
+    Eigen::Vector3d joint4 = (T10 * T21 * T32 * T43).topRightCorner<3, 1>().head<3>();
+    Eigen::Vector3d joint5 = (T10 * T21 * T32 * T43 * T54).topRightCorner<3, 1>().head<3>();
+    
+    Eigen::Vector3d joint6 = (T10 * T21 * T32 * T43 * T54 * T65).topRightCorner<3, 1>().head<3>();
+
+    // Store joint positions in the matrix
+    singolaConfigurazione.row(0) = joint1;
+    singolaConfigurazione.row(1) = joint2;
+    singolaConfigurazione.row(2) = joint3;
+    singolaConfigurazione.row(3) = joint4;
+    singolaConfigurazione.row(4) = joint5;
+    singolaConfigurazione.row(5) = joint6;
+
+    return singolaConfigurazione;
+}
+
+
+
+bool checkCollisioni(Eigen::MatrixXd Th, double offset, double altezza, Point A, Point B, Point C, Point D, Point G){
+
+    for(int i=0; i<5; i++){
+        double x = Th(0,i);
+        double y = Th(1,i);
+        double z = Th(2,i);
+
+        if(x-offset > A.x && x+offset < D.x && y-offset > A.y && y+offset < B.y && z-offset > A.z && z+offset < altezza){
+            if(y+offset > G.y){
+                if(z-offset < G.z){
+                    return true;
+                } else {
+                    Point next = {Th(0,i+1),Th(1,i+1),Th(2,i+1)};
+                    if ((G.z >= z && G.z <= next.z) || (G.z >= next.z && G.z <= z)){
+                        double check = y + (G.z - z) * (next.y - y) / (next.z - z);
+                        if((check >= y && check <= next.y) || (check >= next.y && check <= y)){
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        } 
+    }     
+    return true; 
+}
