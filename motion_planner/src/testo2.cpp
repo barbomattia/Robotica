@@ -10,7 +10,7 @@ int main() {
     Eigen::MatrixXd phief(3, 1);
     double scaleFactor = 10.0;
     double Tf = 10.0; 
-    double DeltaT = 0.1;
+    double DeltaT = 1;
     Eigen::VectorXd T;
     T = Eigen::VectorXd::LinSpaced(static_cast<int>((Tf / DeltaT) + 1), 0, Tf);
      
@@ -39,69 +39,28 @@ int main() {
 
     // Chiamata alle funzioni
     Eigen::MatrixXd TH0 = cinematicaInversa(pd(0, Tf, xe0, xef), euler2RotationMatrix(phid(0, Tf, phief, phie0), "XYZ"), scaleFactor);
-    Eigen::MatrixXd result(100,6);
     int count = 0;
  
     std::cout << "cinematica inversa: " << std::endl << TH0 << std::endl << std::endl;  
     
     Eigen::VectorXd M = getFirstColumnWithoutNaN(TH0);
-    Eigen::Matrix3d Kp = 10.0 * Eigen::Matrix3d::Identity();
-    Eigen::Matrix3d Kq = -10.0 * Eigen::Matrix3d::Identity();
+    Eigen::Matrix3d Kp = 1.0 * Eigen::Matrix3d::Identity();
+    Eigen::Matrix3d Kq = -1.0 * Eigen::Matrix3d::Identity();
     Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(M, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, xef, q0, qf);
+
+    std::cout << "Vettore di vettori di posizioni di articolazioni nel tempo:\n" << Th << std::endl;
      
     //stamoe configurazioni e coordinate giunti
     std::cout << std::endl;
-    std::cout << "configurazione iniziale: " << std::endl << M << std::endl << std::endl;  
-    std::cout << "configurazione finale: " << std::endl << Th.row(99).transpose() << std::endl << std::endl;  
+    std::cout << "configurazione iniziale: " << std::endl << M.transpose() << std::endl << std::endl;  
+    std::cout << "configurazione finale: " << std::endl << Th.row(9).transpose() << std::endl << std::endl;  
     
     Eigen::MatrixXd giuntiInizliale = posizioneGiunti(M, scaleFactor);
-    Eigen::MatrixXd giuntiFinale = posizioneGiunti(Th.row(99), scaleFactor);
+    Eigen::MatrixXd giuntiFinale = posizioneGiunti(Th.row(9), scaleFactor);
     std::cout << "posizione giunti iniziale: " << std::endl << giuntiInizliale << std::endl << std::endl;   
     std::cout << "posizione giunti finale: " << std::endl << giuntiFinale << std::endl << std::endl;  
 
-    //controllo collisioni ultima configurazione      
-    if(!checkCollisioni(giuntiFinale, 0.02)){ 
-        std::cout << "non ci sono collisioni" << std::endl;
-        result = Th;
-    }  else {
-        std::cout << "ci sono collisioni" << std::endl;
-    }
 
-    std::cout << "Vettore di vettori di posizioni di articolazioni nel tempo:\n" << result << std::endl;
-    std::cout << "col: " << result.cols() << ", row: " << result.rows() << std::endl;
-    std::cout << "count: " << count << std::endl;
-   
-
-   /*
-   Eigen::VectorXd Th(6);
-    Th << 0.1,0.4,0.3,0.4,0.5,0.6;
-    double scaleFactor = 10.0;
-
-
-    TransformationMatrices Tm;
-    std::cout << "configurazione iniziale: " << Th.transpose() << std::endl << std::endl;
-
-    std::cout << "CINEMATICA DIRETTA" << std::endl;
-    CinDir result = CinematicaDiretta(Th, scaleFactor);
-
-    std::cout << "vettore (pe): " << result.pe.transpose() << std::endl;
-    std::cout << "matrice orientamento (Re): " << std::endl << result.Re << std::endl;
-
-    std::cout << std::endl;
-    
-    //CINEMATICA INVERSA
-    std::cout << "CINEMATICA INVERSA" << std::endl;
-    //Vector3d p60(3.0, 3.0, 3.0);  
-    //Matrix3d R60 = Eigen::Matrix3d::Identity();   
-    Eigen::MatrixXd M = cinInversa(result.pe, result.Re, scaleFactor);
-
-    Eigen::MatrixXd giunti = posizioneGiunti(M.col(0), scaleFactor);
-    
-    std::cout << "Matrice delle variabili congiunte M:\n" << M << std::endl << std::endl;
-
-    std::cout << "Configurazione: " << 1 << std::endl;
-    std::cout << giunti << std::endl << std::endl;
-    */
 
     return 0;
 }

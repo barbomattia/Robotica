@@ -423,6 +423,35 @@ Eigen::MatrixXd ur5Jac(const Eigen::VectorXd& Th, double scaleFactor) {
 }
 
 
+// FUNZIONE per CALCOLO della PSEUDOINVERSA DESTRA 
+Eigen::MatrixXd pseudoInverse(const Eigen::MatrixXd& J) {
+
+    Eigen::MatrixXd Jt = J.transpose();
+    Eigen::MatrixXd JJt = J * Jt;
+    
+    Eigen::MatrixXd pseudoInverse = Jt * JJt.inverse();
+
+    return pseudoInverse;
+}
+
+
+// FUNZIONE per CALCOLO della PSEUDOINVERSA DESTRA SMORZATA
+Eigen::MatrixXd dampedPseudoInverse(const Eigen::MatrixXd& J) {
+
+    double dampingFactor = 0.0001;
+
+    Eigen::MatrixXd Jt = J.transpose();
+    Eigen::MatrixXd JJt = J * Jt;
+    
+    // Aggiungi termine di smorzamento alla diagonale della matrice JJt
+    Eigen::MatrixXd dampingMatrix = ( dampingFactor * dampingFactor ) * Eigen::MatrixXd::Identity(J.rows(), J.rows());
+    JJt += dampingMatrix;
+
+    Eigen::MatrixXd pseudoInverse = Jt * JJt.inverse();
+
+    return pseudoInverse;
+}
+
 
 //FUNZIONE per CALCOLO la DERIVATA dei QUATERNIONI dei joints ------------------------------------------------------------------------
 Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
@@ -439,24 +468,51 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
 ) {
     // calcolo la Jacobiana per la configurazione attuale del braccio
     Eigen::MatrixXd J = ur5Jac(q, scaleFactor);
-
-    // controllo che il determinate della jacobiano sia uguale a zero, in questo caso abbiamo a che fare con singolarità
-    if (std::abs(J.determinant()) < 1e-3) {
-        std::cerr << "vicino ad una singolarità" << std::endl;
-        //implementazione
-    }
-    
+    std::cout << "Jacobiana: " << std::endl << J << std::endl;
+    std::cout << "det Jacobiana: " << J.determinant() << std::endl;
 
     //Calcolo l'errore di orientazione: Δq=qd * qe.coniugato 
     Eigen::Quaterniond qp = qd * qe.conjugate();
+    std::cout << std::endl <<"Errore Rotazione: " << qp << std::endl;
 
     //Prendo la parte vettoriale del quaternioe errore 
     Eigen::Vector3d eo = qp.vec();
+    std::cout <<"Errore Rotazione parte Vettoriale: " << eo.transpose() << std::endl;
 
-    //Calcolo la derivata di q: dotQ usando la formula
-    Eigen::VectorXd dotQ = J.inverse() * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
 
-    return dotQ;
+    // controllo che il determinate della jacobiano sia uguale a zero, in questo caso abbiamo a che fare con singolarità
+    if (std::abs(J.determinant()) < 5) {
+        std::cerr << "vicino ad una singolarità" << std::endl;
+
+        //uso una damped psudo inverse per calcolare dotq
+        Eigen::MatrixXd dumpedPseudoInverse = dampedPseudoInverse(J);
+        std::cout << "Pseudo Inverse Damped: " << std::endl << dumpedPseudoInverse << std::endl;
+        Eigen::VectorXd dotQ_base = dumpedPseudoInverse * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
+
+        double det_J = J.determinant(); // Calcolo del determinante della Jacobiana
+        double d = 1.0 / det_J;         // Calcolo di d come l'inverso del determinante
+
+        Eigen::VectorXd d_vector = Eigen::VectorXd::Constant(dotQ_base.size(), d);
+        Eigen::VectorXd correction = (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J) * d_vector;
+
+        Eigen::VectorXd dotQ = dotQ_base + correction;
+        std::cout << std::endl  << "J'" <<  std::endl << pseudoInverse(J);
+        std::cout << std::endl  << "I - J'J" << std::endl << (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J)<< std::endl;
+        std::cout << std::endl << "Original q: " << dotQ_base.transpose()<< std::endl;
+        std::cout << "Correction : " << std::endl << correction.transpose() << std::endl ;
+        std::cout << "Dot q: " << dotQ.transpose();
+        std::cout << std::endl << std::endl;
+        return dotQ;
+
+    }else{
+        //Calcolo la derivata di q: dotQ usando la formula
+        Eigen::VectorXd dotQ = J.inverse() * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
+
+        std::cout << "Dot q: " << dotQ.transpose();
+        std::cout << std::endl << std::endl;
+        return dotQ;
+    }
+        
 }
 
 
