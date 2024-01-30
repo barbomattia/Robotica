@@ -5,9 +5,15 @@
 #include <eigen3/Eigen/Geometry>
 #include <vector>
 #include <functional>
+#define ARM_X 0.5
+#define ARM_Y 0.35
+#define ARM_Z 1.75
 
 #ifndef __KINEMATIC_H__
 #define __KINEMATIC_H__
+
+
+
 
     struct TransformationMatrices { Eigen::Matrix4d T10, T21, T32, T43, T54, T65, T60; };
 
@@ -132,7 +138,7 @@
     std::string matrixToString(const Eigen::Matrix3d& mat);
 
     Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor);
-    bool checkCollisioni(Eigen::MatrixXd Th, double offset, double altezza, Point A, Point B, Point C, Point D, Point G);
+    bool checkCollisioni(Eigen::MatrixXd Th, double offset);
 
 
 

@@ -620,6 +620,7 @@ Eigen::VectorXd getFirstColumnWithoutNaN(Eigen::MatrixXd& inputMatrix) {
             
             firstColumnWithoutNaN = inputMatrix.col(col);
             inputMatrix.col(col).array().setConstant(std::numeric_limits<double>::quiet_NaN());
+            std::cout << "num colonna: " << col << std::endl;
             break;
         } else {
             std::cout << "Nessuna configruazione valida trovata" << std::endl;
@@ -727,29 +728,52 @@ Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor){
 
 
 
-bool checkCollisioni(Eigen::MatrixXd Th, double offset, double altezza, Point A, Point B, Point C, Point D, Point G){
+bool checkCollisioni(Eigen::MatrixXd Th, double offset){
 
-    for(int i=0; i<5; i++){
-        double x = Th(0,i);
-        double y = Th(1,i);
-        double z = Th(2,i);
+    double ZTetto = 1.32 - ARM_Z ;
+    double ZTavolo = 0.86 - ARM_Z;
+    double ZGradino = 1.025 - ARM_Z;
+    double X1Tavolo = 0 - ARM_X;
+    double X2Tavolo = 1 - ARM_X;
+    double Y1Tavolo = 0 - ARM_Y;
+    double Y2Tavolo = 0.8 - ARM_Y;
+    double YGradino = 0.155 - ARM_Y;
 
-        if(x-offset > A.x && x+offset < D.x && y-offset > A.y && y+offset < B.y && z-offset > A.z && z+offset < altezza){
-            if(y+offset > G.y){
-                if(z-offset < G.z){
-                    return true;
-                } else {
-                    Point next = {Th(0,i+1),Th(1,i+1),Th(2,i+1)};
-                    if ((G.z >= z && G.z <= next.z) || (G.z >= next.z && G.z <= z)){
-                        double check = y + (G.z - z) * (next.y - y) / (next.z - z);
+    bool result = false;
+
+    for(int i=1; i<6; i++){
+        double x = Th(i,0);
+        double y = Th(i,1);
+        double z = Th(i,2);
+
+        if(y-offset > Y1Tavolo && z-offset > ZTavolo && z+offset < ZTetto){
+            std::cout << "nei confini del tavolo" << std::endl;  
+            if(y+offset < YGradino){
+                std::cout << "sul gradino" << std::endl;  
+                if(z-offset < ZGradino){
+                    std::cout << "nel gradino" << std::endl;  
+                    result = true;
+                    break;
+                } else if(i != 6){
+                    Point next = {Th(i+1,0),Th(i+1,1),Th(i+1,2)};
+                    std::cout << "calcolo successivo" << std::endl;  
+                    if ((ZGradino >= z && ZGradino <= next.z) || (ZGradino >= next.z && ZGradino <= z)){
+                        std::cout << "la z è compresa" << std::endl;  
+                        double check = y + (ZGradino - z) * (next.y - y) / (next.z - z);
+                        std::cout << "check = " << check << std::endl;  
                         if((check >= y && check <= next.y) || (check >= next.y && check <= y)){
-                            return true;
+                            std::cout << "colpisce il gradino" << std::endl;  
+                            result = true;
+                            break;
                         }
                     }
                 }
+                std::cout << "punto successivo sopra gradino" << std::endl;  
             }
-            return false;
-        } 
+        }  else {
+            std::cout << "fuori dai confini del tavolo" << std::endl;
+            result = true;
+        }
     }     
-    return true; 
+    return result; 
 }
