@@ -468,6 +468,9 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
 ) {
     // calcolo la Jacobiana per la configurazione attuale del braccio
     Eigen::MatrixXd J = ur5Jac(q, scaleFactor);
+    std::cout << "Configurazione attuale: " << q.transpose() <<std::endl;
+    std::cout << "Posizione end effector iniziale: " << xe.transpose() <<std::endl;
+    std::cout << "Posizione end effector desiderata: " << xd.transpose() <<std::endl;
     std::cout << "Jacobiana: " << std::endl << J << std::endl;
     std::cout << "det Jacobiana: " << J.determinant() << std::endl;
 
@@ -489,17 +492,18 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
         std::cout << "Pseudo Inverse Damped: " << std::endl << dumpedPseudoInverse << std::endl;
         Eigen::VectorXd dotQ_base = dumpedPseudoInverse * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
 
-        double det_J = J.determinant(); // Calcolo del determinante della Jacobiana
-        double d = 1.0 / det_J;         // Calcolo di d come l'inverso del determinante
+        double det_Jp = J.determinant(); // Calcolo del determinante della Jacobiana
+        double d = 1.0 / det_Jp;                        // Calcolo di d come l'inverso del determinante
 
         Eigen::VectorXd d_vector = Eigen::VectorXd::Constant(dotQ_base.size(), d);
         Eigen::VectorXd correction = (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J) * d_vector;
 
         Eigen::VectorXd dotQ = dotQ_base + correction;
-        std::cout << std::endl  << "J'" <<  std::endl << pseudoInverse(J);
+         std::cout << std::endl  << "J inversa" <<  std::endl << J.inverse() <<  std::endl;
+        std::cout << std::endl  << "J'" <<  std::endl << pseudoInverse(J)<<  std::endl;
         std::cout << std::endl  << "I - J'J" << std::endl << (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J)<< std::endl;
         std::cout << std::endl << "Original q: " << dotQ_base.transpose()<< std::endl;
-        std::cout << "Correction : " << std::endl << correction.transpose() << std::endl ;
+        std::cout << "Correction : " << correction.transpose() << std::endl ;
         std::cout << "Dot q: " << dotQ.transpose();
         std::cout << std::endl << std::endl;
         return dotQ;
@@ -616,6 +620,7 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
     // Per ogni step calcolo la configurazione dei joint 
     for (int i = 1; i < L - 1; ++i) {   
 
+        std::cout << std::endl << "STEP " << i << std::endl;
         // tramite la cinematica diretta trovo la configurazione dell'end effector all'inizio dello step
         auto result = CinematicaDiretta(qk, scaleFactor);   
         Eigen::VectorXd xe = result.pe;     // posizione end effector 
@@ -652,6 +657,8 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
 
         // calcolo con una funzione lineare le configurazioni dei joint a fine step e li inserisco nella matrice configurazioni q
         qk = qk + dotqk * Dt;
+        std::cout << "Configurazione fine step: " << qk.transpose() <<std::endl;
+        std::cout << "Posizione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).pe.transpose() << std::endl << std::endl;
         q.push_back(qk);
     }
 

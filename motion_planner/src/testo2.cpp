@@ -15,7 +15,7 @@ int main() {
     T = Eigen::VectorXd::LinSpaced(static_cast<int>((Tf / DeltaT) + 1), 0, Tf);
      
     //inizializzazione paramateri     
-    xe0 << 0.3, 0.3, 0.3;                       //posizione attuale end-effector
+    xe0 << 0.3, 0.3, 0.0;                       //posizione attuale end-effector
     xe0 *= scaleFactor;
     phie0 << M_PI / 3, M_PI / 3, M_PI / 3;
     
