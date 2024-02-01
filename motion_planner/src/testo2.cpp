@@ -17,7 +17,7 @@ int main() {
     //inizializzazione paramateri     
     xe0 << 0.3, 0.3, 0.0;                       //posizione attuale end-effector
     xe0 *= scaleFactor;
-    phie0 << M_PI / 3, M_PI / 3, M_PI / 3;
+    phie0 << 0, 0, 0;
     
     xef << 0.5, 0.4, 0.9;                   //posizione finale end-effector
     xef *= scaleFactor;
@@ -26,7 +26,7 @@ int main() {
     //stampe punti
     std::cout << "punto iniziale: " << std::endl << xe0.transpose() << std::endl << std::endl;
     std::cout << "punto finale: " << std::endl << xef.transpose() << std::endl << std::endl;
-    
+
     Eigen::Matrix3d workM;
     workM = euler2RotationMatrix(phie0, "XYZ");
     Eigen::Quaterniond q0(workM);
@@ -37,6 +37,9 @@ int main() {
 
     Eigen::Quaterniond qf(Tt0.block<3, 3>(0, 0)); 
 
+    std::cout  << "Quaternione Iniziale: " << q0 << std::endl;
+    std::cout  << "Quaternione Finale: " << qf << std::endl;
+
     // Chiamata alle funzioni
     Eigen::MatrixXd TH0 = cinematicaInversa(pd(0, Tf, xe0, xef), euler2RotationMatrix(phid(0, Tf, phief, phie0), "XYZ"), scaleFactor);
     int count = 0;
@@ -44,16 +47,16 @@ int main() {
     std::cout << "cinematica inversa: " << std::endl << TH0 << std::endl << std::endl;  
     
     Eigen::VectorXd M = getFirstColumnWithoutNaN(TH0);
-    Eigen::Matrix3d Kp = 1.0 * Eigen::Matrix3d::Identity();
-    Eigen::Matrix3d Kq = -1.0 * Eigen::Matrix3d::Identity();
+    Eigen::Matrix3d Kp = 1.05 * Eigen::Matrix3d::Identity();
+    Eigen::Matrix3d Kq = -1.05 * Eigen::Matrix3d::Identity();
     Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(M, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, xef, q0, qf);
 
-    std::cout << "Vettore di vettori di posizioni di articolazioni nel tempo:\n" << Th << std::endl;
+    std::cout << "Vettore di vettori di posizioni di articolazioni nel tempo:\n" << Th.transpose() << std::endl;
      
     //stamoe configurazioni e coordinate giunti
     std::cout << std::endl;
     std::cout << "configurazione iniziale: " << std::endl << M.transpose() << std::endl << std::endl;  
-    std::cout << "configurazione finale: " << std::endl << Th.row(9).transpose() << std::endl << std::endl;  
+    std::cout << "configurazione finale: " << std::endl << Th.row(9) << std::endl << std::endl;  
     
     Eigen::MatrixXd giuntiInizliale = posizioneGiunti(M, scaleFactor);
     Eigen::MatrixXd giuntiFinale = posizioneGiunti(Th.row(9), scaleFactor);

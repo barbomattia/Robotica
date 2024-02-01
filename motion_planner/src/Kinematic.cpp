@@ -11,6 +11,13 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     A ed Alpha sono parametri costatni per loro natura, metre D lo consideriamo costante perchè non abbiamo prismatic joint
 
     Con A, D noi forniamo delle proporzioni che devono essere rispettate, le dimensioni vere e proprie vengono definite in base a scaleFactor */
+    // std::cout <<"\n---------------------------------------";
+    Eigen::VectorXd ThStandard;
+    ThStandard.resize(6);
+    for (int i = 0; i < Th.size(); ++i) {
+        ThStandard[i] = std::round(Th[i] * 1e5) / 1e5; // Arrotonda alla quinta cifra decimale
+    }
+    // std::cout<<"\nCINEMATIC DIRETTA parametri:\nTh: " << ThStandard.transpose() <<"\nsF: " << scaleFactor << std::endl;
 
     Eigen::VectorXd A(6), D(6), Alpha(6);
     A << 0 * scaleFactor, -0.425 * scaleFactor, -0.3922 * scaleFactor, 0, 0, 0;
@@ -30,12 +37,12 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     //CALCOLO delle MATRICI DI TRASPORTO usando la funzione Tij appena definita
     TransformationMatrices Tm; 
     Eigen::Matrix4d T0W;
-    Tm.T10 = Tij(Th(0), Alpha(0), D(0), A(0));
-    Tm.T21 = Tij(Th(1), Alpha(1), D(1), A(1));
-    Tm.T32 = Tij(Th(2), Alpha(2), D(2), A(2));
-    Tm.T43 = Tij(Th(3), Alpha(3), D(3), A(3));
-    Tm.T54 = Tij(Th(4), Alpha(4), D(4), A(4));
-    Tm.T65 = Tij(Th(5), Alpha(5), D(5), A(5));
+    Tm.T10 = Tij(ThStandard(0), Alpha(0), D(0), A(0));
+    Tm.T21 = Tij(ThStandard(1), Alpha(1), D(1), A(1));
+    Tm.T32 = Tij(ThStandard(2), Alpha(2), D(2), A(2));
+    Tm.T43 = Tij(ThStandard(3), Alpha(3), D(3), A(3));
+    Tm.T54 = Tij(ThStandard(4), Alpha(4), D(4), A(4));
+    Tm.T65 = Tij(ThStandard(5), Alpha(5), D(5), A(5));
 
     //CALCOLO LA MATRICE DI TRASPORTO FINALE 
     Tm.T60 = Tm.T10 * Tm.T21 * Tm.T32 * Tm.T43 * Tm.T54 * Tm.T65;
@@ -47,6 +54,9 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     CinDir result;
     result.pe = pe;
     result.Re = Re;
+
+    // std::cout << "Retrun:\nPe: " << result.pe.transpose() << "\nRe:\n" << result.Re << "\n------------------------------------\n";
+
     return result;
 }
 
@@ -466,9 +476,11 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     const Eigen::MatrixXd& Kq,          // matrice di errore quaternione
     double scaleFactor
 ) {
+
     // calcolo la Jacobiana per la configurazione attuale del braccio
     Eigen::MatrixXd J = ur5Jac(q, scaleFactor);
-    std::cout << "Configurazione attuale: " << q.transpose() <<std::endl;
+    std::cout << "Configurazione attuale: " << q.transpose() <<std::endl; 
+    std::cout << std::endl << "Valore di Re: \n" << CinematicaDiretta(q,scaleFactor).Re << "\n";
     std::cout << "Posizione end effector iniziale: " << xe.transpose() <<std::endl;
     std::cout << "Posizione end effector desiderata: " << xd.transpose() <<std::endl;
     std::cout << "Jacobiana: " << std::endl << J << std::endl;
@@ -476,7 +488,9 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
 
     //Calcolo l'errore di orientazione: Δq=qd * qe.coniugato 
     Eigen::Quaterniond qp = qd * qe.conjugate();
-    std::cout << std::endl <<"Errore Rotazione: " << qp << std::endl;
+    std::cout << std::endl << "Quaternione Corrente: " << qe << std::endl;
+    std::cout << "Quaternione Desiderato: " << qd << std::endl;
+    std::cout << "Errore Rotazione: " << qp << std::endl;
 
     //Prendo la parte vettoriale del quaternioe errore 
     Eigen::Vector3d eo = qp.vec();
@@ -617,6 +631,7 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
     Eigen::VectorXd qk = TH0;           // qk copia della configurazione iniziale dei joint
     q.push_back(qk);                    // qk pushata come prima riga in q
 
+    
     // Per ogni step calcolo la configurazione dei joint 
     for (int i = 1; i < L - 1; ++i) {   
 
@@ -658,7 +673,8 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
         // calcolo con una funzione lineare le configurazioni dei joint a fine step e li inserisco nella matrice configurazioni q
         qk = qk + dotqk * Dt;
         std::cout << "Configurazione fine step: " << qk.transpose() <<std::endl;
-        std::cout << "Posizione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).pe.transpose() << std::endl << std::endl;
+        std::cout << "Posizione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).pe.transpose() << std::endl;
+        std::cout << "Rotazione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).Re << std::endl << std::endl;
         q.push_back(qk);
     }
 
