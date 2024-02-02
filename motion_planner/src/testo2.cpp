@@ -35,6 +35,8 @@ int main() {
     Tt0.block<3, 3>(0, 0) = euler2RotationMatrix(phief, "XYZ");
     Tt0.block<3, 1>(0, 3) = xef;
 
+    std::cout << "\nTt0: \n" << Tt0 << std::endl;
+
     Eigen::Quaterniond qf(Tt0.block<3, 3>(0, 0)); 
 
     std::cout  << "Quaternione Iniziale: " << q0 << std::endl;

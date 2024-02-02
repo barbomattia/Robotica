@@ -15,7 +15,7 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     Eigen::VectorXd ThStandard;
     ThStandard.resize(6);
     for (int i = 0; i < Th.size(); ++i) {
-        ThStandard[i] = std::round(Th[i] * 1e5) / 1e5; // Arrotonda alla quinta cifra decimale
+        ThStandard[i] = std::round(Th[i] * 1e6) / 1e6; // Arrotonda alla quinta cifra decimale
     }
     // std::cout<<"\nCINEMATIC DIRETTA parametri:\nTh: " << ThStandard.transpose() <<"\nsF: " << scaleFactor << std::endl;
 
@@ -480,16 +480,17 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     // calcolo la Jacobiana per la configurazione attuale del braccio
     Eigen::MatrixXd J = ur5Jac(q, scaleFactor);
     std::cout << "Configurazione attuale: " << q.transpose() <<std::endl; 
-    std::cout << std::endl << "Valore di Re: \n" << CinematicaDiretta(q,scaleFactor).Re << "\n";
+    std::cout << "Valore di Re: \n" << CinematicaDiretta(q,scaleFactor).Re << "\n";
     std::cout << "Posizione end effector iniziale: " << xe.transpose() <<std::endl;
     std::cout << "Posizione end effector desiderata: " << xd.transpose() <<std::endl;
     std::cout << "Jacobiana: " << std::endl << J << std::endl;
     std::cout << "det Jacobiana: " << J.determinant() << std::endl;
 
     //Calcolo l'errore di orientazione: Δq=qd * qe.coniugato 
-    Eigen::Quaterniond qp = qd * qe.conjugate();
+    Eigen::Quaterniond qp = qd.conjugate() * qe;
     std::cout << std::endl << "Quaternione Corrente: " << qe << std::endl;
-    std::cout << "Quaternione Desiderato: " << qd << std::endl;
+    std::cout << std::endl << "Quaternione Corrente Coniugato: " << qe.conjugate() << std::endl;
+    std::cout << "Quaternione Desiderato: " << qd.conjugate() << std::endl;
     std::cout << "Errore Rotazione: " << qp << std::endl;
 
     //Prendo la parte vettoriale del quaternioe errore 
@@ -513,7 +514,7 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
         Eigen::VectorXd correction = (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J) * d_vector;
 
         Eigen::VectorXd dotQ = dotQ_base + correction;
-         std::cout << std::endl  << "J inversa" <<  std::endl << J.inverse() <<  std::endl;
+        std::cout << std::endl  << "J inversa" <<  std::endl << J.inverse() <<  std::endl;
         std::cout << std::endl  << "J'" <<  std::endl << pseudoInverse(J)<<  std::endl;
         std::cout << std::endl  << "I - J'J" << std::endl << (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J)<< std::endl;
         std::cout << std::endl << "Original q: " << dotQ_base.transpose()<< std::endl;
@@ -526,8 +527,19 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
         //Calcolo la derivata di q: dotQ usando la formula
         Eigen::VectorXd dotQ = J.inverse() * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
 
-        std::cout << "Dot q: " << dotQ.transpose();
+        // stampe di debug
+        std::cout << "\n\nCALCOLO DOT q \nInput\n J inverse:\n" << J.inverse() << "\n vd:" << vd.transpose();
+        std::cout << "\n Kp: \n" << Kp << "\n Kq:\n" << Kq << "\n xd: " << xd.transpose() << "\n xe:" << xe.transpose();
+        std::cout << "\n omegad: " << omegad.transpose() << "\n eo: " << eo.transpose();
+        
+        
+        for (int i = 0; i < dotQ.size(); ++i) {
+            dotQ[i] = std::round(dotQ[i] * 1e6) / 1e6; // Arrotonda alla sesta cifra decimale
+        }
+
+        std::cout << "\n Dot q: " << dotQ.transpose();
         std::cout << std::endl << std::endl;
+
         return dotQ;
     }
         
@@ -547,6 +559,14 @@ Eigen::MatrixXd pd(double tb, double Tf, Eigen::MatrixXd xe0, Eigen::MatrixXd xe
     } else {
         result = t * xef + (1 - t) * xe0;   // altrimenti ritorno la nuova posizione interpolata tra xe0 e xef utilizzando l'interpolazione lineare
     }
+
+    // Arrotonda alla quinta sesta decimale
+    for (int i = 0; i < result.rows(); ++i) {
+        for (int j = 0; j < result.cols(); ++j) {
+            result(i,j) = std::round(result(i,j) * 1e6) / 1e6; 
+        }
+    }
+
     return result;
 }
 
@@ -564,6 +584,14 @@ Eigen::MatrixXd phid(double tb, double Tf, Eigen::MatrixXd phief, Eigen::MatrixX
     } else {
         result = t * phief + (1 - t) * phie0;       // altrimenti ritorno la nuova orientazione interpolata tra xe0 e xef utilizzando l'interpolazione lineare
     }
+
+    // Arrotonda alla quinta sesta decimale
+    for (int i = 0; i < result.rows(); ++i) {
+        for (int j = 0; j < result.cols(); ++j) {
+            result(i,j) = std::round(result(i,j) * 1e6) / 1e6; 
+        }
+    }
+
     return result;
 }
 
@@ -581,6 +609,12 @@ Eigen::Quaterniond qd(double tb, double Tf, Eigen::Quaterniond q0, Eigen::Quater
     } else {
         result = q0.slerp(t, qf);   // altrimenti ritorno un nuovo quaternione derivato dall'interpolata sferica tra q0 e qf 
     }
+
+    //std::cout << "\n----------------------\nFUNZIONE qd\nInput:\n\ttb: " << tb <<"\n\tTf: " << Tf <<"\n\t q0: "<< q0 << "\n\tqf: " << qf;
+    //std::cout << "\nRetrurn: " << result << std::endl;
+
+    result.coeffs() = (result.coeffs() * 1e6).array().round() / 1e6;
+
     return result;
 }
 
@@ -601,6 +635,13 @@ Eigen::Matrix3d euler2RotationMatrix(const Eigen::Vector3d& euler_angles, const 
     } else {
         // Add support for other rotation orders if needed
         throw std::invalid_argument("Unsupported rotation order");
+    }
+
+    // Arrotonda alla sesta cifra decimale
+    for (int i = 0; i < rotation_matrix.rows(); ++i) {
+        for (int j = 0; j < rotation_matrix.cols(); ++j) {
+            rotation_matrix(i,j) = std::round(rotation_matrix(i,j) * 1e6) / 1e6; 
+        }
     }
 
     return rotation_matrix;
@@ -642,10 +683,17 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
         Eigen::Matrix3d Re = result.Re;     // rotazione end effector 
         Eigen::Quaterniond qe(Re);          // calcolo il quaternione relativo alla rotazione end effector 
 
+        // Arrotonda alla sesta cifra decimale 
+        qe.coeffs() = (qe.coeffs() * 1e6).array().round() / 1e6;
+
         // tramite la funzione pd calcola la posizione nel lasso temporale corrente T[i] e quello iniziale 0
-        Eigen::MatrixXd vd1 = (pd(T[i], Tf, xe0, xef) - pd(0, Tf, xe0, xef));   // trova il delta posizione
+        Eigen::MatrixXd vd1 = (pd(T[i], Tf, xe0, xef) - pd(T[i-1], Tf, xe0, xef));   // trova il delta posizione
         // calcola la velocità desiderata dello step basandosi sul delta spostamento ed il tempo a disposizione per lo step 
-        Eigen::MatrixXd vd = vd1 / Dt;            
+        Eigen::MatrixXd vd = vd1 / Dt;  
+        // Arrotonda alla sesta cifra decimale
+        for (int i = 0; i < vd.size(); ++i) {
+            vd(i) = std::round(vd(i) * 1e6) / 1e6;     
+        }           
 
         Eigen::Quaterniond qd_t = qd(T[i], Tf, q0, qf);                 // quaternione ad inizio step
         Eigen::Quaterniond qd_t_plus_Dt = qd(T[i] + Dt, Tf, q0, qf);    // quaternione a fine step 
@@ -663,7 +711,11 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
         In quaeto caso la sua parte vettoriale può essere interpretata come misura della variazione dell'asse di rotazione
         e quindi della velocità angolare attorno a quell'asse.
         omegad è la parte vettoriale del quaternione variazione cioè la velocita angolare desiderata */
-        Eigen::Vector3d omegad = parts(work);   
+        Eigen::Vector3d omegad = parts(work.conjugate());  
+        // Arrotonda alla sesta cifra decimale
+        for (int i = 0; i < omegad.size(); ++i) {
+            omegad(i) = std::round(omegad(i) * 1e6) / 1e6;     
+        } 
 
         // calcolo la derivata del quaternione 
         Eigen::VectorXd dotqk = invDiffKinematiControlCompleteQuaternion(
