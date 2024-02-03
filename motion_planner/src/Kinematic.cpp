@@ -508,7 +508,7 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
 
         //uso una damped psudo inverse per calcolare dotq
         Eigen::MatrixXd dumpedPseudoInverse = dampedPseudoInverse(J);
-        std::cout << "Pseudo Inverse Damped: " << std::endl << dumpedPseudoInverse << std::endl;
+        //std::cout << "Pseudo Inverse Damped: " << std::endl << dumpedPseudoInverse << std::endl;
         Eigen::VectorXd dotQ_base = dumpedPseudoInverse * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
 
         double det_Jp = J.determinant(); // Calcolo del determinante della Jacobiana
@@ -519,6 +519,7 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
 
         Eigen::VectorXd dotQ = dotQ_base + correction;
         
+        /*
         std::cout << std::endl  << "J inversa" <<  std::endl << J.inverse() <<  std::endl;
         std::cout << std::endl  << "J'" <<  std::endl << pseudoInverse(J)<<  std::endl;
         std::cout << std::endl  << "I - J'J" << std::endl << (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J)<< std::endl;
@@ -526,6 +527,7 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
         std::cout << "Correction : " << correction.transpose() << std::endl ;
         std::cout << "Dot q: " << dotQ.transpose();
         std::cout << std::endl << std::endl;
+        */
         
         return dotQ;
 
@@ -748,8 +750,9 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
 
 
 
-Eigen::VectorXd getFirstColumnWithoutNaN(Eigen::MatrixXd& inputMatrix) {
+NaNColumn getFirstColumnWithoutNaN(Eigen::MatrixXd& inputMatrix) {
     Eigen::VectorXd firstColumnWithoutNaN;
+    bool check = false;
 
     for (int col = 0; col < inputMatrix.cols(); ++col) {
         //verifico se ci sono valori nan nella colonna, quindi nella configurazione
@@ -757,14 +760,15 @@ Eigen::VectorXd getFirstColumnWithoutNaN(Eigen::MatrixXd& inputMatrix) {
             
             firstColumnWithoutNaN = inputMatrix.col(col);
             inputMatrix.col(col).array().setConstant(std::numeric_limits<double>::quiet_NaN());
-            std::cout << "num colonna: " << col << std::endl;
+            std::cout << "NAN num colonna: " << col << std::endl;
+            return {firstColumnWithoutNaN, true};
             break;
-        } else {
-            std::cout << "Nessuna configruazione valida trovata" << std::endl;
-        }
+        } 
     }
-
-    return firstColumnWithoutNaN;
+    if(!check){
+        std::cout << "NAN Nessuna configruazione valida trovata" << std::endl;
+    }
+    return {firstColumnWithoutNaN, false};      
 }
 
 
@@ -865,23 +869,25 @@ Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor){
 
 
 
-bool checkCollisioni(Eigen::MatrixXd Th, double offset){
+bool checkCollisioni(Eigen::MatrixXd Th, double offset, double scaleFactor){
 
-    double ZTetto = 2;
-    double ZTavolo = 0.86 ;
-    double ZGradino = 1.025;
-    double X1Tavolo = 0 ;
-    double X2Tavolo = 1;
-    double Y1Tavolo = 0;
-    double Y2Tavolo = 0.8;
-    double YGradino = 0.155;
+    double ZTetto = 3 * scaleFactor;
+    double ZTavolo = 0.86 * scaleFactor;
+    double ZGradino = 1.025 * scaleFactor;
+    double X1Tavolo = 0 * scaleFactor;
+    double X2Tavolo = 1 * scaleFactor;
+    double Y1Tavolo = 0 * scaleFactor;
+    double Y2Tavolo = 0.8 * scaleFactor;
+    double YGradino = 0.155 * scaleFactor;
 
     bool result = false;
 
     for(int i=1; i<6; i++){
-        double x = Th(i,0);
-        double y = Th(i,1);
-        double z = Th(i,2);
+        double x = Th(i,0) + ARM_X;
+        double y = Th(i,1) + ARM_Y;
+        double z = Th(i,2) + ARM_Z;
+        std::cout << "GIUNTO: " << i << std::endl;
+        std::cout << "X: " << x << ", Y: " << y << ", Z: " << z << std::endl;        
 
         if(y-offset > Y1Tavolo && z-offset > ZTavolo && z+offset < ZTetto){
             std::cout << "nei confini del tavolo" << std::endl;  
@@ -891,8 +897,11 @@ bool checkCollisioni(Eigen::MatrixXd Th, double offset){
                     std::cout << "nel gradino" << std::endl;  
                     result = true;
                     break;
-                } else if(i != 6){
-                    Point next = {Th(i+1,0),Th(i+1,1),Th(i+1,2)};
+                } else if(i != 5){
+                    Point next = {Th(i+1,0), Th(i+1,1), Th(i+1,2)};
+                    next.x += ARM_X;
+                    next.y += ARM_Y;
+                    next.z += ARM_Z;
                     std::cout << "calcolo successivo" << std::endl;  
                     if ((ZGradino >= z && ZGradino <= next.z) || (ZGradino >= next.z && ZGradino <= z)){
                         std::cout << "la z è compresa" << std::endl;  
@@ -910,8 +919,36 @@ bool checkCollisioni(Eigen::MatrixXd Th, double offset){
         }  else {
             std::cout << "fuori dai confini del tavolo" << std::endl;
             result = true;
+            break;
         }
     }     
     return result; 
+}
+
+Eigen::Quaterniond slerpFunction(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2, double t) {
+    // Normalizzazione dei quaternioni
+    Eigen::Quaterniond quat1 = q1.normalized();
+    Eigen::Quaterniond quat2 = q2.normalized();
+
+    // Calcolo del prodotto scalare tra i quaternioni
+    double dotProduct = quat1.coeffs().dot(quat2.coeffs());
+
+    // Se il prodotto scalare è negativo, inverti uno dei quaternioni
+    if (dotProduct < 0) {
+        quat1.coeffs() = -quat1.coeffs();
+        dotProduct = -dotProduct;
+    }
+
+    // Calcolo dell'angolo tra i quaternioni
+    double theta = acos(dotProduct);
+    double sinTheta = sin(theta);
+
+    // Calcolo dell'interpolazione sferica
+    Eigen::Quaterniond result = Eigen::Quaterniond(
+        (sin((1 - t) * theta) / sinTheta) * quat1.coeffs() + (sin(t * theta) / sinTheta) * quat2.coeffs()
+    );
+
+    // Normalizzazione del risultato
+    return result.normalized();
 }
 

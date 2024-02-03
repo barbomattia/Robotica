@@ -1,32 +1,6 @@
 #include "../include/Kinematic.h"
 
-Eigen::Quaterniond slerpFunction(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2, double t) {
-    // Normalizzazione dei quaternioni
-    Eigen::Quaterniond quat1 = q1.normalized();
-    Eigen::Quaterniond quat2 = q2.normalized();
-
-    // Calcolo del prodotto scalare tra i quaternioni
-    double dotProduct = quat1.coeffs().dot(quat2.coeffs());
-
-    // Se il prodotto scalare è negativo, inverti uno dei quaternioni
-    if (dotProduct < 0) {
-        quat1.coeffs() = -quat1.coeffs();
-        dotProduct = -dotProduct;
-    }
-
-    // Calcolo dell'angolo tra i quaternioni
-    double theta = acos(dotProduct);
-    double sinTheta = sin(theta);
-
-    // Calcolo dell'interpolazione sferica
-    Eigen::Quaterniond result = Eigen::Quaterniond(
-        (sin((1 - t) * theta) / sinTheta) * quat1.coeffs() + (sin(t * theta) / sinTheta) * quat2.coeffs()
-    );
-
-    // Normalizzazione del risultato
-    return result.normalized();
-}
-
+/*
 int main(){
 
     Eigen::Quaterniond q1(1.0, 2.0, 3.0, 4.0);
@@ -56,6 +30,98 @@ int main(){
 
 
 
+
+
+
+    return 0;
+}
+*/
+
+int main() {
+
+   // Inizializzazione delle variabili globali
+    Eigen::MatrixXd xe0(3, 1);
+    Eigen::MatrixXd xef(3, 1);
+    Eigen::MatrixXd phie0(3, 1);
+    Eigen::MatrixXd phief(3, 1);
+    double scaleFactor = 1.0;
+    double Tf = 10.0; 
+    double DeltaT = 2;
+    Eigen::VectorXd T;
+    T = Eigen::VectorXd::LinSpaced(static_cast<int>((Tf / DeltaT) + 1), 0, Tf);
+     
+    //inizializzazione paramateri     
+    xe0 << 0.3, 0.3, 1;                       //posizione attuale end-effector
+    xe0 *= scaleFactor;
+    phie0 << 0, 0, 0;
+    
+    xef << 0.5, 0.4, 1.2;                   //posizione finale end-effector
+    xef *= scaleFactor;
+    phief << M_PI / 2, M_PI / 2, M_PI / 2;
+
+    //stampe punti
+    //std::cout << "punto iniziale: " << xe0.transpose() << std::endl << std::endl;
+    //std::cout << "punto finale: " << xef.transpose() << std::endl << std::endl;
+
+    Eigen::Matrix3d workM;
+    workM = euler2RotationMatrix(phie0, "XYZ");
+    Eigen::Quaterniond q0(workM);
+
+    Eigen::Matrix4d Tt0 = Eigen::Matrix4d::Identity();
+    Tt0.block<3, 3>(0, 0) = euler2RotationMatrix(phief, "XYZ");
+    Tt0.block<3, 1>(0, 3) = xef;
+
+    Eigen::Quaterniond qf(Tt0.block<3, 3>(0, 0)); 
+
+    //std::cout  << "Quaternione Iniziale: " << q0 << std::endl;
+    //std::cout  << "Quaternione Finale: " << qf << std::endl;
+
+    // Chiamata alle funzioni
+    Eigen::MatrixXd TH0 = cinematicaInversa(pd(0, Tf, xe0, xef), euler2RotationMatrix(phid(0, Tf, phief, phie0), "XYZ"), scaleFactor);
+    int count = 0;
+ 
+    std::cout << std::endl << "CINEMATICA INVERSA: " << std::endl << TH0 << std::endl << std::endl;  
+
+    Eigen::Matrix3d Kp = 3 * Eigen::Matrix3d::Identity();
+    Eigen::Matrix3d Kq = -2.65 * Eigen::Matrix3d::Identity();
+    
+    for(int i=0; i<8; i++){
+        
+        NaNColumn M = getFirstColumnWithoutNaN(TH0);
+        bool check = M.isNaN;
+        std::cout << std::endl << "CONF: " << i+1 << std::endl << TH0 << std::endl; 
+        
+        if(check){
+            Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(M.configurazione, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, xef, q0, qf);
+        
+            for(int j = 0; j<Th.rows(); j++){
+                
+                Eigen::MatrixXd giunti = posizioneGiunti(Th.row(j), scaleFactor);
+
+                std::cout << std::endl << "CONF: " << i+1 << ", STEP: " << j+1 << std::endl;
+                std::cout << "configurazione: " << Th.row(j) << std::endl << std::endl;
+                std::cout << "posizione giunti funzione: " << std::endl << giunti << std::endl << std::endl;          
+                
+                if(checkCollisioni(giunti, 0.02, scaleFactor)){
+                    std::cout << "congifurazione con collisione" << std::endl;
+                    check = false;
+                    break;
+                }
+            }
+
+            if(check){
+                CinDir EndEffectorFinal = CinematicaDiretta(Th.row(99), scaleFactor);
+                Eigen::Quaterniond qef(EndEffectorFinal.Re);
+
+                std::cout << "MATRICE TH" << std::endl << Th << std::endl;
+                std::cout << std::endl << "Posizione end effector finale: " << EndEffectorFinal.pe.transpose() << std::endl;
+                std::cout << std::endl << "Orientamento end effector finale: " << std::endl << EndEffectorFinal.Re << std::endl;
+            } 
+        }    
+    }
+    
+
+    
 
 
 

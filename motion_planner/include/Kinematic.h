@@ -23,6 +23,11 @@
         Eigen::Matrix3d Re;     //ROTAZIONE END EFFECTOR
     };
 
+    struct NaNColumn{
+        Eigen::VectorXd configurazione;
+        bool isNaN;
+    };
+
     struct Point{
         double x;
         double y;
@@ -129,7 +134,7 @@
     );
 
 
-    Eigen::VectorXd getFirstColumnWithoutNaN(Eigen::MatrixXd& inputMatrix);
+    NaNColumn getFirstColumnWithoutNaN(Eigen::MatrixXd& inputMatrix);
 
     // funzioni per facilitare lo sviluppo; non centrano con il puro calcolo della cinematica
 
@@ -137,10 +142,8 @@
     std::string matrixToString(const Eigen::Matrix3d& mat);
 
     Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor);
-    bool checkCollisioni(Eigen::MatrixXd Th, double offset);
+    bool checkCollisioni(Eigen::MatrixXd Th, double offset, double scaleFactor);
 
-
-
-
+    Eigen::Quaterniond slerpFunction(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2, double t);
 
 #endif
