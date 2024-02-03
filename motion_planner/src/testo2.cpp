@@ -50,14 +50,14 @@ int main() {
     Eigen::Matrix3d Kq = -2.65 * Eigen::Matrix3d::Identity();
     
     for(int i=0; i<8; i++){
-        Eigen::VectorXd M = getFirstColumnWithoutNaN(TH0);
-        Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(M, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, xef, q0, qf);
+        NaNColumn M = getFirstColumnWithoutNaN(TH0);
+        Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(M.configurazione, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, xef, q0, qf);
         
         int count = 0;
 
         for(int j = 0; j<Th.rows(); j++){
             Eigen::MatrixXd giunti = posizioneGiunti(Th.row(j), scaleFactor);
-            if(checkCollisioni(giunti, 0.02)){
+            if(checkCollisioni(giunti, 0.02, scaleFactor)){
                 std::cout << "congifurazione con collisione" << std::endl;
                 count = 0;
                 break;
@@ -80,7 +80,7 @@ int main() {
             std::cout << "Rotazione end effector raggiunta: \n" << EndEffectorFinal.Re << std::endl;  
             std::cout << "Quaternione end effector raggiunta: \n" << qef << std::endl;   
             
-            Eigen::MatrixXd giuntiInizliale = posizioneGiunti(M, scaleFactor);
+            Eigen::MatrixXd giuntiInizliale = posizioneGiunti(M.configurazione, scaleFactor);
             Eigen::MatrixXd giuntiFinale = posizioneGiunti(Th.row(9), scaleFactor);
             // std::cout << "posizione giunti iniziale: " << std::endl << giuntiInizliale << std::endl << std::endl;   
             // std::cout << "posizione giunti finale: " << std::endl << giuntiFinale.transpose() << std::endl << std::endl;  
