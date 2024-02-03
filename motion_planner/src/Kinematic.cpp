@@ -682,7 +682,7 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
     // Per ogni step calcolo la configurazione dei joint 
     for (int i = 1; i < L - 1; ++i) {   
 
-        std::cout << std::endl << "STEP " << i << std::endl;
+        //std::cout << std::endl << "STEP " << i << std::endl;
         // tramite la cinematica diretta trovo la configurazione dell'end effector all'inizio dello step
         auto result = CinematicaDiretta(qk, scaleFactor);   
         Eigen::VectorXd xe = result.pe;     // posizione end effector 
@@ -867,14 +867,14 @@ Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor){
 
 bool checkCollisioni(Eigen::MatrixXd Th, double offset){
 
-    double ZTetto = 1.32 - ARM_Z ;
-    double ZTavolo = 0.86 - ARM_Z;
-    double ZGradino = 1.025 - ARM_Z;
-    double X1Tavolo = 0 - ARM_X;
-    double X2Tavolo = 1 - ARM_X;
-    double Y1Tavolo = 0 - ARM_Y;
-    double Y2Tavolo = 0.8 - ARM_Y;
-    double YGradino = 0.155 - ARM_Y;
+    double ZTetto = 2;
+    double ZTavolo = 0.86 ;
+    double ZGradino = 1.025;
+    double X1Tavolo = 0 ;
+    double X2Tavolo = 1;
+    double Y1Tavolo = 0;
+    double Y2Tavolo = 0.8;
+    double YGradino = 0.155;
 
     bool result = false;
 

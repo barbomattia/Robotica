@@ -1,5 +1,31 @@
 #include "../include/Kinematic.h"
 
+Eigen::Quaterniond slerpFunction(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2, double t) {
+    // Normalizzazione dei quaternioni
+    Eigen::Quaterniond quat1 = q1.normalized();
+    Eigen::Quaterniond quat2 = q2.normalized();
+
+    // Calcolo del prodotto scalare tra i quaternioni
+    double dotProduct = quat1.coeffs().dot(quat2.coeffs());
+
+    // Se il prodotto scalare è negativo, inverti uno dei quaternioni
+    if (dotProduct < 0) {
+        quat1.coeffs() = -quat1.coeffs();
+        dotProduct = -dotProduct;
+    }
+
+    // Calcolo dell'angolo tra i quaternioni
+    double theta = acos(dotProduct);
+    double sinTheta = sin(theta);
+
+    // Calcolo dell'interpolazione sferica
+    Eigen::Quaterniond result = Eigen::Quaterniond(
+        (sin((1 - t) * theta) / sinTheta) * quat1.coeffs() + (sin(t * theta) / sinTheta) * quat2.coeffs()
+    );
+
+    // Normalizzazione del risultato
+    return result.normalized();
+}
 
 int main(){
 

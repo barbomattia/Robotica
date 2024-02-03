@@ -19,7 +19,7 @@ int main() {
     xe0 *= scaleFactor;
     phie0 << 0, 0, 0;
     
-    xef << -0.5, 0.4, -0.6;                   //posizione finale end-effector
+    xef << 0.5, 0.4, 0.6;                   //posizione finale end-effector
     xef *= scaleFactor;
     phief << M_PI / 2, M_PI / 2, M_PI / 2;
 
@@ -45,29 +45,52 @@ int main() {
     int count = 0;
  
     // std::cout << "cinematica inversa: " << std::endl << TH0 << std::endl << std::endl;  
-    
-    Eigen::VectorXd M = getFirstColumnWithoutNaN(TH0);
+
     Eigen::Matrix3d Kp = 3 * Eigen::Matrix3d::Identity();
     Eigen::Matrix3d Kq = -2.65 * Eigen::Matrix3d::Identity();
-    Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(M, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, xef, q0, qf);
-
-    std::cout << "Vettore di vettori di posizioni di articolazioni nel tempo:\n" << Th << std::endl;
-     
-    //stamoe configurazioni e coordinate giunti
-    std::cout << std::endl;
-    // std::cout << "configurazione iniziale: " << std::endl << M.transpose() << std::endl << std::endl;  
-    std::cout << "configurazione finale: " << std::endl << Th.row(99) << std::endl << std::endl;
-
-    CinDir EndEffectorFinal = CinematicaDiretta(Th.row(99), scaleFactor);
-    Eigen::Quaterniond qef(EndEffectorFinal.Re);
-    std::cout << "Posizione end effector raggiunta: " << EndEffectorFinal.pe.transpose() << std::endl;
-    std::cout << "Rotazione end effector raggiunta: \n" << EndEffectorFinal.Re << std::endl;  
-    std::cout << "Quaternione end effector raggiunta: \n" << qef << std::endl;   
     
-    Eigen::MatrixXd giuntiInizliale = posizioneGiunti(M, scaleFactor);
-    Eigen::MatrixXd giuntiFinale = posizioneGiunti(Th.row(9), scaleFactor);
-    // std::cout << "posizione giunti iniziale: " << std::endl << giuntiInizliale << std::endl << std::endl;   
-    // std::cout << "posizione giunti finale: " << std::endl << giuntiFinale.transpose() << std::endl << std::endl;  
+    for(int i=0; i<8; i++){
+        Eigen::VectorXd M = getFirstColumnWithoutNaN(TH0);
+        Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(M, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, xef, q0, qf);
+        
+        int count = 0;
+
+        for(int j = 0; j<Th.rows(); j++){
+            Eigen::MatrixXd giunti = posizioneGiunti(Th.row(j), scaleFactor);
+            if(checkCollisioni(giunti, 0.02)){
+                std::cout << "congifurazione con collisione" << std::endl;
+                count = 0;
+                break;
+            } else {
+                count++;
+            }
+        }
+        if(count == 600){
+            std::cout << "count: " << count << std::endl;
+            std::cout << "Vettore di vettori di posizioni di articolazioni nel tempo:\n" << Th << std::endl;
+     
+            //stamoe configurazioni e coordinate giunti
+            std::cout << std::endl;
+            // std::cout << "configurazione iniziale: " << std::endl << M.transpose() << std::endl << std::endl;  
+            std::cout << "configurazione finale: " << std::endl << Th.row(99) << std::endl << std::endl;
+
+            CinDir EndEffectorFinal = CinematicaDiretta(Th.row(99), scaleFactor);
+            Eigen::Quaterniond qef(EndEffectorFinal.Re);
+            std::cout << "Posizione end effector raggiunta: " << EndEffectorFinal.pe.transpose() << std::endl;
+            std::cout << "Rotazione end effector raggiunta: \n" << EndEffectorFinal.Re << std::endl;  
+            std::cout << "Quaternione end effector raggiunta: \n" << qef << std::endl;   
+            
+            Eigen::MatrixXd giuntiInizliale = posizioneGiunti(M, scaleFactor);
+            Eigen::MatrixXd giuntiFinale = posizioneGiunti(Th.row(9), scaleFactor);
+            // std::cout << "posizione giunti iniziale: " << std::endl << giuntiInizliale << std::endl << std::endl;   
+            // std::cout << "posizione giunti finale: " << std::endl << giuntiFinale.transpose() << std::endl << std::endl;  
+        } else {
+            std::cout << "nessuna configurazione valida" << std::endl;
+        }
+    }
+    
+
+    
 
 
 
