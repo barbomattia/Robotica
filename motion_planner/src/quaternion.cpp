@@ -110,12 +110,13 @@ int main() {
             }
 
             if(check){
-                CinDir EndEffectorFinal = CinematicaDiretta(Th.row(99), scaleFactor);
+                CinDir EndEffectorFinal = CinematicaDiretta(Th.row(Th.rows()-1), scaleFactor);
                 Eigen::Quaterniond qef(EndEffectorFinal.Re);
 
                 std::cout << "MATRICE TH" << std::endl << Th << std::endl;
                 std::cout << std::endl << "Posizione end effector finale: " << EndEffectorFinal.pe.transpose() << std::endl;
                 std::cout << std::endl << "Orientamento end effector finale: " << std::endl << EndEffectorFinal.Re << std::endl;
+                break;
             } 
         }    
     }

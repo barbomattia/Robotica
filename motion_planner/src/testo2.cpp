@@ -78,6 +78,7 @@ int main() {
             Eigen::Quaterniond qef(EndEffectorFinal.Re);
             std::cout << "Posizione end effector raggiunta: " << EndEffectorFinal.pe.transpose() << std::endl;
             std::cout << "Rotazione end effector raggiunta: \n" << EndEffectorFinal.Re << std::endl;  
+
             std::cout << "Quaternione end effector raggiunta: \n" << qef << std::endl;   
             
             Eigen::MatrixXd giuntiInizliale = posizioneGiunti(M.configurazione, scaleFactor);
@@ -88,6 +89,8 @@ int main() {
             std::cout << "nessuna configurazione valida" << std::endl;
         }
     }
+
+    
     
 
     

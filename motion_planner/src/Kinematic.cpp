@@ -874,8 +874,8 @@ bool checkCollisioni(Eigen::MatrixXd Th, double offset, double scaleFactor){
     double ZTetto = 3 * scaleFactor;
     double ZTavolo = 0.86 * scaleFactor;
     double ZGradino = 1.025 * scaleFactor;
-    double X1Tavolo = 0 * scaleFactor;
-    double X2Tavolo = 1 * scaleFactor;
+    double XCol1 = 0.1 * scaleFactor;
+    double XCol2 = 0.9 * scaleFactor;
     double Y1Tavolo = 0 * scaleFactor;
     double Y2Tavolo = 0.8 * scaleFactor;
     double YGradino = 0.155 * scaleFactor;
@@ -889,32 +889,34 @@ bool checkCollisioni(Eigen::MatrixXd Th, double offset, double scaleFactor){
         std::cout << "GIUNTO: " << i << std::endl;
         std::cout << "X: " << x << ", Y: " << y << ", Z: " << z << std::endl;        
 
-        if(y-offset > Y1Tavolo && z-offset > ZTavolo && z+offset < ZTetto){
-            std::cout << "nei confini del tavolo" << std::endl;  
+        if(z-offset > ZTavolo && z+offset < ZTetto){
+            std::cout << "correttamente sopra il tavolo" << std::endl;  
             if(y+offset < YGradino){
                 std::cout << "sul gradino" << std::endl;  
-                if(z-offset < ZGradino){
-                    std::cout << "nel gradino" << std::endl;  
-                    result = true;
-                    break;
-                } else if(i != 5){
-                    Point next = {Th(i+1,0), Th(i+1,1), Th(i+1,2)};
-                    next.x += ARM_X;
-                    next.y += ARM_Y;
-                    next.z += ARM_Z;
-                    std::cout << "calcolo successivo" << std::endl;  
-                    if ((ZGradino >= z && ZGradino <= next.z) || (ZGradino >= next.z && ZGradino <= z)){
-                        std::cout << "la z è compresa" << std::endl;  
-                        double check = y + (ZGradino - z) * (next.y - y) / (next.z - z);
-                        std::cout << "check = " << check << std::endl;  
-                        if((check >= y && check <= next.y) || (check >= next.y && check <= y)){
-                            std::cout << "colpisce il gradino" << std::endl;  
-                            result = true;
-                            break;
+                if(x-offset > XCol1 && x+offset < XCol2){
+                    if(z-offset < ZGradino){
+                        std::cout << "nel gradino" << std::endl;  
+                        result = true;
+                        break;
+                    } else if(i != 5){
+                        Point next = {Th(i+1,0), Th(i+1,1), Th(i+1,2)};
+                        next.x += ARM_X;
+                        next.y += ARM_Y;
+                        next.z += ARM_Z;
+                        std::cout << "calcolo successivo" << std::endl;  
+                        if ((ZGradino >= z && ZGradino <= next.z) || (ZGradino >= next.z && ZGradino <= z)){
+                            std::cout << "la z è compresa" << std::endl;  
+                            double check = y + (ZGradino - z) * (next.y - y) / (next.z - z);
+                            std::cout << "check = " << check << std::endl;  
+                            if((check >= y && check <= next.y) || (check >= next.y && check <= y)){
+                                std::cout << "colpisce il gradino" << std::endl;  
+                                result = true;
+                                break;
+                            }
                         }
                     }
-                }
-                std::cout << "punto successivo sopra gradino" << std::endl;  
+                    std::cout << "punto successivo sopra gradino" << std::endl;
+                }  
             }
         }  else {
             std::cout << "fuori dai confini del tavolo" << std::endl;

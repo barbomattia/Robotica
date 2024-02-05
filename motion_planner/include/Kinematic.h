@@ -34,6 +34,12 @@
         double z;
     };
 
+    struct MidPoint{
+        double x = 0.75;
+        double y = 0.4;
+        double z = 1.2;
+    };
+
     /*CINEMATICA DIRETTA --------------------------------------------------------------------------------------------------------- 
     PARAMETRI:
     - Th: vettore dei parametri q dei joints
