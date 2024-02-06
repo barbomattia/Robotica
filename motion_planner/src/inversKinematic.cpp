@@ -37,6 +37,9 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     std::cout << "Quaternion q0: " << quaternioToString(q0).c_str() << std::endl << std::endl; 
 
     ROS_INFO("--REQUEST DESIRED END EFFECTOR ----------\n");
+    for(int i=0; i<3; i++){
+        req.xef[i] = req.xef[i] * scaleFactor;
+    }
     std::cout << "Vector Location xef: " << req.xef[0] << ", " << req.xef[1] << ", " << req.xef[2] << std::endl;
     std::cout << "Vector Euler phief: " << req.phief[0] << ", " << req.phief[1] << ", " << req.phief[2] << std::endl;
 

@@ -10,16 +10,21 @@ int main() {
     Eigen::MatrixXd phief(3, 1);
     double scaleFactor = 10.0;
     double Tf = 10.0; 
-    double DeltaT = 0.1;
+    double DeltaT = 0.2;
     Eigen::VectorXd T;
     T = Eigen::VectorXd::LinSpaced(static_cast<int>((Tf / DeltaT) + 1), 0, Tf);
+
+    Eigen::VectorXd provaTh(6);
+    provaTh << -0.320096, -0.780249, -2.560807, -1.630513, -1.570495, 3.491099;
+    CinDir prova0 = CinematicaDiretta(provaTh, scaleFactor);
+    std::cout << std::endl << "PROVA: X0 = " << prova0.pe << std::endl;
      
     //inizializzazione paramateri     
-    xe0 << 0.3, 0.3, 0.0;                       //posizione attuale end-effector
+    xe0 <<  0.151928, -0.190828, 0.454479;         //posizione attuale end-effector
     xe0 *= scaleFactor;
-    phie0 << 0, 0, 0;
+    phie0 <<  1.5708, -6.3e-05, -0.000311;
     
-    xef << 0.5, 0.4, 0.6;                   //posizione finale end-effector
+    xef << 0.4, -0.10 , 0.65;                   //posizione finale end-effector
     xef *= scaleFactor;
     phief << M_PI / 2, M_PI / 2, M_PI / 2;
 
@@ -46,8 +51,8 @@ int main() {
  
     // std::cout << "cinematica inversa: " << std::endl << TH0 << std::endl << std::endl;  
 
-    Eigen::Matrix3d Kp = 3 * Eigen::Matrix3d::Identity();
-    Eigen::Matrix3d Kq = -2.65 * Eigen::Matrix3d::Identity();
+    Eigen::Matrix3d Kp = 10 * Eigen::Matrix3d::Identity();
+    Eigen::Matrix3d Kq = -10 * Eigen::Matrix3d::Identity();
     Eigen::VectorXd M = getFirstColumnWithoutNaN(TH0).configurazione;
     Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(M, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, xef, q0, qf);
 
@@ -61,12 +66,12 @@ int main() {
     //stamoe configurazioni e coordinate giunti
     std::cout << std::endl;
     // std::cout << "configurazione iniziale: " << std::endl << M.transpose() << std::endl << std::endl;  
-    std::cout << "configurazione finale: " << std::endl << Th.row(99) << std::endl << std::endl;
+    std::cout << "configurazione finale: " << std::endl << Th.row(49) << std::endl << std::endl;
 
-    CinDir EndEffectorFinal = CinematicaDiretta(Th.row(99), scaleFactor);
+    CinDir EndEffectorFinal = CinematicaDiretta(Th.row(49), scaleFactor);
     Eigen::Quaterniond qef(EndEffectorFinal.Re);
     std::cout << "Posizione end effector raggiunta: " << EndEffectorFinal.pe.transpose() << std::endl;
-    std::cout << "Rotazione end effector raggiunta: \n" << EndEffectorFinal.Re << std::endl;  
+    std::cout << "Rotazione end effector raggiunta: " << EndEffectorFinal.Re.eulerAngles(0,1,2) << std::endl;  
     std::cout << "Quaternione end effector raggiunta: \n" << qef << std::endl;   
     
     /*

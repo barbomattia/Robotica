@@ -42,7 +42,7 @@ std::vector<Block> riordinaDatiBlocchi(const std::vector<double>& xBlocks, const
 
         for(int j=0; j<3; j++){
             b.x[j] = xBlocks[(i*3)+j];
-            b.phi[j] = xBlocks[(i*3)+j];
+            b.phi[j] = phiBlocks[(i*3)+j];
         }
 
         ret.push_back(b);
@@ -66,16 +66,16 @@ std::stringstream stampaVector(const std::vector<double>& vec){
 }
 
 bool areVectorsEqual(const std::vector<double>& received_positions, const std::vector<double>& vec2) {
-    
     // riordino received_positions nell'ordine corretto dei joint
     std::vector<double> vec = {received_positions[4], received_positions[3], received_positions[0], received_positions[5], received_positions[6], received_positions[7] };
     
     if (vec.size() != vec2.size()) {
+        std::cout<<"DIMENSIONI DIFFERENTI" << std::endl;
         return false;
     }
 
     for (size_t i = 0; i < vec.size(); ++i) {
-        if (std::abs(vec[i] - vec2[i]) > 0.1) {     // definisco treshold per non considerare altir errori
+        if (std::abs(vec[i] - vec2[i]) > 0.01) {     // definisco treshold per non considerare altir errori
             return false; 
         }
     }
@@ -170,9 +170,9 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
 
     //inizializzo nella richiesta i parametri finali della configurazione end effector 
     //per le coordinate conferto le coordinate originali nel world frame alla coordinate del UR5 fram 
-    srv.request.xef[0]=xef[0]-ARM_X;          srv.request.phief[0]=phief[0];
-    srv.request.xef[1]=xef[1]-ARM_Y;          srv.request.phief[1]=phief[1];
-    srv.request.xef[2]=xef[2]-ARM_Z;          srv.request.phief[2]=phief[2];
+    srv.request.xef[0]=xef[0]-ARM_X;            srv.request.phief[0]=phief[0];
+    srv.request.xef[1]=ARM_Y - xef[1];            srv.request.phief[1]=phief[1];
+    srv.request.xef[2]=ARM_Z - xef[2];          srv.request.phief[2]=phief[2];
 
     
     /* TEST PRINT OF REQUEST MESSAGE 
@@ -233,7 +233,7 @@ void control_gazebo_arm(ros::NodeHandle& n, std::vector<double> q){
     }
 
     std::cout << "Braccio in Movimento:\n";
-    ros::Rate loop_rate(10); 
+    ros::Rate loop_rate(1000); 
 
     while(!areVectorsEqual(received_positions,q))
     {

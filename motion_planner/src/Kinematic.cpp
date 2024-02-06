@@ -550,7 +550,7 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     */
 
     // controllo che il determinate della jacobiano sia uguale a zero, in questo caso abbiamo a che fare con singolarità
-    if (std::abs(J.determinant()) < 5) {
+    if (std::abs(J.determinant()) < 0.5) {
         
         double detJ = J.determinant(); 
         /*
@@ -567,8 +567,9 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
         std::cerr << "det = " << detJ << std::endl;
 
         //uso una damped psudo inverse per calcolare dotq
+        std::cout << "Pseudo Inverse: " << std::endl << pseudoInverse(J) << std::endl;
         Eigen::MatrixXd dumpedPseudoInverse = dampedPseudoInverse(J);
-        //std::cout << "Pseudo Inverse Damped: " << std::endl << dumpedPseudoInverse << std::endl;
+        std::cout << "Pseudo Inverse Damped: " << std::endl << dumpedPseudoInverse << std::endl;
         Eigen::VectorXd dotQ_base = dumpedPseudoInverse * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
 
         //Eigen::VectorXd second_task = wDerived(q,  scaleFactor);
@@ -808,7 +809,7 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
         Eigen::VectorXd dotqk = invDiffKinematiControlCompleteQuaternion(
             qk, xe, pd(T[i],Tf, xe0, xef), vd, omegad, qe, qd(T[i],Tf, q0, qf), Kp, Kq, scaleFactor
         );
-        std::cout << "\ndot q: [";
+        std::cout << "dot q: [";
         for (int i = 0; i < dotqk.size(); ++i) {
             std::cout << dotqk(i);
             if (i < dotqk.size() - 1) {

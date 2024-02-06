@@ -13,8 +13,10 @@ int main(int argc, char **argv){
 
     std::cout << " ----------------------------- OBJECT DETECTION --------------------------------- \n";
     std::vector<Block> blocchi = ask_object_detection(n);                 //ottengo tutti i blocchi trovati
-    Block blocco = blocchi[0];                                            //dichiaro il blocco che voglio ordinare    
-
+    Block blocco;                                             //dichiaro il blocco che voglio ordinare    
+    blocco.x[0] = 0.9; blocco.x[1] = 0.65; blocco.x[2] = 1.1;
+    blocco.phi[0] = 0; blocco.phi[1] = 0; blocco.phi[2] = 0;
+    blocco.name = "prova";
                                 
     std::cout << "\n ----------------------------- ASK MOTION PLAN -------------------------------- \n";
     Eigen::MatrixXd q = ask_inverse_kinematic(n, blocco.x, blocco.phi);
@@ -34,8 +36,8 @@ int main(int argc, char **argv){
         std::cout << std::endl;
         */
 
-        //control_gazebo_arm(n,qi_vector);
-        //std::cout <<"\n";
+        control_gazebo_arm(n,qi_vector);
+        std::cout <<"\n";
 
     }
 
