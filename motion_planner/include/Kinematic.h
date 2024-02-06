@@ -5,9 +5,12 @@
 #include <eigen3/Eigen/Geometry>
 #include <vector>
 #include <functional>
+
 #define ARM_X 0.5
 #define ARM_Y 0.35
 #define ARM_Z 1.75
+
+#define DER_H 0.0001
 
 #ifndef __KINEMATIC_H__
 #define __KINEMATIC_H__
@@ -151,5 +154,9 @@
     bool checkCollisioni(Eigen::MatrixXd Th, double offset, double scaleFactor);
 
     Eigen::Quaterniond slerpFunction(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2, double t);
+
+    double DerivataParzialeDetJ(const Eigen::VectorXd& q, int i, double scaleFactor);
+
+    Eigen::VectorXd wDerived(const Eigen::VectorXd& q, double scaleFactor);
 
 #endif

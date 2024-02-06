@@ -1,4 +1,5 @@
 #include "../include/Kinematic.h"
+#include <cmath>
 
 // CINEMATICA DIRETTA --------------------------------------------------------------------------------------------------------- 
 CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
@@ -448,7 +449,7 @@ Eigen::MatrixXd pseudoInverse(const Eigen::MatrixXd& J) {
 // FUNZIONE per CALCOLO della PSEUDOINVERSA DESTRA SMORZATA
 Eigen::MatrixXd dampedPseudoInverse(const Eigen::MatrixXd& J) {
 
-    double dampingFactor = 0.0001;
+    double dampingFactor = 0.000001;
 
     Eigen::MatrixXd Jt = J.transpose();
     Eigen::MatrixXd JJt = J * Jt;
@@ -461,6 +462,50 @@ Eigen::MatrixXd dampedPseudoInverse(const Eigen::MatrixXd& J) {
 
     return pseudoInverse;
 }
+
+
+/* FUNZIONE per CALCOLO: w'(q) --------------------------------------------------------------------------------------------------------
+Eigen::VectorXd wDerived(const Eigen::VectorXd& q, double scaleFactor){
+
+    std::vector<double> wD;
+
+    Eigen::MatrixXd J = ur5Jac(q, scaleFactor); // calcolo il la Jacobiana in base a q
+    Eigen::MatrixXd JJt = J *J.transpose();                 
+    double detJJt = JJt.determinant();
+
+    // formula ottenuta dalla derivazione a catena di w(q)
+    double K = (1/(2*detJJt)) * (2*J.determinant());
+    // std::cout << "Valore K: " << K <<std::endl;
+    
+    for(int i=0; i< q.size(); i++){
+        double dpdi = DerivataParzialeDetJ(q, i, scaleFactor);     // calcolo la derivata parziale di w rispetto a qi
+        wD.push_back(K*dpdi);
+        //std::cout << "dpdi " << i <<"=  " << dpdi << std::endl << "wd = " << K*dpdi << std::endl;
+    }
+    
+    // Converti std::vector in Eigen::VectorXd
+    Eigen::VectorXd result(wD.size());
+    for (int i = 0; i < wD.size(); i++) {
+        result(i) = wD[i];
+    }
+
+    return result; 
+}
+
+//FUNZIONE per CALCOLARE la DERIVATA PARZIALE di w(q) su qi -------------------------------------------------------------------------------
+double DerivataParzialeDetJ(const Eigen::VectorXd& q, int i, double scaleFactor) {
+    Eigen::VectorXd q_plus_h = q;
+
+    // Incremento la componente i di q di un valore piccolo h (definito in Kinematic.h)
+    q_plus_h[i] += DER_H;
+
+    // Calcolo la approssimazione delle derivate parziali di det(J) utilizzando la definizione di derivata
+    Eigen::MatrixXd J = ur5Jac(q, scaleFactor);
+    Eigen::MatrixXd J_plus_h = ur5Jac(q_plus_h, scaleFactor);
+    
+    return (J_plus_h.determinant() - J.determinant()) /  DER_H;
+}
+*/
 
 
 //FUNZIONE per CALCOLO la DERIVATA dei QUATERNIONI dei joints ------------------------------------------------------------------------
@@ -486,15 +531,17 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     //Prendo la parte vettoriale del quaternioe errore 
     Eigen::Vector3d eo = qp.vec();
 
+    Eigen::VectorXd dotQ;
+
     /* STAMPE DEBUG
-    std::cout << "Configurazione attuale: " << q.transpose() <<std::endl; 
-    std::cout << "Valore di Re: \n" << CinematicaDiretta(q,scaleFactor).Re << "\n";
+    */ std::cout << "Configurazione attuale: " << q.transpose() <<std::endl; 
+    /* std::cout << "Valore di Re: \n" << CinematicaDiretta(q,scaleFactor).Re << "\n";
     std::cout << "Posizione end effector iniziale: " << xe.transpose() <<std::endl;
     std::cout << "Posizione end effector desiderata: " << xd.transpose() <<std::endl;
     std::cout << "Jacobiana: " << std::endl << J << std::endl;
     std::cout << "det Jacobiana: " << J.determinant() << std::endl;
 
-     std::cout << std::endl << "Quaternione Corrente: " << qe << std::endl;
+    std::cout << std::endl << "Quaternione Corrente: " << qe << std::endl;
     std::cout << std::endl << "Quaternione Corrente Coniugato: " << qe.conjugate() << std::endl;
     std::cout << "Quaternione Desiderato: " << qd.conjugate() << std::endl;
     std::cout << "Errore Rotazione: " << qp << std::endl;
@@ -504,37 +551,69 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
 
     // controllo che il determinate della jacobiano sia uguale a zero, in questo caso abbiamo a che fare con singolarità
     if (std::abs(J.determinant()) < 5) {
-        std::cerr << "vicino ad una singolarità" << std::endl;
+        
+        double detJ = J.determinant(); 
+        /*
+        double K0 = 5 * ( 1/ detJ );
+
+        double MassAsintotico = 0.1; // Massimo asintotico
+        double TassoCrescita = -0.5; // Tasso di crescita
+        double PuntoFlesso = 1.5; // Punto di flesso
+
+        double reduction = amplitude * log(base * (x - inflectionPoint)); 
+        */
+
+        std::cerr << "vicino ad una singolarità," << std::endl;
+        std::cerr << "det = " << detJ << std::endl;
 
         //uso una damped psudo inverse per calcolare dotq
         Eigen::MatrixXd dumpedPseudoInverse = dampedPseudoInverse(J);
         //std::cout << "Pseudo Inverse Damped: " << std::endl << dumpedPseudoInverse << std::endl;
         Eigen::VectorXd dotQ_base = dumpedPseudoInverse * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
 
-        double det_Jp = J.determinant(); // Calcolo del determinante della Jacobiana
-        double d = 1.0 / det_Jp;                        // Calcolo di d come l'inverso del determinante
-
-        Eigen::VectorXd d_vector = Eigen::VectorXd::Constant(dotQ_base.size(), d);
-        Eigen::VectorXd correction = (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J) * d_vector;
-
-        Eigen::VectorXd dotQ = dotQ_base + correction;
+        //Eigen::VectorXd second_task = wDerived(q,  scaleFactor);
+        dotQ = dotQ_base ;//+ (K0 * second_task); 
         
-        /*
         std::cout << std::endl  << "J inversa" <<  std::endl << J.inverse() <<  std::endl;
         std::cout << std::endl  << "J'" <<  std::endl << pseudoInverse(J)<<  std::endl;
         std::cout << std::endl  << "I - J'J" << std::endl << (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J)<< std::endl;
         std::cout << std::endl << "Original q: " << dotQ_base.transpose()<< std::endl;
-        std::cout << "Correction : " << correction.transpose() << std::endl ;
+        // std::cout << "second_task : " << second_task.transpose() << std::endl ;
         std::cout << "Dot q: " << dotQ.transpose();
         std::cout << std::endl << std::endl;
-        */
+
+        for (int i = 0; i < dotQ.size(); ++i) {
+            dotQ[i] = std::round(dotQ[i] * 1e6) / 1e6; // Arrotonda alla sesta cifra decimale
+        }
         
-        return dotQ;
+        
+    /*}else if (std::abs(J.determinant()) < 30){
+        double detJ = J.determinant(); 
 
+        double MassAsintotico = 0.5; // Massimo asintotico
+        double TassoCrescita = -0.5; // Tasso di crescita
+        double PuntoFlesso = 8.0; // Punto di flesso
+
+        double K0 = MassAsintotico / (1 + std::exp(-TassoCrescita * (std::abs(detJ) - PuntoFlesso)));
+        
+        std::cerr << "Ti stai avvicinando ad una singolarità" << std::endl;
+        std::cerr << "det = " << detJ <<" K0 = " << K0 << std::endl;
+    
+        Eigen::VectorXd dotQ_base = J.inverse() * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
+        Eigen::VectorXd second_task = wDerived(q,  scaleFactor);
+        dotQ = dotQ_base + (K0 * second_task); 
+        
+        for (int i = 0; i < dotQ.size(); ++i) {
+            dotQ[i] = std::round(dotQ[i] * 1e6) / 1e6; // Arrotonda alla sesta cifra decimale
+        }
+
+    */
     }else{
+        
         //Calcolo la derivata di q: dotQ usando la formula
-        Eigen::VectorXd dotQ = J.inverse() * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
-
+        Eigen::VectorXd dotQ_base = J.inverse() * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
+        //Eigen::VectorXd second_task = wDerived(q,  scaleFactor);
+        dotQ = dotQ_base; 
         /* stampe di debug
         std::cout << "\n\nCALCOLO DOT q \nInput\n J inverse:\n" << J.inverse() << "\n vd:" << vd.transpose();
         std::cout << "\n Kp: \n" << Kp << "\n Kq:\n" << Kq << "\n xd: " << xd.transpose() << "\n xe:" << xe.transpose();
@@ -547,9 +626,9 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
 
         // std::cout << "\n Dot q: " << dotQ.transpose();
         // std::cout << std::endl << std::endl;
-
-        return dotQ;
     }
+
+    return dotQ;
         
 }
 
@@ -684,7 +763,7 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
     // Per ogni step calcolo la configurazione dei joint 
     for (int i = 1; i < L - 1; ++i) {   
 
-        //std::cout << std::endl << "STEP " << i << std::endl;
+        std::cout << std::endl << "STEP " << i << std::endl;
         // tramite la cinematica diretta trovo la configurazione dell'end effector all'inizio dello step
         auto result = CinematicaDiretta(qk, scaleFactor);   
         Eigen::VectorXd xe = result.pe;     // posizione end effector 
@@ -732,7 +811,7 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
 
         // calcolo con una funzione lineare le configurazioni dei joint a fine step e li inserisco nella matrice configurazioni q
         qk = qk + dotqk * Dt;
-        // std::cout << "Configurazione fine step: " << qk.transpose() <<std::endl;
+        std::cout << "Configurazione fine step: " << qk.transpose() <<std::endl;
         // std::cout << "Posizione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).pe.transpose() << std::endl;
         // std::cout << "Rotazione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).Re << std::endl << std::endl;
         q.push_back(qk);

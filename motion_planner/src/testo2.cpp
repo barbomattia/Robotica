@@ -48,16 +48,36 @@ int main() {
 
     Eigen::Matrix3d Kp = 3 * Eigen::Matrix3d::Identity();
     Eigen::Matrix3d Kq = -2.65 * Eigen::Matrix3d::Identity();
+    Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(M, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, xef, q0, qf);
+
+    std::cout << "Vettore di vettori di posizioni di articolazioni nel tempo:\n" << std::endl;
+    for (int i = 0; i < Th.rows(); ++i) {
+        // Stampa il numero di riga
+        std::cout << "STEP " << i << ": " << Th.row(i) << std::endl;
+    }
+   
+     
+    //stamoe configurazioni e coordinate giunti
+    std::cout << std::endl;
+    // std::cout << "configurazione iniziale: " << std::endl << M.transpose() << std::endl << std::endl;  
+    std::cout << "configurazione finale: " << std::endl << Th.row(99) << std::endl << std::endl;
+
+    CinDir EndEffectorFinal = CinematicaDiretta(Th.row(99), scaleFactor);
+    Eigen::Quaterniond qef(EndEffectorFinal.Re);
+    std::cout << "Posizione end effector raggiunta: " << EndEffectorFinal.pe.transpose() << std::endl;
+    std::cout << "Rotazione end effector raggiunta: \n" << EndEffectorFinal.Re << std::endl;  
+    std::cout << "Quaternione end effector raggiunta: \n" << qef << std::endl;   
     
+    /*
     for(int i=0; i<8; i++){
-        NaNColumn M = getFirstColumnWithoutNaN(TH0);
-        Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(M.configurazione, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, xef, q0, qf);
+        Eigen::VectorXd M = getFirstColumnWithoutNaN(TH0);
+        Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(M, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, xef, q0, qf);
         
         int count = 0;
 
         for(int j = 0; j<Th.rows(); j++){
             Eigen::MatrixXd giunti = posizioneGiunti(Th.row(j), scaleFactor);
-            if(checkCollisioni(giunti, 0.02, scaleFactor)){
+            if(checkCollisioni(giunti, 0.02)){
                 std::cout << "congifurazione con collisione" << std::endl;
                 count = 0;
                 break;
@@ -81,7 +101,7 @@ int main() {
 
             std::cout << "Quaternione end effector raggiunta: \n" << qef << std::endl;   
             
-            Eigen::MatrixXd giuntiInizliale = posizioneGiunti(M.configurazione, scaleFactor);
+            Eigen::MatrixXd giuntiInizliale = posizioneGiunti(M, scaleFactor);
             Eigen::MatrixXd giuntiFinale = posizioneGiunti(Th.row(9), scaleFactor);
             // std::cout << "posizione giunti iniziale: " << std::endl << giuntiInizliale << std::endl << std::endl;   
             // std::cout << "posizione giunti finale: " << std::endl << giuntiFinale.transpose() << std::endl << std::endl;  
@@ -89,7 +109,7 @@ int main() {
             std::cout << "nessuna configurazione valida" << std::endl;
         }
     }
-
+    */
     
     
 

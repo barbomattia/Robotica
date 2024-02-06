@@ -8,10 +8,9 @@ int main() {
     th << 3.607390, -0.275293, 2.119540, 2.868140, 1.570800, -2.036590;
 
 
-    CinDir result = CinematicaDiretta(th, scaleFactor);
+    Eigen::VectorXd wD = wDerived(th, scaleFactor);
+    std::cout << "PROVA " << wD.transpose() << std::endl << std::endl;
 
-    std::cout << "result Direct Cinematic of th: " << th.transpose() << std::endl;
-    std::cout << "pe: " << result.pe.transpose()<< std::endl;
-    std::cout << "Re: " << std::endl << result.Re << std::endl;
+    return 0;
 
 }
