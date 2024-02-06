@@ -1,4 +1,5 @@
 #include "../include/Kinematic.h"
+#include <cmath>
 
 // CINEMATICA DIRETTA --------------------------------------------------------------------------------------------------------- 
 CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
@@ -11,6 +12,13 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     A ed Alpha sono parametri costatni per loro natura, metre D lo consideriamo costante perchè non abbiamo prismatic joint
 
     Con A, D noi forniamo delle proporzioni che devono essere rispettate, le dimensioni vere e proprie vengono definite in base a scaleFactor */
+    // std::cout <<"\n---------------------------------------";
+    Eigen::VectorXd ThStandard;
+    ThStandard.resize(6);
+    for (int i = 0; i < Th.size(); ++i) {
+        ThStandard[i] = std::round(Th[i] * 1e6) / 1e6; // Arrotonda alla quinta cifra decimale
+    }
+    // std::cout<<"\nCINEMATIC DIRETTA parametri:\nTh: " << ThStandard.transpose() <<"\nsF: " << scaleFactor << std::endl;
 
     Eigen::VectorXd A(6), D(6), Alpha(6);
     A << 0 * scaleFactor, -0.425 * scaleFactor, -0.3922 * scaleFactor, 0, 0, 0;
@@ -30,12 +38,12 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     //CALCOLO delle MATRICI DI TRASPORTO usando la funzione Tij appena definita
     TransformationMatrices Tm; 
     Eigen::Matrix4d T0W;
-    Tm.T10 = Tij(Th(0), Alpha(0), D(0), A(0));
-    Tm.T21 = Tij(Th(1), Alpha(1), D(1), A(1));
-    Tm.T32 = Tij(Th(2), Alpha(2), D(2), A(2));
-    Tm.T43 = Tij(Th(3), Alpha(3), D(3), A(3));
-    Tm.T54 = Tij(Th(4), Alpha(4), D(4), A(4));
-    Tm.T65 = Tij(Th(5), Alpha(5), D(5), A(5));
+    Tm.T10 = Tij(ThStandard(0), Alpha(0), D(0), A(0));
+    Tm.T21 = Tij(ThStandard(1), Alpha(1), D(1), A(1));
+    Tm.T32 = Tij(ThStandard(2), Alpha(2), D(2), A(2));
+    Tm.T43 = Tij(ThStandard(3), Alpha(3), D(3), A(3));
+    Tm.T54 = Tij(ThStandard(4), Alpha(4), D(4), A(4));
+    Tm.T65 = Tij(ThStandard(5), Alpha(5), D(5), A(5));
 
     //CALCOLO LA MATRICE DI TRASPORTO FINALE 
     Tm.T60 = Tm.T10 * Tm.T21 * Tm.T32 * Tm.T43 * Tm.T54 * Tm.T65;
@@ -47,6 +55,9 @@ CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     CinDir result;
     result.pe = pe;
     result.Re = Re;
+
+    // std::cout << "Retrun:\nPe: " << result.pe.transpose() << "\nRe:\n" << result.Re << "\n------------------------------------\n";
+
     return result;
 }
 
@@ -423,10 +434,22 @@ Eigen::MatrixXd ur5Jac(const Eigen::VectorXd& Th, double scaleFactor) {
 }
 
 
+// FUNZIONE per CALCOLO della PSEUDOINVERSA DESTRA 
+Eigen::MatrixXd pseudoInverse(const Eigen::MatrixXd& J) {
+
+    Eigen::MatrixXd Jt = J.transpose();
+    Eigen::MatrixXd JJt = J * Jt;
+    
+    Eigen::MatrixXd pseudoInverse = Jt * JJt.inverse();
+
+    return pseudoInverse;
+}
+
+
 // FUNZIONE per CALCOLO della PSEUDOINVERSA DESTRA SMORZATA
 Eigen::MatrixXd dampedPseudoInverse(const Eigen::MatrixXd& J) {
 
-    double dampingFactor = 0.0001;
+    double dampingFactor = 0.000001;
 
     Eigen::MatrixXd Jt = J.transpose();
     Eigen::MatrixXd JJt = J * Jt;
@@ -441,6 +464,48 @@ Eigen::MatrixXd dampedPseudoInverse(const Eigen::MatrixXd& J) {
 }
 
 
+/* FUNZIONE per CALCOLO: w'(q) --------------------------------------------------------------------------------------------------------
+Eigen::VectorXd wDerived(const Eigen::VectorXd& q, double scaleFactor){
+
+    std::vector<double> wD;
+
+    Eigen::MatrixXd J = ur5Jac(q, scaleFactor); // calcolo il la Jacobiana in base a q
+    Eigen::MatrixXd JJt = J *J.transpose();                 
+    double detJJt = JJt.determinant();
+
+    // formula ottenuta dalla derivazione a catena di w(q)
+    double K = (1/(2*detJJt)) * (2*J.determinant());
+    // std::cout << "Valore K: " << K <<std::endl;
+    
+    for(int i=0; i< q.size(); i++){
+        double dpdi = DerivataParzialeDetJ(q, i, scaleFactor);     // calcolo la derivata parziale di w rispetto a qi
+        wD.push_back(K*dpdi);
+        //std::cout << "dpdi " << i <<"=  " << dpdi << std::endl << "wd = " << K*dpdi << std::endl;
+    }
+    
+    // Converti std::vector in Eigen::VectorXd
+    Eigen::VectorXd result(wD.size());
+    for (int i = 0; i < wD.size(); i++) {
+        result(i) = wD[i];
+    }
+
+    return result; 
+}
+
+//FUNZIONE per CALCOLARE la DERIVATA PARZIALE di w(q) su qi -------------------------------------------------------------------------------
+double DerivataParzialeDetJ(const Eigen::VectorXd& q, int i, double scaleFactor) {
+    Eigen::VectorXd q_plus_h = q;
+
+    // Incremento la componente i di q di un valore piccolo h (definito in Kinematic.h)
+    q_plus_h[i] += DER_H;
+
+    // Calcolo la approssimazione delle derivate parziali di det(J) utilizzando la definizione di derivata
+    Eigen::MatrixXd J = ur5Jac(q, scaleFactor);
+    Eigen::MatrixXd J_plus_h = ur5Jac(q_plus_h, scaleFactor);
+    
+    return (J_plus_h.determinant() - J.determinant()) /  DER_H;
+}
+*/
 
 
 //FUNZIONE per CALCOLO la DERIVATA dei QUATERNIONI dei joints ------------------------------------------------------------------------
@@ -456,35 +521,115 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     const Eigen::MatrixXd& Kq,          // matrice di errore quaternione
     double scaleFactor
 ) {
+
     // calcolo la Jacobiana per la configurazione attuale del braccio
     Eigen::MatrixXd J = ur5Jac(q, scaleFactor);
-
+    
     //Calcolo l'errore di orientazione: Δq=qd * qe.coniugato 
-    Eigen::Quaterniond qp = qd * qe.conjugate();
+    Eigen::Quaterniond qp = qd.conjugate() * qe;
 
     //Prendo la parte vettoriale del quaternioe errore 
     Eigen::Vector3d eo = qp.vec();
 
+    Eigen::VectorXd dotQ;
+
+    /* STAMPE DEBUG
+    */ std::cout << "Configurazione attuale: " << q.transpose() <<std::endl; 
+    /* std::cout << "Valore di Re: \n" << CinematicaDiretta(q,scaleFactor).Re << "\n";
+    std::cout << "Posizione end effector iniziale: " << xe.transpose() <<std::endl;
+    std::cout << "Posizione end effector desiderata: " << xd.transpose() <<std::endl;
+    std::cout << "Jacobiana: " << std::endl << J << std::endl;
+    std::cout << "det Jacobiana: " << J.determinant() << std::endl;
+
+    std::cout << std::endl << "Quaternione Corrente: " << qe << std::endl;
+    std::cout << std::endl << "Quaternione Corrente Coniugato: " << qe.conjugate() << std::endl;
+    std::cout << "Quaternione Desiderato: " << qd.conjugate() << std::endl;
+    std::cout << "Errore Rotazione: " << qp << std::endl;
+
+    std::cout <<"Errore Rotazione parte Vettoriale: " << eo.transpose() << std::endl;
+    */
 
     // controllo che il determinate della jacobiano sia uguale a zero, in questo caso abbiamo a che fare con singolarità
-    if (std::abs(J.determinant()) < 1e-3) {
-        std::cerr << "vicino ad una singolarità" << std::endl;
+    if (std::abs(J.determinant()) < 5) {
+        
+        double detJ = J.determinant(); 
+        /*
+        double K0 = 5 * ( 1/ detJ );
+
+        double MassAsintotico = 0.1; // Massimo asintotico
+        double TassoCrescita = -0.5; // Tasso di crescita
+        double PuntoFlesso = 1.5; // Punto di flesso
+
+        double reduction = amplitude * log(base * (x - inflectionPoint)); 
+        */
+
+        std::cerr << "vicino ad una singolarità," << std::endl;
+        std::cerr << "det = " << detJ << std::endl;
 
         //uso una damped psudo inverse per calcolare dotq
-        Eigen::MatrixXd pseudoInverse = dampedPseudoInverse(J);
-        Eigen::VectorXd dotQ = pseudoInverse * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
+        Eigen::MatrixXd dumpedPseudoInverse = dampedPseudoInverse(J);
+        //std::cout << "Pseudo Inverse Damped: " << std::endl << dumpedPseudoInverse << std::endl;
+        Eigen::VectorXd dotQ_base = dumpedPseudoInverse * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
 
-        return dotQ;
+        //Eigen::VectorXd second_task = wDerived(q,  scaleFactor);
+        dotQ = dotQ_base ;//+ (K0 * second_task); 
+        
+        std::cout << std::endl  << "J inversa" <<  std::endl << J.inverse() <<  std::endl;
+        std::cout << std::endl  << "J'" <<  std::endl << pseudoInverse(J)<<  std::endl;
+        std::cout << std::endl  << "I - J'J" << std::endl << (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J)<< std::endl;
+        std::cout << std::endl << "Original q: " << dotQ_base.transpose()<< std::endl;
+        // std::cout << "second_task : " << second_task.transpose() << std::endl ;
+        std::cout << "Dot q: " << dotQ.transpose();
+        std::cout << std::endl << std::endl;
 
+        for (int i = 0; i < dotQ.size(); ++i) {
+            dotQ[i] = std::round(dotQ[i] * 1e6) / 1e6; // Arrotonda alla sesta cifra decimale
+        }
+        
+        
+    /*}else if (std::abs(J.determinant()) < 30){
+        double detJ = J.determinant(); 
+
+        double MassAsintotico = 0.5; // Massimo asintotico
+        double TassoCrescita = -0.5; // Tasso di crescita
+        double PuntoFlesso = 8.0; // Punto di flesso
+
+        double K0 = MassAsintotico / (1 + std::exp(-TassoCrescita * (std::abs(detJ) - PuntoFlesso)));
+        
+        std::cerr << "Ti stai avvicinando ad una singolarità" << std::endl;
+        std::cerr << "det = " << detJ <<" K0 = " << K0 << std::endl;
+    
+        Eigen::VectorXd dotQ_base = J.inverse() * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
+        Eigen::VectorXd second_task = wDerived(q,  scaleFactor);
+        dotQ = dotQ_base + (K0 * second_task); 
+        
+        for (int i = 0; i < dotQ.size(); ++i) {
+            dotQ[i] = std::round(dotQ[i] * 1e6) / 1e6; // Arrotonda alla sesta cifra decimale
+        }
+
+    */
     }else{
+        
         //Calcolo la derivata di q: dotQ usando la formula
-        Eigen::VectorXd dotQ = J.inverse() * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
+        Eigen::VectorXd dotQ_base = J.inverse() * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
+        //Eigen::VectorXd second_task = wDerived(q,  scaleFactor);
+        dotQ = dotQ_base; 
+        /* stampe di debug
+        std::cout << "\n\nCALCOLO DOT q \nInput\n J inverse:\n" << J.inverse() << "\n vd:" << vd.transpose();
+        std::cout << "\n Kp: \n" << Kp << "\n Kq:\n" << Kq << "\n xd: " << xd.transpose() << "\n xe:" << xe.transpose();
+        std::cout << "\n omegad: " << omegad.transpose() << "\n eo: " << eo.transpose();
+        */
+        
+        for (int i = 0; i < dotQ.size(); ++i) {
+            dotQ[i] = std::round(dotQ[i] * 1e6) / 1e6; // Arrotonda alla sesta cifra decimale
+        }
 
-        return dotQ;
+        // std::cout << "\n Dot q: " << dotQ.transpose();
+        // std::cout << std::endl << std::endl;
     }
-    
 
-    
+    return dotQ;
+        
 }
 
 
@@ -501,6 +646,14 @@ Eigen::MatrixXd pd(double tb, double Tf, Eigen::MatrixXd xe0, Eigen::MatrixXd xe
     } else {
         result = t * xef + (1 - t) * xe0;   // altrimenti ritorno la nuova posizione interpolata tra xe0 e xef utilizzando l'interpolazione lineare
     }
+
+    // Arrotonda alla quinta sesta decimale
+    for (int i = 0; i < result.rows(); ++i) {
+        for (int j = 0; j < result.cols(); ++j) {
+            result(i,j) = std::round(result(i,j) * 1e6) / 1e6; 
+        }
+    }
+
     return result;
 }
 
@@ -518,6 +671,14 @@ Eigen::MatrixXd phid(double tb, double Tf, Eigen::MatrixXd phief, Eigen::MatrixX
     } else {
         result = t * phief + (1 - t) * phie0;       // altrimenti ritorno la nuova orientazione interpolata tra xe0 e xef utilizzando l'interpolazione lineare
     }
+
+    // Arrotonda alla quinta sesta decimale
+    for (int i = 0; i < result.rows(); ++i) {
+        for (int j = 0; j < result.cols(); ++j) {
+            result(i,j) = std::round(result(i,j) * 1e6) / 1e6; 
+        }
+    }
+
     return result;
 }
 
@@ -535,6 +696,12 @@ Eigen::Quaterniond qd(double tb, double Tf, Eigen::Quaterniond q0, Eigen::Quater
     } else {
         result = q0.slerp(t, qf);   // altrimenti ritorno un nuovo quaternione derivato dall'interpolata sferica tra q0 e qf 
     }
+
+    //std::cout << "\n----------------------\nFUNZIONE qd\nInput:\n\ttb: " << tb <<"\n\tTf: " << Tf <<"\n\t q0: "<< q0 << "\n\tqf: " << qf;
+    //std::cout << "\nRetrurn: " << result << std::endl;
+
+    result.coeffs() = (result.coeffs() * 1e6).array().round() / 1e6;
+
     return result;
 }
 
@@ -555,6 +722,13 @@ Eigen::Matrix3d euler2RotationMatrix(const Eigen::Vector3d& euler_angles, const 
     } else {
         // Add support for other rotation orders if needed
         throw std::invalid_argument("Unsupported rotation order");
+    }
+
+    // Arrotonda alla sesta cifra decimale
+    for (int i = 0; i < rotation_matrix.rows(); ++i) {
+        for (int j = 0; j < rotation_matrix.cols(); ++j) {
+            rotation_matrix(i,j) = std::round(rotation_matrix(i,j) * 1e6) / 1e6; 
+        }
     }
 
     return rotation_matrix;
@@ -585,19 +759,28 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
     Eigen::VectorXd qk = TH0;           // qk copia della configurazione iniziale dei joint
     q.push_back(qk);                    // qk pushata come prima riga in q
 
+    
     // Per ogni step calcolo la configurazione dei joint 
     for (int i = 1; i < L - 1; ++i) {   
 
+        std::cout << std::endl << "STEP " << i << std::endl;
         // tramite la cinematica diretta trovo la configurazione dell'end effector all'inizio dello step
         auto result = CinematicaDiretta(qk, scaleFactor);   
         Eigen::VectorXd xe = result.pe;     // posizione end effector 
         Eigen::Matrix3d Re = result.Re;     // rotazione end effector 
         Eigen::Quaterniond qe(Re);          // calcolo il quaternione relativo alla rotazione end effector 
 
+        // Arrotonda alla sesta cifra decimale 
+        qe.coeffs() = (qe.coeffs() * 1e6).array().round() / 1e6;
+
         // tramite la funzione pd calcola la posizione nel lasso temporale corrente T[i] e quello iniziale 0
-        Eigen::MatrixXd vd1 = (pd(T[i], Tf, xe0, xef) - pd(0, Tf, xe0, xef));   // trova il delta posizione
+        Eigen::MatrixXd vd1 = (pd(T[i], Tf, xe0, xef) - pd(T[i-1], Tf, xe0, xef));   // trova il delta posizione
         // calcola la velocità desiderata dello step basandosi sul delta spostamento ed il tempo a disposizione per lo step 
-        Eigen::MatrixXd vd = vd1 / Dt;            
+        Eigen::MatrixXd vd = vd1 / Dt;  
+        // Arrotonda alla sesta cifra decimale
+        for (int i = 0; i < vd.size(); ++i) {
+            vd(i) = std::round(vd(i) * 1e6) / 1e6;     
+        }           
 
         Eigen::Quaterniond qd_t = qd(T[i], Tf, q0, qf);                 // quaternione ad inizio step
         Eigen::Quaterniond qd_t_plus_Dt = qd(T[i] + Dt, Tf, q0, qf);    // quaternione a fine step 
@@ -615,7 +798,11 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
         In quaeto caso la sua parte vettoriale può essere interpretata come misura della variazione dell'asse di rotazione
         e quindi della velocità angolare attorno a quell'asse.
         omegad è la parte vettoriale del quaternione variazione cioè la velocita angolare desiderata */
-        Eigen::Vector3d omegad = parts(work);   
+        Eigen::Vector3d omegad = parts(work.conjugate());  
+        // Arrotonda alla sesta cifra decimale
+        for (int i = 0; i < omegad.size(); ++i) {
+            omegad(i) = std::round(omegad(i) * 1e6) / 1e6;     
+        } 
 
         // calcolo la derivata del quaternione 
         Eigen::VectorXd dotqk = invDiffKinematiControlCompleteQuaternion(
@@ -632,6 +819,9 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
 
         // calcolo con una funzione lineare le configurazioni dei joint a fine step e li inserisco nella matrice configurazioni q
         qk = qk + dotqk * Dt;
+        std::cout << "Configurazione fine step: " << qk.transpose() <<std::endl;
+        // std::cout << "Posizione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).pe.transpose() << std::endl;
+        // std::cout << "Rotazione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).Re << std::endl << std::endl;
         q.push_back(qk);
     }
 
@@ -647,19 +837,25 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
 
 
 
-Eigen::VectorXd getFirstColumnWithoutNaN(const Eigen::MatrixXd& inputMatrix) {
+NaNColumn getFirstColumnWithoutNaN(Eigen::MatrixXd& inputMatrix) {
     Eigen::VectorXd firstColumnWithoutNaN;
+    bool check = false;
 
     for (int col = 0; col < inputMatrix.cols(); ++col) {
-        // Verifica se ci sono valori NaN nella colonna corrente
+        //verifico se ci sono valori nan nella colonna, quindi nella configurazione
         if (!inputMatrix.col(col).array().isNaN().any()) {
-            // Estrai la prima colonna senza NaN
+            
             firstColumnWithoutNaN = inputMatrix.col(col);
+            inputMatrix.col(col).array().setConstant(std::numeric_limits<double>::quiet_NaN());
+            std::cout << "NAN num colonna: " << col << std::endl;
+            return {firstColumnWithoutNaN, true};
             break;
-        }
+        } 
     }
-
-    return firstColumnWithoutNaN;
+    if(!check){
+        std::cout << "NAN Nessuna configruazione valida trovata" << std::endl;
+    }
+    return {firstColumnWithoutNaN, false};      
 }
 
 
@@ -685,7 +881,7 @@ std::string vectorToString(const Eigen::VectorXd& vec) {
     return ss.str();
 }
 
-std::string matrix3dToString(const Eigen::Matrix3d& mat) {
+std::string matrixToString(const Eigen::Matrix3d& mat) {
     std::stringstream ss;
     for (int i = 0; i < mat.rows(); ++i) {
         ss << "\n";  // a capo dopo ogni riga
@@ -697,20 +893,151 @@ std::string matrix3dToString(const Eigen::Matrix3d& mat) {
     return ss.str();
 }
 
-std::string quaternionToString(const Eigen::Quaterniond& q){
-    std::stringstream ss;
-    ss << "x: " << q.x() << " y: " << q.y() << " z: " << q.z() << " w: " << q.w();
-    return ss.str();
+Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor){
+
+    // Inizializzazione dei vettori A e D e del vettore Alpha con i valori del braccio robotico:
+    Eigen::VectorXd A(6);
+    A << 0, -0.425, -0.3922, 0, 0, 0;
+    A *= scaleFactor;
+
+    Eigen::VectorXd D(6);
+    D << 0.1625, 0, 0, 0.1333, 0.0997, 0.0996;
+    D *= scaleFactor;
+
+    Eigen::VectorXd Alpha(6);
+    Alpha << M_PI / 2, 0, 0, M_PI / 2, -M_PI / 2, 0;
+
+    auto Tij = [](double th, double alpha, double d, double a) -> Eigen::Matrix4d {
+        Eigen::Matrix4d result;
+        result << cos(th), -sin(th) * cos(alpha), sin(th) * sin(alpha), a * cos(th),
+                  sin(th), cos(th) * cos(alpha), -cos(th) * sin(alpha), a * sin(th),
+                  0, sin(alpha), cos(alpha), d,
+                  0, 0, 0, 1;
+        return result;
+    };
+
+    Eigen::MatrixXd singolaConfigurazione(6, 3);
+
+    // Extract joint angles for the current configuration
+    double th1 = Th(0);
+    double th2 = Th(1);
+    double th3 = Th(2);
+    double th4 = Th(3);
+    double th5 = Th(4);
+    double th6 = Th(5);
+
+    // Calculate transformation matrices for each joint
+    Eigen::Matrix4d T10 = Tij(th1, Alpha(0), D(0), A(0));
+    Eigen::Matrix4d T21 = Tij(th2, Alpha(1), D(1), A(1));
+    Eigen::Matrix4d T32 = Tij(th3, Alpha(2), D(2), A(2));
+    Eigen::Matrix4d T43 = Tij(th4, Alpha(3), D(3), A(3));
+    Eigen::Matrix4d T54 = Tij(th5, Alpha(4), D(4), A(4));
+    Eigen::Matrix4d T65 = Tij(th6, Alpha(5), D(5), A(5));
+
+    // Calculate joint positions in world coordinates
+    Eigen::Vector3d joint1 = T10.topRightCorner<3, 1>().head<3>();
+    Eigen::Vector3d joint2 = (T10 * T21).topRightCorner<3, 1>().head<3>();
+    Eigen::Vector3d joint3 = (T10 * T21 * T32).topRightCorner<3, 1>().head<3>();
+    Eigen::Vector3d joint4 = (T10 * T21 * T32 * T43).topRightCorner<3, 1>().head<3>();
+    Eigen::Vector3d joint5 = (T10 * T21 * T32 * T43 * T54).topRightCorner<3, 1>().head<3>();
+    
+    Eigen::Vector3d joint6 = (T10 * T21 * T32 * T43 * T54 * T65).topRightCorner<3, 1>().head<3>();
+
+    // Store joint positions in the matrix
+    singolaConfigurazione.row(0) = joint1;
+    singolaConfigurazione.row(1) = joint2;
+    singolaConfigurazione.row(2) = joint3;
+    singolaConfigurazione.row(3) = joint4;
+    singolaConfigurazione.row(4) = joint5;
+    singolaConfigurazione.row(5) = joint6;
+
+    return singolaConfigurazione;
 }
 
-std::string matrixToString(const Eigen::MatrixXd& matrice){
-    std::stringstream ss;
-    for (int i = 0; i < matrice.rows(); ++i) {
-        ss << "[q" << i <<"]: "; 
-        for (int j = 0; j < matrice.cols(); ++j) {
-            ss << matrice(i, j) << " ";
+
+
+bool checkCollisioni(Eigen::MatrixXd Th, double offset, double scaleFactor){
+
+    double ZTetto = 3 * scaleFactor;
+    double ZTavolo = 0.86 * scaleFactor;
+    double ZGradino = 1.025 * scaleFactor;
+    double XCol1 = 0.1 * scaleFactor;
+    double XCol2 = 0.9 * scaleFactor;
+    double Y1Tavolo = 0 * scaleFactor;
+    double Y2Tavolo = 0.8 * scaleFactor;
+    double YGradino = 0.155 * scaleFactor;
+
+    bool result = false;
+
+    for(int i=1; i<6; i++){
+        double x = Th(i,0) + ARM_X;
+        double y = Th(i,1) + ARM_Y;
+        double z = Th(i,2) + ARM_Z;
+        std::cout << "GIUNTO: " << i << std::endl;
+        std::cout << "X: " << x << ", Y: " << y << ", Z: " << z << std::endl;        
+
+        if(z-offset > ZTavolo && z+offset < ZTetto){
+            std::cout << "correttamente sopra il tavolo" << std::endl;  
+            if(y+offset < YGradino){
+                std::cout << "sul gradino" << std::endl;  
+                if(x-offset > XCol1 && x+offset < XCol2){
+                    if(z-offset < ZGradino){
+                        std::cout << "nel gradino" << std::endl;  
+                        result = true;
+                        break;
+                    } else if(i != 5){
+                        Point next = {Th(i+1,0), Th(i+1,1), Th(i+1,2)};
+                        next.x += ARM_X;
+                        next.y += ARM_Y;
+                        next.z += ARM_Z;
+                        std::cout << "calcolo successivo" << std::endl;  
+                        if ((ZGradino >= z && ZGradino <= next.z) || (ZGradino >= next.z && ZGradino <= z)){
+                            std::cout << "la z è compresa" << std::endl;  
+                            double check = y + (ZGradino - z) * (next.y - y) / (next.z - z);
+                            std::cout << "check = " << check << std::endl;  
+                            if((check >= y && check <= next.y) || (check >= next.y && check <= y)){
+                                std::cout << "colpisce il gradino" << std::endl;  
+                                result = true;
+                                break;
+                            }
+                        }
+                    }
+                    std::cout << "punto successivo sopra gradino" << std::endl;
+                }  
+            }
+        }  else {
+            std::cout << "fuori dai confini del tavolo" << std::endl;
+            result = true;
+            break;
         }
-        ss << "\n";
-    }
-    return ss.str();
+    }     
+    return result; 
 }
+
+Eigen::Quaterniond slerpFunction(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2, double t) {
+    // Normalizzazione dei quaternioni
+    Eigen::Quaterniond quat1 = q1.normalized();
+    Eigen::Quaterniond quat2 = q2.normalized();
+
+    // Calcolo del prodotto scalare tra i quaternioni
+    double dotProduct = quat1.coeffs().dot(quat2.coeffs());
+
+    // Se il prodotto scalare è negativo, inverti uno dei quaternioni
+    if (dotProduct < 0) {
+        quat1.coeffs() = -quat1.coeffs();
+        dotProduct = -dotProduct;
+    }
+
+    // Calcolo dell'angolo tra i quaternioni
+    double theta = acos(dotProduct);
+    double sinTheta = sin(theta);
+
+    // Calcolo dell'interpolazione sferica
+    Eigen::Quaterniond result = Eigen::Quaterniond(
+        (sin((1 - t) * theta) / sinTheta) * quat1.coeffs() + (sin(t * theta) / sinTheta) * quat2.coeffs()
+    );
+
+    // Normalizzazione del risultato
+    return result.normalized();
+}
+

@@ -6,8 +6,17 @@
 #include <vector>
 #include <functional>
 
+#define ARM_X 0.5
+#define ARM_Y 0.35
+#define ARM_Z 1.75
+
+#define DER_H 0.0001
+
 #ifndef __KINEMATIC_H__
 #define __KINEMATIC_H__
+
+
+
 
     struct TransformationMatrices { Eigen::Matrix4d T10, T21, T32, T43, T54, T65, T60; };
 
@@ -17,6 +26,22 @@
         Eigen::Matrix3d Re;     //ROTAZIONE END EFFECTOR
     };
 
+    struct NaNColumn{
+        Eigen::VectorXd configurazione;
+        bool isNaN;
+    };
+
+    struct Point{
+        double x;
+        double y;
+        double z;
+    };
+
+    struct MidPoint{
+        double x = 0.75;
+        double y = 0.4;
+        double z = 1.2;
+    };
 
     /*CINEMATICA DIRETTA --------------------------------------------------------------------------------------------------------- 
     PARAMETRI:
@@ -99,9 +124,8 @@
     Eigen::Quaterniond qd(double tb, double Tf, Eigen::Quaterniond q0, Eigen::Quaterniond qf);
 
 
-    //FUNZIONE per CONVERTIRE una ORIENTAZIONE (angoli EULERO) in una MATRICE di ROTAZIONE ----------------------------------------------s
+    //FUNZIONE per CONVERTIRE una ORIENTAZIONE (angoli EULERO) in una MATRICE di ROTAZIONE ----------------------------------------------
     Eigen::Matrix3d euler2RotationMatrix(const Eigen::Vector3d& euler_angles, const std::string& order);
-
 
     // FUNZIONE per CALCOLO CONFIGURAZIONI JOINT usando un Control basato sui QUATERNIONI e su INTERPOLAZIONE SFERICA --------------------
     Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
@@ -121,7 +145,7 @@
     );
 
 
-    Eigen::VectorXd getFirstColumnWithoutNaN(const Eigen::MatrixXd& inputMatrix);
+    NaNColumn getFirstColumnWithoutNaN(Eigen::MatrixXd& inputMatrix);
 
     // funzioni per facilitare lo sviluppo; non centrano con il puro calcolo della cinematica
 
@@ -130,8 +154,13 @@
     std::string quaternionToString(const Eigen::Quaterniond& q);
     std::string matrixToString(const Eigen::MatrixXd& matrice); 
 
+    Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor);
+    bool checkCollisioni(Eigen::MatrixXd Th, double offset, double scaleFactor);
 
+    Eigen::Quaterniond slerpFunction(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2, double t);
 
+    double DerivataParzialeDetJ(const Eigen::VectorXd& q, int i, double scaleFactor);
 
+    Eigen::VectorXd wDerived(const Eigen::VectorXd& q, double scaleFactor);
 
 #endif
