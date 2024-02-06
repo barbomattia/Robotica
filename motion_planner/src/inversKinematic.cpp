@@ -7,8 +7,8 @@
 
 bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::InverseKinematic::Response &res){
     double scaleFactor = 10.0;
-    double Tf = 10.0; 
-    double DeltaT = 0.1;
+    double Tf = 4.0; 
+    double DeltaT = 0.04;
     Eigen::VectorXd T;
     T = Eigen::VectorXd::LinSpaced(static_cast<int>((Tf / DeltaT) + 1), 0, Tf);
 
@@ -68,7 +68,7 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     */
 
     Eigen::Matrix3d Kp = 3 * Eigen::Matrix3d::Identity();
-    Eigen::Matrix3d Kq = -2.65 * Eigen::Matrix3d::Identity();
+    Eigen::Matrix3d Kq = -3 * Eigen::Matrix3d::Identity();
 
     Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf);
     ROS_INFO("--DERIVED q ------");

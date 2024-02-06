@@ -252,6 +252,38 @@ void control_gazebo_arm(ros::NodeHandle& n, std::vector<double> q){
 
 }
 
+void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q){
+
+    ros::Publisher pub = n.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1);
+    std::vector<std_msgs::Float64MultiArray> jointPositions(100);
+
+    for(int i = 0; i < q.rows(); i++){
+        Eigen::MatrixXd qi = q.row(i);
+        
+        std::vector<double> qi_vector(qi.data(), qi.data() + qi.size());
+        
+        std_msgs::Float64MultiArray jointPositionTemp;
+        jointPositionTemp.data.insert(jointPositionTemp.data.end(), qi_vector.begin(), qi_vector.end()); 
+        jointPositionTemp.data.push_back(0.0);     //inserisco i valori per il rasp1
+        jointPositionTemp.data.push_back(0.0);     //inserisco i valori per il rasp2
+
+        jointPositions[i] = jointPositionTemp;
+
+    }
+
+    ros::Rate loop_rate(25); // tasso di ciclo di controllo di 10 Hz
+    int count = 0;
+    std::cout << "Braccio in movimento .";
+    while (count != 100) {
+        if(count % 5 == 0) std::cout << ".";
+        pub.publish(jointPositions[count]);
+        count++;
+        ros::spinOnce(); 
+        loop_rate.sleep();
+    }
+    std::cout << std::endl;
+
+}
 
 
 

@@ -23,6 +23,7 @@ int main(int argc, char **argv){
 
 
     std::cout << "\n ----------------------------- REACHING THE BLOCK ----------------------------- \n";
+    /*
     for(int i = 0; i < q.rows(); i++){
 
         Eigen::MatrixXd qi = q.row(i);
@@ -34,12 +35,14 @@ int main(int argc, char **argv){
             std::cout << elem << " ";
         }
         std::cout << std::endl;
-        */
+        
 
         control_gazebo_arm(n,qi_vector);
         std::cout <<"\n";
 
     }
+    */
+    control_gazebo_arm_2(n,q);
 
 
     std::cout << "\n ----------------------------- GRASP THE BLOCK ------------------------------- \n";
