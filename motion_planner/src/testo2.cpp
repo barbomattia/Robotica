@@ -48,6 +48,7 @@ int main() {
 
     Eigen::Matrix3d Kp = 3 * Eigen::Matrix3d::Identity();
     Eigen::Matrix3d Kq = -2.65 * Eigen::Matrix3d::Identity();
+    Eigen::VectorXd M = getFirstColumnWithoutNaN(TH0).configurazione;
     Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(M, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, xef, q0, qf);
 
     std::cout << "Vettore di vettori di posizioni di articolazioni nel tempo:\n" << std::endl;
