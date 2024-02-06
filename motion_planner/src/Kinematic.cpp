@@ -577,9 +577,9 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
         std::cout << std::endl  << "J inversa" <<  std::endl << J.inverse() <<  std::endl;
         std::cout << std::endl  << "J'" <<  std::endl << pseudoInverse(J)<<  std::endl;
         std::cout << std::endl  << "I - J'J" << std::endl << (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J)<< std::endl;
-        std::cout << std::endl << "Original q: " << dotQ_base.transpose()<< std::endl;
+        // std::cout << std::endl << "Original q: " << dotQ_base.transpose()<< std::endl;
         // std::cout << "second_task : " << second_task.transpose() << std::endl ;
-        std::cout << "Dot q: " << dotQ.transpose();
+        // std::cout << "Dot q: " << dotQ.transpose();
         std::cout << std::endl << std::endl;
 
         for (int i = 0; i < dotQ.size(); ++i) {
@@ -808,7 +808,7 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
         Eigen::VectorXd dotqk = invDiffKinematiControlCompleteQuaternion(
             qk, xe, pd(T[i],Tf, xe0, xef), vd, omegad, qe, qd(T[i],Tf, q0, qf), Kp, Kq, scaleFactor
         );
-        std::cout << "\ndock: [";
+        std::cout << "\ndot q: [";
         for (int i = 0; i < dotqk.size(); ++i) {
             std::cout << dotqk(i);
             if (i < dotqk.size() - 1) {
@@ -881,7 +881,8 @@ std::string vectorToString(const Eigen::VectorXd& vec) {
     return ss.str();
 }
 
-std::string matrixToString(const Eigen::Matrix3d& mat) {
+
+std::string matrixToString(const Eigen::MatrixXd& mat) {
     std::stringstream ss;
     for (int i = 0; i < mat.rows(); ++i) {
         ss << "\n";  // a capo dopo ogni riga
@@ -890,6 +891,24 @@ std::string matrixToString(const Eigen::Matrix3d& mat) {
         }
 
     }
+    return ss.str();
+}
+
+std::string matrix3dToString(const Eigen::Matrix3d& mat) {
+    std::stringstream ss;
+    for (int i = 0; i < mat.rows(); ++i) {
+        ss << "\n";  // a capo dopo ogni riga
+        for (int j = 0; j < mat.cols(); ++j) {
+            ss << mat(i, j) << " ";
+        }
+
+    }
+    return ss.str();
+}
+
+std::string quaternioToString(const Eigen::Quaterniond& quaternion){
+    std::ostringstream ss;
+    ss << quaternion.w() << ", " << quaternion.x() << ", " << quaternion.y() << ", " << quaternion.z();
     return ss.str();
 }
 

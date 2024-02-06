@@ -6,9 +6,9 @@
 #include <iostream>
 
 bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::InverseKinematic::Response &res){
-    double scaleFactor = 1.0;
-    double Tf = 10.0;
-    double DeltaT = 0.5;
+    double scaleFactor = 10.0;
+    double Tf = 10.0; 
+    double DeltaT = 0.1;
     Eigen::VectorXd T;
     T = Eigen::VectorXd::LinSpaced(static_cast<int>((Tf / DeltaT) + 1), 0, Tf);
 
@@ -29,16 +29,16 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     Eigen::Quaterniond q0(Re);          // quaternione configurazione iniziale 
 
     // Stampa del vettore xe e della matrice Re
-    ROS_INFO("\n");
-    ROS_INFO("--DERIVE INITIAL INFORMATION xe, Re, RPY, q0 of END EFFECTOR------");
-    ROS_INFO("Vector xe: %s", vectorToString(xe).c_str());
-    ROS_INFO("Matrix Re:%s", matrix3dToString(Re).c_str());
-    ROS_INFO("Vector RPY: %s ", vectorToString(Re.eulerAngles(0, 1, 2)).c_str());
-    ROS_INFO("Quaternion q0: %s \n", quaternionToString(q0).c_str());
+    std::cout << std::endl;
+    ROS_INFO("--DERIVE INITIAL INFORMATION xe, Re, RPY, q0 of END EFFECTOR------\n");
+    std::cout << "Vector xe: " << vectorToString(xe).c_str() << std::endl;
+    std::cout << "Matrix Re: " << matrix3dToString(Re).c_str() << std::endl;
+    std::cout << "Vector RPY: " << vectorToString(Re.eulerAngles(0, 1, 2)).c_str() << std::endl;
+    std::cout << "Quaternion q0: " << quaternioToString(q0).c_str() << std::endl << std::endl; 
 
-    ROS_INFO("--REQUEST DESIRED END EFFECTOR ----------");
-    ROS_INFO("Vector Location xef : %f, %f, %f", req.xef[0], req.xef[1], req.xef[2]);
-    ROS_INFO("Vector Euler phief : %f, %f, %f", req.phief[0], req.phief[1], req.phief[2]);
+    ROS_INFO("--REQUEST DESIRED END EFFECTOR ----------\n");
+    std::cout << "Vector Location xef: " << req.xef[0] << ", " << req.xef[1] << ", " << req.xef[2] << std::endl;
+    std::cout << "Vector Euler phief: " << req.phief[0] << ", " << req.phief[1] << ", " << req.phief[2] << std::endl;
 
    
     // converto il vettore di double req.phief ed xef in vettori eigen phief e xef
@@ -48,14 +48,14 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     // derivo la matrice di rotazione desiderata dell'end effector da phief
     Eigen::Matrix3d Ref;
     Ref = euler2RotationMatrix(phief, "XYZ");
-    ROS_INFO("Matrix Ref:%s ", matrix3dToString(Ref).c_str());
+    std::cout << "Matrix Ref: " << matrix3dToString(Ref).c_str() << std::endl;
 
     // assempblo la matrice di configurazione dell'end effector usando Ref e xef
     Eigen::Matrix4d Tt0 = Eigen::Matrix4d::Identity();
     Tt0.block<3, 3>(0, 0) = Ref;
     Tt0.block<3, 1>(0, 3) = xef;
     Eigen::Quaterniond qf(Tt0.block<3, 3>(0, 0));
-    ROS_INFO("Quaternion qf: %s \n", quaternionToString(qf).c_str());
+    std::cout << "Quaternion qf: " << quaternioToString(qf).c_str() << std::endl;
 
     /*prova temporanea semplice cinematica inversa
     Eigen::MatrixXd THf = cinematicaInversa(xef, Ref, scaleFactor);
@@ -64,13 +64,12 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     ROS_INFO("%s", vectorToString(M).c_str());
     */
 
-    Eigen::Matrix3d Kp = 10.0 * Eigen::Matrix3d::Identity();
-    Eigen::Matrix3d Kq = -10.0 * Eigen::Matrix3d::Identity();
+    Eigen::Matrix3d Kp = 3 * Eigen::Matrix3d::Identity();
+    Eigen::Matrix3d Kq = -2.65 * Eigen::Matrix3d::Identity();
 
     Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf);
     ROS_INFO("--DERIVED q ------");
-    ROS_INFO("Dimensioni di Th: %ld %ld", Th.rows(), Th.cols());
-    ROS_INFO("%s", matrixToString(Th).c_str());
+    std::cout << "Dimensioni di Th: " << Th.rows() << " " << Th.cols() << std::endl << matrixToString(Th).c_str() << std::endl;
 
     //copio la matrice th nella risposta
     for (int i = 0; i < Th.rows(); i++) { 

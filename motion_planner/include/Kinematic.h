@@ -151,16 +151,17 @@
 
     std::string vectorToString(const Eigen::VectorXd& vec);
     std::string matrix3dToString(const Eigen::Matrix3d& mat);
-    std::string quaternionToString(const Eigen::Quaterniond& q);
     std::string matrixToString(const Eigen::MatrixXd& matrice); 
+    std::string quaternioToString(const Eigen::Quaterniond& quaternion); 
 
     Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor);
+
     bool checkCollisioni(Eigen::MatrixXd Th, double offset, double scaleFactor);
 
     Eigen::Quaterniond slerpFunction(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2, double t);
 
     double DerivataParzialeDetJ(const Eigen::VectorXd& q, int i, double scaleFactor);
 
-    Eigen::VectorXd wDerived(const Eigen::VectorXd& q, double scaleFactor);
+    //Eigen::VectorXd wDerived(const Eigen::VectorXd& q, double scaleFactor);
 
 #endif
