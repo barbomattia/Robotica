@@ -186,20 +186,17 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
     if (service_client.call(srv)){
 
         // Se la chiamata ha successo 
-        std::cout << "\nCONFIGURAZIONI di q: \n";
+        std::cout << "\nCONFIGURAZIONI di q CALCOLATE: \n";
 
-        ret.resize(srv.response.array_q.size() / 6, 6);
-            
+        ret.resize(srv.response.array_q.size() / 6, 6);     
         std::stringstream q_received;
+
         for(int i=0; i < srv.response.array_q.size() / 6; i++){
-            q_received << "\tq[" << i << "]: ";
             for(int j=0; j<6; j++){
                 ret(i,j) = srv.response.array_q[(i*6)+j];
-                q_received << srv.response.array_q[(i*6)+j] << "  ";
             }  
-            q_received << "\n";
         }
-        std::cout << q_received.str().c_str() << "\n";
+        
         
     } else {
         // Se la chiamata non ha successo stmapo un errore
@@ -231,33 +228,36 @@ void control_gazebo_arm(ros::NodeHandle& n, std::vector<double> q){
     }
 
     std::cout << "Braccio in Movimento:\n";
-    ros::Rate loop_rate(1000); 
+    ros::Rate loop_rate(25); 
 
     while(!areVectorsEqual(received_positions,q))
     {
         pub.publish(jointPositions);
 
-        std::stringstream stampa;
+        /* std::stringstream stampa;
         stampa << "Joint State: " << stampaVector(received_positions).str() << "\n";
-        std::cout << stampa.str().c_str();
+        std::cout << std::endl << stampa.str().c_str(); */
 
         ros::spinOnce(); 
         loop_rate.sleep();
     }
     
 
-    std::cout << "Configurazione Raggiunta \n";
+    std::cout << "\tConfigurazione Raggiunta \n";
 
 }
 
 
-void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q){
+void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q, bool goingBack){
 
     ros::Publisher pub = n.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1);
     std::vector<std_msgs::Float64MultiArray> jointPositions(100);
 
     for(int i = 0; i < q.rows(); i++){
-        Eigen::MatrixXd qi = q.row(i);
+        Eigen::MatrixXd qi;
+
+        if(goingBack){ qi = q.row(99-i); }
+        else { qi = q.row(i); }
         
         std::vector<double> qi_vector(qi.data(), qi.data() + qi.size());
         
@@ -270,34 +270,32 @@ void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q){
 
     }
 
-    ros::Rate loop_rate(25); // tasso di ciclo di controllo di 10 Hz
+    ros::Rate loop_rate(25); 
     int count = 0;
    
     while (count != 100) {
-        if(count % 5 == 0) std::cout << ".";
         pub.publish(jointPositions[count]);
         count++;
         ros::spinOnce(); 
         loop_rate.sleep();
     }
-    std::cout << std::endl;
 
 }
 
 
 
 std::vector<double> define_end_position(std::string block){
-    if(block == "X1-Y4-Z2")             return {0.9, 0.25, 0.865, 0.0, 0.0, 1.570795};
-    if(block == "X1-Y4-Z1")             return {0.9, 0.3, 0.865, 0.0, 0.0, 1.570795};
-    if(block == "X1-Y1-Z2")             return {0.8, 0.3, 0.865, 0.0, 0.0, 0.0};
-    if(block == "X2-Y2-Z2")             return {0.92, 0.4, 0.865, 0.0, 0.0, 0.0};
-    if(block == "X2-Y2-Z2-FILLET")      return {0.82, 0.4, 0.865, 0.0, 0.0, 0.0};
-    if(block == "X1-Y3-Z2")             return {0.92, 0.5, 0.865, 0.0, 0.0, 1.570795};
-    if(block == "X1-Y3-Z2-FILLET")      return {0.8, 0.5, 0.865, 0.0, 0.0, 1.570795};
-    if(block == "X1-Y2-Z2-TWINFILLET")  return {0.95, 0.65, 0.865, 0.0, 0.0, 1.570795};
-    if(block == "X1-Y2-Z2")             return {0.9, 0.65, 0.865, 0.0, 0.0, 0.0};
-    if(block == "X1-Y2-Z1")             return {0.85, 0.65, 0.865, 0.0, 0.0, 1.570795};
-    if(block == "X1-Y2-Z2-CHAMFER")     return {0.8, 0.65, 0.865, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y4-Z2")             return {0.9, 0.25, 1.1, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y4-Z1")             return {0.9, 0.3, 1.1, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y1-Z2")             return {0.8, 0.3, 1.1, 0.0, 0.0, 0.0};
+    if(block == "X2-Y2-Z2")             return {0.92, 0.4, 1.1, 0.0, 0.0, 0.0};
+    if(block == "X2-Y2-Z2-FILLET")      return {0.82, 0.4, 1.1, 0.0, 0.0, 0.0};
+    if(block == "X1-Y3-Z2")             return {0.92, 0.5, 1.1, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y3-Z2-FILLET")      return {0.8, 0.5, 1.1, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y2-Z2-TWINFILLET")  return {0.95, 0.65, 1.1, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y2-Z2")             return {0.9, 0.65, 1.1, 0.0, 0.0, 0.0};
+    if(block == "X1-Y2-Z1")             return {0.85, 0.65, 1.1, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y2-Z2-CHAMFER")     return {0.8, 0.65, 1.1, 0.0, 0.0, 1.570795};
 
     return {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     

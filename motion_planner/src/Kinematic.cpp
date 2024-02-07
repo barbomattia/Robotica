@@ -1,5 +1,8 @@
 #include "../include/Kinematic.h"
 #include <cmath>
+#include <iostream>
+#include <fstream>
+
 
 // CINEMATICA DIRETTA --------------------------------------------------------------------------------------------------------- 
 CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
@@ -519,7 +522,8 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     const Eigen::Quaterniond& qd,       // quaternione configurazione end effector desiderata
     const Eigen::MatrixXd& Kp,          // matrice di errore lineare     
     const Eigen::MatrixXd& Kq,          // matrice di errore quaternione
-    double scaleFactor
+    double scaleFactor,
+    std::ofstream& outputFile  
 ) {
 
     // calcolo la Jacobiana per la configurazione attuale del braccio
@@ -534,7 +538,7 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     Eigen::VectorXd dotQ;
 
     /* STAMPE DEBUG
-    */ std::cout << "Configurazione attuale: " << q.transpose() <<std::endl; 
+    */ outputFile << "Configurazione attuale: " << q.transpose() <<std::endl; 
     /* std::cout << "Valore di Re: \n" << CinematicaDiretta(q,scaleFactor).Re << "\n";
     std::cout << "Posizione end effector iniziale: " << xe.transpose() <<std::endl;
     std::cout << "Posizione end effector desiderata: " << xd.transpose() <<std::endl;
@@ -563,25 +567,25 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
         double reduction = amplitude * log(base * (x - inflectionPoint)); 
         */
 
-        std::cerr << "vicino ad una singolarità," << std::endl;
-        std::cerr << "det = " << detJ << std::endl;
+        outputFile << "vicino ad una singolarità," << std::endl;
+        outputFile << "det = " << detJ << std::endl;
 
         //uso una damped psudo inverse per calcolare dotq
-        std::cout << "Pseudo Inverse: " << std::endl << pseudoInverse(J) << std::endl;
+        outputFile << "Pseudo Inverse: " << std::endl << pseudoInverse(J) << std::endl;
         Eigen::MatrixXd dumpedPseudoInverse = dampedPseudoInverse(J);
-        std::cout << "Pseudo Inverse Damped: " << std::endl << dumpedPseudoInverse << std::endl;
+        outputFile << "Pseudo Inverse Damped: " << std::endl << dumpedPseudoInverse << std::endl;
         Eigen::VectorXd dotQ_base = dumpedPseudoInverse * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
 
         //Eigen::VectorXd second_task = wDerived(q,  scaleFactor);
         dotQ = dotQ_base ;//+ (K0 * second_task); 
         
-        std::cout << std::endl  << "J inversa" <<  std::endl << J.inverse() <<  std::endl;
-        std::cout << std::endl  << "J'" <<  std::endl << pseudoInverse(J)<<  std::endl;
-        std::cout << std::endl  << "I - J'J" << std::endl << (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J)<< std::endl;
+        outputFile << std::endl  << "J inversa" <<  std::endl << J.inverse() <<  std::endl;
+        outputFile << std::endl  << "J'" <<  std::endl << pseudoInverse(J)<<  std::endl;
+        outputFile << std::endl  << "I - J'J" << std::endl << (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J)<< std::endl;
         // std::cout << std::endl << "Original q: " << dotQ_base.transpose()<< std::endl;
         // std::cout << "second_task : " << second_task.transpose() << std::endl ;
         // std::cout << "Dot q: " << dotQ.transpose();
-        std::cout << std::endl << std::endl;
+        outputFile << std::endl << std::endl;
 
         for (int i = 0; i < dotQ.size(); ++i) {
             dotQ[i] = std::round(dotQ[i] * 1e6) / 1e6; // Arrotonda alla sesta cifra decimale
@@ -751,7 +755,8 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
     Eigen::MatrixXd xe0,            // posizione iniziale end-effector 
     Eigen::MatrixXd xef,            // posizione finale end-effector
     Eigen::Quaterniond q0,          // quaternione iniziale end-effector 
-    Eigen::Quaterniond qf           // quaternione finale end-effector
+    Eigen::Quaterniond qf,          // quaternione finale end-effector
+    std::ofstream& outputFile        
 ) {
     // Dichiaro la matrice q dove ogni riga corrisponde ad uno step temporale ed contiene le configurazioni dei joint in quel preciso step temporale
     std::vector<Eigen::VectorXd> q;     // q è un vettore di vettori, cioè una matrice
@@ -764,7 +769,7 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
     // Per ogni step calcolo la configurazione dei joint 
     for (int i = 1; i < L - 1; ++i) {   
 
-        std::cout << std::endl << "STEP " << i << std::endl;
+        outputFile << "STEP " << i << std::endl;
         // tramite la cinematica diretta trovo la configurazione dell'end effector all'inizio dello step
         auto result = CinematicaDiretta(qk, scaleFactor);   
         Eigen::VectorXd xe = result.pe;     // posizione end effector 
@@ -807,20 +812,20 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
 
         // calcolo la derivata del quaternione 
         Eigen::VectorXd dotqk = invDiffKinematiControlCompleteQuaternion(
-            qk, xe, pd(T[i],Tf, xe0, xef), vd, omegad, qe, qd(T[i],Tf, q0, qf), Kp, Kq, scaleFactor
+            qk, xe, pd(T[i],Tf, xe0, xef), vd, omegad, qe, qd(T[i],Tf, q0, qf), Kp, Kq, scaleFactor, outputFile
         );
-        std::cout << "dot q: [";
+        outputFile << "dot q: [";
         for (int i = 0; i < dotqk.size(); ++i) {
-            std::cout << dotqk(i);
+            outputFile << dotqk(i);
             if (i < dotqk.size() - 1) {
-                std::cout << ", ";
+                outputFile << ", ";
             }
         }
-        std::cout << "]" << std::endl;
+        outputFile << "]" << std::endl;
 
         // calcolo con una funzione lineare le configurazioni dei joint a fine step e li inserisco nella matrice configurazioni q
         qk = qk + dotqk * Dt;
-        std::cout << "Configurazione fine step: " << qk.transpose() <<std::endl;
+        outputFile << "Configurazione fine step: " << qk.transpose() <<std::endl <<std::endl;
         // std::cout << "Posizione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).pe.transpose() << std::endl;
         // std::cout << "Rotazione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).Re << std::endl << std::endl;
         q.push_back(qk);

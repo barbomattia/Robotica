@@ -36,7 +36,7 @@
     /* RICHIESTA MOVIMENTO BRACCIO
     La funzione richiede a gazebo di muovere il braccio robotico usando la configurazione dei joint q passata*/
     void control_gazebo_arm(ros::NodeHandle& n, std::vector<double> q);
-    void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q);
+    void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q, bool goingBack);
 
 
     /* DEFINIZIONE POSIZIONE ORDINATA BLOCCO

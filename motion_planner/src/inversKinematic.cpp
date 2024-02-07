@@ -4,6 +4,9 @@
 #include "../include/Kinematic.h"
 #include "motion_planner/InverseKinematic.h"
 #include <iostream>
+#include <fstream>
+
+int motion_request = 0;
 
 bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::InverseKinematic::Response &res){
     double scaleFactor = 10.0;
@@ -12,11 +15,22 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     Eigen::VectorXd T;
     T = Eigen::VectorXd::LinSpaced(static_cast<int>((Tf / DeltaT) + 1), 0, Tf);
 
+    
+    std::string nomeFile = "motion_request_" + std::to_string(motion_request) + ".txt";          motion_request++;
+    std::string outputPath = "ros_ws/src/Robotica/motion_planner/output_log/" + nomeFile;
+    std::ofstream outputFile(outputPath);                             // Apertura del file in modalità scrittura
+
+    // Controllo se il file è stato aperto correttamente
+    if (!outputFile.is_open()) {
+        std::cerr << "Impossibile aprire il file." << std::endl;
+        return 1;
+    }
+
     ROS_INFO("\n");
-    ROS_INFO("REQUEST------------------------------\n");
-    ROS_INFO("--REQUEST JOINT PARAMETERS ----------");
+    ROS_INFO("REQUEST-----------------------------------------\n");
+    ROS_INFO("REQUEST JOINT PARAMETERS \n");
     for (int i = 0; i < req.jointstate.size(); i++) {
-        ROS_INFO("joint %d: %f", i, req.jointstate[i]);
+        std::cout << "joint " << i << ": " << req.jointstate[i] << std::endl;
     }
     
     // converto il vettore di double req.jointstate in un vettore eigen joinstate
@@ -30,13 +44,13 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
 
     // Stampa del vettore xe e della matrice Re
     std::cout << std::endl;
-    ROS_INFO("--DERIVE INITIAL INFORMATION xe, Re, RPY, q0 of END EFFECTOR------\n");
+    ROS_INFO("DERIVE INITIAL INFORMATION xe, Re, RPY, q0 of END EFFECTOR\n");
     std::cout << "Vector xe: " << vectorToString(xe).c_str() << std::endl;
     std::cout << "Matrix Re: " << matrix3dToString(Re).c_str() << std::endl;
     std::cout << "Vector RPY: " << vectorToString(Re.eulerAngles(0, 1, 2)).c_str() << std::endl;
     std::cout << "Quaternion q0: " << quaternioToString(q0).c_str() << std::endl << std::endl; 
 
-    ROS_INFO("--REQUEST DESIRED END EFFECTOR ----------\n");
+    ROS_INFO("REQUEST DESIRED END EFFECTOR\n");
     for(int i=0; i<3; i++){
         req.xef[i] = req.xef[i] * scaleFactor;
     }
@@ -58,7 +72,7 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     Tt0.block<3, 3>(0, 0) = Ref;
     Tt0.block<3, 1>(0, 3) = xef;
     Eigen::Quaterniond qf(Tt0.block<3, 3>(0, 0));
-    std::cout << "Quaternion qf: " << quaternioToString(qf).c_str() << std::endl;
+    std::cout << "Quaternion qf: " << quaternioToString(qf).c_str() << std::endl << std::endl;
 
     /*prova temporanea semplice cinematica inversa
     Eigen::MatrixXd THf = cinematicaInversa(xef, Ref, scaleFactor);
@@ -70,9 +84,10 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     Eigen::Matrix3d Kp = 3 * Eigen::Matrix3d::Identity();
     Eigen::Matrix3d Kq = -3 * Eigen::Matrix3d::Identity();
 
-    Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf);
-    ROS_INFO("--DERIVED q ------");
-    std::cout << "Dimensioni di Th: " << Th.rows() << " " << Th.cols() << std::endl << matrixToString(Th).c_str() << std::endl;
+    Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf, outputFile);
+    ROS_INFO("DERIVED q");
+    std::cout << "Dimensioni di Th: " << Th.rows() << " " << Th.cols() << std::endl  << std::endl;
+    outputFile << std::endl << "MATRICE di q" << std::endl << matrixToString(Th).c_str();
 
     //copio la matrice th nella risposta
     for (int i = 0; i < Th.rows(); i++) { 
@@ -86,12 +101,14 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
         }
     }
 
+    /*
     for(int i=0; i < res.array_q.size(); i++){
         std::cout << res.array_q[i] << " ";
     }
     std::cout<<"\n";
+    */
 
-    ROS_INFO("-- END REQUEST ------");
+    ROS_INFO("END REQUEST --------------------------\n\n");
 
     
     return true;

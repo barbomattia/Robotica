@@ -93,7 +93,8 @@
         const Eigen::Quaterniond& qd,       // quaternione configurazione end effector desiderata
         const Eigen::MatrixXd& Kp,          // matrice di errore lineare     
         const Eigen::MatrixXd& Kq,          // matrice di errore quaternione
-        double scaleFactor
+        double scaleFactor,
+        std::ofstream& outputFile        // file di stampa 
     );
 
 
@@ -141,7 +142,8 @@
         Eigen::MatrixXd xe0,            // posizione iniziale end-effector 
         Eigen::MatrixXd xef,            // posizione finale end-effector
         Eigen::Quaterniond q0,          // quaternione iniziale end-effector 
-        Eigen::Quaterniond qf           // quaternione finale end-effector
+        Eigen::Quaterniond qf,           // quaternione finale end-effector
+        std::ofstream& outputFile        // file di stampa 
     );
 
 
