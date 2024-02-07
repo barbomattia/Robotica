@@ -1,0 +1,180 @@
+\hypertarget{Kinematic_8h}{}\doxysection{/home/mattia/trento\+\_\+lab\+\_\+home/ros\+\_\+ws/src/\+Robotica/motion\+\_\+planner/include/\+Kinematic.h File Reference}
+\label{Kinematic_8h}\index{/home/mattia/trento\_lab\_home/ros\_ws/src/Robotica/motion\_planner/include/Kinematic.h@{/home/mattia/trento\_lab\_home/ros\_ws/src/Robotica/motion\_planner/include/Kinematic.h}}
+
+
+Header file containing the declarations of the functions necessary for the arm movement.  
+
+
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$eigen3/\+Eigen/\+Core$>$}\newline
+{\ttfamily \#include $<$eigen3/\+Eigen/\+Dense$>$}\newline
+{\ttfamily \#include $<$eigen3/\+Eigen/\+Geometry$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+Include dependency graph for Kinematic.\+h\+:
+% FIG 0
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structTransformationMatrices}{Transformation\+Matrices}}
+\begin{DoxyCompactList}\small\item\em Struct containing the arm transformation matrices. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structCinDir}{Cin\+Dir}}
+\begin{DoxyCompactList}\small\item\em Struct containing the return values ​​of the Cinematica\+Diretta function. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structNaNColumn}{Na\+NColumn}}
+\begin{DoxyCompactList}\small\item\em Struct containing the return values ​​of the get\+First\+Column\+Without\+NaN function. \end{DoxyCompactList}\item 
+struct \mbox{\hyperlink{structPoint}{Point}}
+\begin{DoxyCompactList}\small\item\em Struct containing the x, y and z coordinates of a point in the world frame. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{Kinematic_8h_aafc74086090f3a2b2e8cfb4aec02d944}\label{Kinematic_8h_aafc74086090f3a2b2e8cfb4aec02d944}} 
+\#define {\bfseries ARM\+\_\+X}~0.\+5
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a3c13737220ed4ec19990f8900d8722e8}\label{Kinematic_8h_a3c13737220ed4ec19990f8900d8722e8}} 
+\#define {\bfseries ARM\+\_\+Y}~0.\+35
+\item 
+\mbox{\Hypertarget{Kinematic_8h_ab861f47e050096ab74dfc150d4343e6d}\label{Kinematic_8h_ab861f47e050096ab74dfc150d4343e6d}} 
+\#define {\bfseries ARM\+\_\+Z}~1.\+75
+\item 
+\mbox{\Hypertarget{Kinematic_8h_afec19c1440a6ca4d037948156e4b4482}\label{Kinematic_8h_afec19c1440a6ca4d037948156e4b4482}} 
+\#define {\bfseries END\+\_\+\+EFFECTOR\+\_\+\+WIDTH}~0.\+05
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a4189bc6056474373bddf078e2eb80f47}\label{Kinematic_8h_a4189bc6056474373bddf078e2eb80f47}} 
+\#define {\bfseries BLOCK\+\_\+\+WIDTH\+\_\+\+MIN}~0.\+1
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a23780492fbcc91a51eba6ff4fc1e4836}\label{Kinematic_8h_a23780492fbcc91a51eba6ff4fc1e4836}} 
+\#define {\bfseries DER\+\_\+H}~0.\+0001
+\item 
+\mbox{\Hypertarget{Kinematic_8h_ae4f594e91188af03ab1cade788f8de3c}\label{Kinematic_8h_ae4f594e91188af03ab1cade788f8de3c}} 
+\#define {\bfseries \+\_\+\+\_\+\+KINEMATIC\+\_\+\+H\+\_\+\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+int \mbox{\hyperlink{Kinematic_8h_ad5755de87d8b9181d2d4f9915dd918b4}{random}} (int min, int max)
+\begin{DoxyCompactList}\small\item\em return a random int value between the lower and the higher values \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structCinDir}{Cin\+Dir}} \mbox{\hyperlink{Kinematic_8h_a022ae771b6ad351f574783a99a1eec3d}{Cinematica\+Diretta}} (const Eigen\+::\+Vector\+Xd \&Th, double scale\+Factor)
+\begin{DoxyCompactList}\small\item\em Function that calculates the direct kinematics and returns a vector containing the position reached by the end effector and a matrix corresponding to the orientation of the end effector in the world frame. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{Kinematic_8h_a1a85bf779278fbb52c9e9f71c5cb5623}\label{Kinematic_8h_a1a85bf779278fbb52c9e9f71c5cb5623}} 
+Eigen\+::\+Matrix\+Xd {\bfseries cinematica\+Inversa} (Eigen\+::\+Vector3d p60, Eigen\+::\+Matrix3d R60, double scale\+Factor)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a1d89d08f64cf77eb31bb8bb577ebcaca}\label{Kinematic_8h_a1d89d08f64cf77eb31bb8bb577ebcaca}} 
+Eigen\+::\+Matrix\+Xd {\bfseries ur5\+Jac} (const Eigen\+::\+Vector\+Xd \&Th, double scale\+Factor)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_abbde76b0417af102832d5e76fcbe3a63}\label{Kinematic_8h_abbde76b0417af102832d5e76fcbe3a63}} 
+Eigen\+::\+Quaterniond {\bfseries quatconj} (const Eigen\+::\+Quaterniond \&q)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a1c3fde9379c1e420292a7fa79182bb50}\label{Kinematic_8h_a1c3fde9379c1e420292a7fa79182bb50}} 
+Eigen\+::\+Quaterniond {\bfseries quatmultiply} (const Eigen\+::\+Quaterniond \&q1, const Eigen\+::\+Quaterniond \&q2)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a68570f4c1662cff0cc6b21013163450f}\label{Kinematic_8h_a68570f4c1662cff0cc6b21013163450f}} 
+Eigen\+::\+Vector3d {\bfseries parts} (const Eigen\+::\+Quaterniond \&q)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_aff2bfd339ab21d80bbb9ff75d0704f77}\label{Kinematic_8h_aff2bfd339ab21d80bbb9ff75d0704f77}} 
+Eigen\+::\+Matrix\+Xd {\bfseries damped\+Pseudo\+Inverse} (const Eigen\+::\+Matrix\+Xd \&J)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a48d2a0fdb8861b570671234d0a31f698}\label{Kinematic_8h_a48d2a0fdb8861b570671234d0a31f698}} 
+Eigen\+::\+Vector\+Xd {\bfseries inv\+Diff\+Kinemati\+Control\+Complete\+Quaternion} (const Eigen\+::\+Vector\+Xd \&q, const Eigen\+::\+Vector\+Xd \&xe, const Eigen\+::\+Vector\+Xd \&xd, const Eigen\+::\+Vector\+Xd \&vd, const Eigen\+::\+Vector\+Xd \&omegad, const Eigen\+::\+Quaterniond \&qe, const Eigen\+::\+Quaterniond \&qd, const Eigen\+::\+Matrix\+Xd \&Kp, const Eigen\+::\+Matrix\+Xd \&Kq, double scale\+Factor, std\+::ofstream \&output\+File)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a764d0200f6a88f8746d0e8d016bf3106}\label{Kinematic_8h_a764d0200f6a88f8746d0e8d016bf3106}} 
+Eigen\+::\+Matrix\+Xd {\bfseries pd} (double tb, double Tf, Eigen\+::\+Matrix\+Xd xe0, Eigen\+::\+Matrix\+Xd xef)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_ad36b6bbec8ef8707e24b7176c790d553}\label{Kinematic_8h_ad36b6bbec8ef8707e24b7176c790d553}} 
+Eigen\+::\+Matrix\+Xd {\bfseries phid} (double tb, double Tf, Eigen\+::\+Matrix\+Xd phief, Eigen\+::\+Matrix\+Xd phie0)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_ac7f4de83c93ccc4ffa187ac5282990b5}\label{Kinematic_8h_ac7f4de83c93ccc4ffa187ac5282990b5}} 
+Eigen\+::\+Quaterniond {\bfseries qd} (double tb, double Tf, Eigen\+::\+Quaterniond q0, Eigen\+::\+Quaterniond qf)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a56ccf6005b49d2817232a5abdf36946b}\label{Kinematic_8h_a56ccf6005b49d2817232a5abdf36946b}} 
+Eigen\+::\+Matrix3d {\bfseries euler2\+Rotation\+Matrix} (const Eigen\+::\+Vector3d \&euler\+\_\+angles, const std\+::string \&order)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_aab0118437a5555eb3e17f9dc9ba5c8ec}\label{Kinematic_8h_aab0118437a5555eb3e17f9dc9ba5c8ec}} 
+Eigen\+::\+Matrix\+Xd {\bfseries inv\+Diff\+Kinematic\+Control\+Sim\+Complete\+Quaternion} (const Eigen\+::\+Vector\+Xd \&TH0, const Eigen\+::\+Matrix\+Xd \&Kp, const Eigen\+::\+Matrix\+Xd \&Kq, const Eigen\+::\+Vector\+Xd \&T, double minT, double maxT, double Dt, double scale\+Factor, double Tf, Eigen\+::\+Matrix\+Xd xe0, Eigen\+::\+Matrix\+Xd xef, Eigen\+::\+Quaterniond q0, Eigen\+::\+Quaterniond qf, std\+::ofstream \&output\+File)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a675d15dd58442ece131b3bc1f85b383a}\label{Kinematic_8h_a675d15dd58442ece131b3bc1f85b383a}} 
+\mbox{\hyperlink{structNaNColumn}{Na\+NColumn}} {\bfseries get\+First\+Column\+Without\+NaN} (Eigen\+::\+Matrix\+Xd \&input\+Matrix)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a8d276a20223f0c5b4ab549196b167ee3}\label{Kinematic_8h_a8d276a20223f0c5b4ab549196b167ee3}} 
+std\+::string {\bfseries vector\+To\+String} (const Eigen\+::\+Vector\+Xd \&vec)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_ae639d22d5c4e2d425fb45698d4dbee86}\label{Kinematic_8h_ae639d22d5c4e2d425fb45698d4dbee86}} 
+std\+::string {\bfseries matrix3d\+To\+String} (const Eigen\+::\+Matrix3d \&mat)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a52bafca417bc23227b885764c4180619}\label{Kinematic_8h_a52bafca417bc23227b885764c4180619}} 
+std\+::string {\bfseries matrix\+To\+String} (const Eigen\+::\+Matrix\+Xd \&matrice)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a11ca42345e139af29a5e9f9595eeb990}\label{Kinematic_8h_a11ca42345e139af29a5e9f9595eeb990}} 
+std\+::string {\bfseries quaternio\+To\+String} (const Eigen\+::\+Quaterniond \&quaternion)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a5b5565001339d358e4fb0e8997fbc7dd}\label{Kinematic_8h_a5b5565001339d358e4fb0e8997fbc7dd}} 
+Eigen\+::\+Matrix\+Xd {\bfseries posizione\+Giunti} (Eigen\+::\+Vector\+Xd Th, double scale\+Factor)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a18011714c0863e8c977512c491846be4}\label{Kinematic_8h_a18011714c0863e8c977512c491846be4}} 
+bool {\bfseries check\+Collisioni} (Eigen\+::\+Matrix\+Xd Th, double offset, double dist, double scale\+Factor)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a9ebe551bcf345cc6d35463054d139d3a}\label{Kinematic_8h_a9ebe551bcf345cc6d35463054d139d3a}} 
+Eigen\+::\+Quaterniond {\bfseries slerp\+Function} (const Eigen\+::\+Quaterniond \&q1, const Eigen\+::\+Quaterniond \&q2, double t)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_af402503c52262f913fbb08f81601b7df}\label{Kinematic_8h_af402503c52262f913fbb08f81601b7df}} 
+double {\bfseries Gripper} (std\+::string block\+Name)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a1935633056f0551c77cf061d8628691e}\label{Kinematic_8h_a1935633056f0551c77cf061d8628691e}} 
+double {\bfseries Derivata\+Parziale\+DetJ} (const Eigen\+::\+Vector\+Xd \&q, int i, double scale\+Factor)
+\item 
+\mbox{\Hypertarget{Kinematic_8h_aef41f528669e7a45ddc9e6a6407d4f78}\label{Kinematic_8h_aef41f528669e7a45ddc9e6a6407d4f78}} 
+Eigen\+::\+Vector\+Xd {\bfseries random\+Point} (double scale\+Factor)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Header file containing the declarations of the functions necessary for the arm movement. 
+
+\begin{DoxyAuthor}{Author}
+Mattia Barborini, Matteo Grisenti 
+\end{DoxyAuthor}
+\begin{DoxyDate}{Date}
+2024-\/02-\/07 
+\end{DoxyDate}
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{Kinematic_8h_a022ae771b6ad351f574783a99a1eec3d}\label{Kinematic_8h_a022ae771b6ad351f574783a99a1eec3d}} 
+\index{Kinematic.h@{Kinematic.h}!CinematicaDiretta@{CinematicaDiretta}}
+\index{CinematicaDiretta@{CinematicaDiretta}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{CinematicaDiretta()}{CinematicaDiretta()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structCinDir}{Cin\+Dir}} Cinematica\+Diretta (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector\+Xd \&}]{Th,  }\item[{double}]{scale\+Factor }\end{DoxyParamCaption})}
+
+
+
+Function that calculates the direct kinematics and returns a vector containing the position reached by the end effector and a matrix corresponding to the orientation of the end effector in the world frame. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em Th} & vector containing the q values ​​of the joints \\
+\hline
+{\em scale\+Factor} & scale factor \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+\mbox{\hyperlink{structCinDir}{Cin\+Dir}} 
+\end{DoxyReturn}
+\mbox{\Hypertarget{Kinematic_8h_ad5755de87d8b9181d2d4f9915dd918b4}\label{Kinematic_8h_ad5755de87d8b9181d2d4f9915dd918b4}} 
+\index{Kinematic.h@{Kinematic.h}!random@{random}}
+\index{random@{random}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{random()}{random()}}
+{\footnotesize\ttfamily int random (\begin{DoxyParamCaption}\item[{int}]{min,  }\item[{int}]{max }\end{DoxyParamCaption})}
+
+
+
+return a random int value between the lower and the higher values 
+
+
+\begin{DoxyParams}{Parameters}
+{\em min} & lower value \\
+\hline
+{\em max} & higher value \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+int 
+\end{DoxyReturn}

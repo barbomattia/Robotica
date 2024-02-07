@@ -1,0 +1,12 @@
+digraph "/home/mattia/trento_lab_home/ros_ws/src/Robotica/motion_planner" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_460fe994c6b4623f034b5099157ba189 {
+    graph [ bgcolor="#eeeeff", pencolor="black", label="" URL="dir_460fe994c6b4623f034b5099157ba189.html"];
+    dir_460fe994c6b4623f034b5099157ba189 [shape=plaintext label="motion_planner"];
+  dir_103bd8faa7e1e94a88e27d199f8e61d2 [shape=box label="include" fillcolor="white" style="filled" URL="dir_103bd8faa7e1e94a88e27d199f8e61d2.html"];
+  dir_58339f9787fa011001c8f5ffc8993916 [shape=box label="src" fillcolor="white" style="filled" URL="dir_58339f9787fa011001c8f5ffc8993916.html"];
+  }
+  dir_58339f9787fa011001c8f5ffc8993916->dir_103bd8faa7e1e94a88e27d199f8e61d2 [headlabel="5", labeldistance=1.5 headhref="dir_000002_000001.html"];
+}

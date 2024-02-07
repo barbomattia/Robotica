@@ -1,3 +1,12 @@
+/**
+ * @file Kinematic.h
+ * @author Mattia Barborini, Matteo Grisenti
+ * @brief Header file containing the declarations of the functions necessary for the arm movement
+ * @date 2024-02-07
+ * 
+ */
+
+
 #pragma once
 #include <iostream>
 #include <eigen3/Eigen/Core>
@@ -6,6 +15,10 @@
 #include <vector>
 #include <functional>
 
+/**
+ * @brief 
+ * 
+ */
 #define ARM_X 0.5
 #define ARM_Y 0.35
 #define ARM_Z 1.75
@@ -20,38 +33,63 @@
 
 
 
-
+    /**
+     * @brief Struct containing the arm transformation matrices
+     * 
+     */
     struct TransformationMatrices { Eigen::Matrix4d T10, T21, T32, T43, T54, T65, T60; };
 
+    /**
+     * @brief Struct containing the return values ​​of the CinematicaDiretta function 
+     * 
+     */
     //CONFIGURAZIONE END EFFECTOR -----------------------------------------------------------------------------------------------
     struct CinDir{
         Eigen::Vector3d pe;     //POSIZIONE END EFFECTOR
         Eigen::Matrix3d Re;     //ROTAZIONE END EFFECTOR
     };
 
+    /**
+     * @brief Struct containing the return values ​​of the getFirstColumnWithoutNaN function
+     * 
+     */
     struct NaNColumn{
         Eigen::VectorXd configurazione;
         bool isNaN;
     };
 
+    /**
+     * @brief Struct containing the x, y and z coordinates of a point in the world frame
+     * 
+     */
     struct Point{
         double x;
         double y;
         double z;
     };
 
-    struct MidPoint{
-        double x = 0.75;
-        double y = 0.4;
-        double z = 1.2;
-    };
 
+    /**
+     * @brief return a random int value between the lower and the higher values
+     * 
+     * @param min lower value
+     * @param max higher value
+     * @return int 
+     */
     int random(int min, int max);
 
     /*CINEMATICA DIRETTA --------------------------------------------------------------------------------------------------------- 
     PARAMETRI:
     - Th: vettore dei parametri q dei joints
     - scaleFactor: variabile che consente di adattare le dimensioni del modello del robot UR5 */
+
+    /**
+     * @brief Function that calculates the direct kinematics and returns a vector containing the position reached by the end effector and a matrix corresponding to the orientation of the end effector in the world frame
+     * 
+     * @param Th vector containing the q values ​​of the joints
+     * @param scaleFactor scale factor
+     * @return CinDir 
+     */
     CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor);
 
 
