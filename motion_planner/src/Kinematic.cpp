@@ -3,6 +3,9 @@
 #include <iostream>
 #include <fstream>
 
+int random(int min, int max){
+    return rand()%(max-min+1)+min;
+}
 
 // CINEMATICA DIRETTA --------------------------------------------------------------------------------------------------------- 
 CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
@@ -981,15 +984,13 @@ Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor){
 
 
 
-bool checkCollisioni(Eigen::MatrixXd Th, double offset, double scaleFactor){
+bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scaleFactor){
 
     double ZTetto = 3 * scaleFactor;
-    double ZTavolo = 0.86 * scaleFactor;
+    double ZTavolo = 0.86 * scaleFactor + dist;
     double ZGradino = 1.025 * scaleFactor;
     double XCol1 = 0.1 * scaleFactor;
     double XCol2 = 0.9 * scaleFactor;
-    double Y1Tavolo = 0 * scaleFactor;
-    double Y2Tavolo = 0.8 * scaleFactor;
     double YGradino = 0.155 * scaleFactor;
 
     bool result = false;
@@ -1065,4 +1066,100 @@ Eigen::Quaterniond slerpFunction(const Eigen::Quaterniond& q1, const Eigen::Quat
     // Normalizzazione del risultato
     return result.normalized();
 }
+
+double Gripper(std::string blockName){
+    
+    bool check = false;
+    std::vector<std::string> OneWidth = {
+
+    };
+
+    for (const std::string& s : OneWidth) {
+        if (blockName == s) {
+            check = true;
+        }
+    }
+
+    if(check){
+        return (END_EFFECTOR_WIDTH - BLOCK_WIDTH_MIN)/2.0;
+    }
+
+    return (END_EFFECTOR_WIDTH - BLOCK_WIDTH_MIN*2)/2.0;
+}
+
+Eigen::VectorXd randomPoint(double scaleFactor){
+    Eigen::VectorXd result;
+    double x = random(0,100)/100.0;
+    double y = random(0,80)/100.0;
+    double z = random(105,300)/100.0;
+    result << x,y,z;
+    result *= scaleFactor;
+    return result;
+}
+
+Eigen::MatrixXd alternativeTrajectory(
+        const Eigen::VectorXd& jointstate, 
+        const Eigen::MatrixXd& Kp,      
+        const Eigen::MatrixXd& Kq,      
+        const Eigen::VectorXd& T,       
+        double minT,                    
+        double maxT,                     
+        double DeltaT,                       
+        double scaleFactor,
+        double Tf,                       
+        Eigen::MatrixXd xe0,             
+        Eigen::MatrixXd xef,            
+        Eigen::Quaterniond q0,           
+        Eigen::Quaterniond qf,          
+        std::ofstream& outputFile )
+    {
+
+        bool check = true;
+        Eigen::VectorXd phie_mid;
+        phie_mid << M_PI / 2, M_PI / 2, M_PI / 2;
+        Eigen::Quaterniond q_mid(phie_mid);
+        Eigen::MatrixXd result(200,6);
+        
+        while(check){
+            Eigen::VectorXd point_mid = randomPoint(scaleFactor);
+            Eigen::MatrixXd Th1 = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, point_mid, q0, q_mid, outputFile);
+            
+            bool checkTh1 = false;
+            for(int i = 0; i<Th1.rows(); i++){
+                Eigen::MatrixXd giunti1 = posizioneGiunti(Th1.row(i), scaleFactor);
+  
+                if(checkCollisioni(giunti1, 0.025, 0.05, scaleFactor)){
+                    checkTh1 = true;
+                    break;
+                } 
+            }
+
+            if(!checkTh1){
+                Eigen::VectorXd xe_mid = posizioneGiunti(Th1.row(99), scaleFactor).row(5);
+                Eigen::MatrixXd Th2 = invDiffKinematicControlSimCompleteQuaternion(Th1.row(99), Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe_mid, xef, q_mid, qf, outputFile);
+
+                bool checkTh2 = false;
+                for(int i = 0; i<Th2.rows(); i++){
+                    Eigen::MatrixXd giunti2 = posizioneGiunti(Th2.row(i), scaleFactor);
+    
+                    if(checkCollisioni(giunti2, 0.025, 0.05, scaleFactor)){
+                        checkTh2 = true;
+                        break;
+                    } 
+                }
+
+                if(checkTh2){
+                    for(int i=0; i<100; i++){
+                        result.row(i) = Th1.row(i);
+                        result.row(i+100) = Th2.row(i);
+                    }
+                    check = true;
+                }
+            }
+        }
+
+        return result;
+    }
+
+
 

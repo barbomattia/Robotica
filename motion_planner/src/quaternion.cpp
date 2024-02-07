@@ -39,6 +39,7 @@ int main(){
 
 int main() {
 
+    /*
    // Inizializzazione delle variabili globali
     Eigen::MatrixXd xe0(3, 1);
     Eigen::MatrixXd xef(3, 1);
@@ -102,7 +103,7 @@ int main() {
                 std::cout << "configurazione: " << Th.row(j) << std::endl << std::endl;
                 std::cout << "posizione giunti funzione: " << std::endl << giunti << std::endl << std::endl;          
                 
-                if(checkCollisioni(giunti, 0.02, scaleFactor)){
+                if(checkCollisioni(giunti, 0.025, 0.05, scaleFactor)){
                     std::cout << "congifurazione con collisione" << std::endl;
                     check = false;
                     break;
@@ -121,13 +122,41 @@ int main() {
         }    
     }
     
+    */
 
+   Eigen::MatrixXd mat1(3, 2);
+    mat1 << 1, 2,
+            3, 4,
+            5, 6;
+
+    Eigen::MatrixXd mat2(3, 3);
+    mat2 << 7, 8, 9,
+            10, 11, 12,
+            13, 14, 15;
+
+    // Creazione di una nuova matrice grande abbastanza da contenere entrambe le matrici
+    Eigen::MatrixXd mergedMat(mat1.rows(), mat1.cols() + mat2.cols());
+
+    // Copia mat1 nella parte sinistra di mergedMat
+    mergedMat.block(0, 0, mat1.rows(), mat1.cols()) = mat1;
+
+    // Copia mat2 nella parte destra di mergedMat
+    mergedMat.block(0, mat1.cols(), mat2.rows(), mat2.cols()) = mat2;
+
+    std::cout << "Matrice unita:\n" << mergedMat << std::endl;
+
+    return 0;
     
-
+    
 
 
     return 0;
 }
+
+
+
+
+
 
 
 

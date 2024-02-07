@@ -10,6 +10,9 @@
 #define ARM_Y 0.35
 #define ARM_Z 1.75
 
+#define END_EFFECTOR_WIDTH 0.05
+#define BLOCK_WIDTH_MIN 0.1
+
 #define DER_H 0.0001
 
 #ifndef __KINEMATIC_H__
@@ -42,6 +45,8 @@
         double y = 0.4;
         double z = 1.2;
     };
+
+    int random(int min, int max);
 
     /*CINEMATICA DIRETTA --------------------------------------------------------------------------------------------------------- 
     PARAMETRI:
@@ -158,12 +163,18 @@
 
     Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor);
 
-    bool checkCollisioni(Eigen::MatrixXd Th, double offset, double scaleFactor);
+    bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scaleFactor);
 
     Eigen::Quaterniond slerpFunction(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2, double t);
+
+    double Gripper(std::string blockName);
 
     double DerivataParzialeDetJ(const Eigen::VectorXd& q, int i, double scaleFactor);
 
     //Eigen::VectorXd wDerived(const Eigen::VectorXd& q, double scaleFactor);
+
+    Eigen::VectorXd randomPoint(double scaleFactor);
+
+    
 
 #endif

@@ -8,7 +8,7 @@
 
 int motion_request = 0;
 
-bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::InverseKinematic::Response &res){
+bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::InverseKinematic::Response &res, double dist){
     double scaleFactor = 10.0;
     double Tf = 4.0; 
     double DeltaT = 0.04;
@@ -89,17 +89,38 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     std::cout << "Dimensioni di Th: " << Th.rows() << " " << Th.cols() << std::endl  << std::endl;
     outputFile << std::endl << "MATRICE di q" << std::endl << matrixToString(Th).c_str();
 
-    //copio la matrice th nella risposta
-    for (int i = 0; i < Th.rows(); i++) { 
-        for (int j = 0; j < Th.cols(); j++) {
-            //res.array_q.push_back(Th(i,j));
-            if (i >= 0 && i < Th.rows() && j >= 0 && j < Th.cols()) {
-                res.array_q.push_back(Th(i, j));
-            } else {
-                ROS_ERROR("Indici fuori dai limiti: i=%d, j=%d", i, j);
-            }
+    //controllo collisioni
+    bool collision = false;
+
+    //per tutte le 100 configurazioni trovate della traiettoria, ricavo le posizioni dei giunti e controllo che non ci siano collisioni
+    for(int i=0; i < Th.rows(); i++){
+        Eigen::MatrixXd giunti = posizioneGiunti(Th.row(i), scaleFactor);
+        
+        if(checkCollisioni(giunti, 0.025, 0.05, scaleFactor)){
+            std::cout << "congifurazione con collisione" << std::endl;
+            collisione = true;
+            break;
         }
     }
+
+    //se non ci sono collisioni ritorno la matrice Th altrimenti calcolo una traiettoria alternativa
+    if(!collision){
+
+        //copio la matrice th nella risposta
+        for (int i = 0; i < Th.rows(); i++) { 
+            for (int j = 0; j < Th.cols(); j++) {
+                //res.array_q.push_back(Th(i,j));
+                if (i >= 0 && i < Th.rows() && j >= 0 && j < Th.cols()) {
+                    res.array_q.push_back(Th(i, j));
+                } else {
+                    ROS_ERROR("Indici fuori dai limiti: i=%d, j=%d", i, j);
+                }
+            }
+        }
+    } else {
+        Eigen::MatrixXd alternative = alternativeTrajectory(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf, outputFile);
+    }
+    
 
     /*
     for(int i=0; i < res.array_q.size(); i++){
