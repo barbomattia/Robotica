@@ -24,7 +24,7 @@ int main() {
     xe0 *= scaleFactor;
     phie0 <<  1.5708, -6.3e-05, -0.000311;
     
-    xef << 0.4, -0.10 , 0.65;                   //posizione finale end-effector
+    xef << -0.26, 0.34 , 1.1;                   //posizione finale end-effector
     xef *= scaleFactor;
     phief << M_PI / 2, M_PI / 2, M_PI / 2;
 

@@ -211,8 +211,6 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
 }
 
 
-
-
 void control_gazebo_arm(ros::NodeHandle& n, std::vector<double> q){
     
     ros::Publisher pub = n.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1);
@@ -252,6 +250,7 @@ void control_gazebo_arm(ros::NodeHandle& n, std::vector<double> q){
 
 }
 
+
 void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q){
 
     ros::Publisher pub = n.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1);
@@ -273,7 +272,7 @@ void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q){
 
     ros::Rate loop_rate(25); // tasso di ciclo di controllo di 10 Hz
     int count = 0;
-    std::cout << "Braccio in movimento .";
+   
     while (count != 100) {
         if(count % 5 == 0) std::cout << ".";
         pub.publish(jointPositions[count]);
