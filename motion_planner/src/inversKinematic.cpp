@@ -84,7 +84,7 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     Eigen::Matrix3d Kp = 3 * Eigen::Matrix3d::Identity();
     Eigen::Matrix3d Kq = -3 * Eigen::Matrix3d::Identity();
 
-    Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf, outputFile);
+    Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf, false, outputFile);
     ROS_INFO("DERIVED q");
     std::cout << "Dimensioni di Th: " << Th.rows() << " " << Th.cols() << std::endl  << std::endl;
     outputFile << std::endl << "MATRICE di q" << std::endl << matrixToString(Th).c_str() << std::endl << std::endl;

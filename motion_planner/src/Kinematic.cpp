@@ -455,7 +455,7 @@ Eigen::MatrixXd pseudoInverse(const Eigen::MatrixXd& J) {
 // FUNZIONE per CALCOLO della PSEUDOINVERSA DESTRA SMORZATA
 Eigen::MatrixXd dampedPseudoInverse(const Eigen::MatrixXd& J) {
 
-    double dampingFactor = 0.000001;
+    double dampingFactor = 0.0001;
 
     Eigen::MatrixXd Jt = J.transpose();
     Eigen::MatrixXd JJt = J * Jt;
@@ -470,7 +470,7 @@ Eigen::MatrixXd dampedPseudoInverse(const Eigen::MatrixXd& J) {
 }
 
 
-/* FUNZIONE per CALCOLO: w'(q) --------------------------------------------------------------------------------------------------------
+//FUNZIONE per CALCOLO: w'(q) --------------------------------------------------------------------------------------------------------
 Eigen::VectorXd wDerived(const Eigen::VectorXd& q, double scaleFactor){
 
     std::vector<double> wD;
@@ -511,7 +511,7 @@ double DerivataParzialeDetJ(const Eigen::VectorXd& q, int i, double scaleFactor)
     
     return (J_plus_h.determinant() - J.determinant()) /  DER_H;
 }
-*/
+
 
 
 //FUNZIONE per CALCOLO la DERIVATA dei QUATERNIONI dei joints ------------------------------------------------------------------------
@@ -526,6 +526,7 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     const Eigen::MatrixXd& Kp,          // matrice di errore lineare     
     const Eigen::MatrixXd& Kq,          // matrice di errore quaternione
     double scaleFactor,
+    double exploitRedundancy,
     std::ofstream& outputFile  
 ) {
 
@@ -541,51 +542,60 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     Eigen::VectorXd dotQ;
 
     /* STAMPE DEBUG
-    */ outputFile << "Configurazione attuale: " << q.transpose() <<std::endl; 
-    /* std::cout << "Valore di Re: \n" << CinematicaDiretta(q,scaleFactor).Re << "\n";
-    std::cout << "Posizione end effector iniziale: " << xe.transpose() <<std::endl;
-    std::cout << "Posizione end effector desiderata: " << xd.transpose() <<std::endl;
-    std::cout << "Jacobiana: " << std::endl << J << std::endl;
-    std::cout << "det Jacobiana: " << J.determinant() << std::endl;
+     outputFile << "Configurazione attuale: " << q.transpose() <<std::endl; 
+     std::cout << "Valore di Re: \n" << CinematicaDiretta(q,scaleFactor).Re << "\n"; */
+    outputFile << "Posizione end effector iniziale: " << xe.transpose() <<std::endl;
+    /* outputFile << "Posizione end effector desiderata: " << xd.transpose() <<std::endl;
+    outputFile << "Jacobiana: " << std::endl << J << std::endl; */
 
-    std::cout << std::endl << "Quaternione Corrente: " << qe << std::endl;
+    /* std::cout << std::endl << "Quaternione Corrente: " << qe << std::endl;
     std::cout << std::endl << "Quaternione Corrente Coniugato: " << qe.conjugate() << std::endl;
     std::cout << "Quaternione Desiderato: " << qd.conjugate() << std::endl;
-    std::cout << "Errore Rotazione: " << qp << std::endl;
-
-    std::cout <<"Errore Rotazione parte Vettoriale: " << eo.transpose() << std::endl;
-    */
+    std::cout << "Errore Rotazione: " << qp << std::endl; 
+    std::cout <<"Errore Rotazione parte Vettoriale: " << eo.transpose() << std::endl; */
+    double detJ = std::abs(J.determinant()); 
+    outputFile << "det = " << detJ << std::endl;
 
     // controllo che il determinate della jacobiano sia uguale a zero, in questo caso abbiamo a che fare con singolarità
-    if (std::abs(J.determinant()) < 0.5) {
+    if (detJ < 1) {
         
-        double detJ = J.determinant(); 
-
         outputFile << "vicino ad una singolarità," << std::endl;
-        outputFile << "det = " << detJ << std::endl;
-
-        //uso una damped psudo inverse per calcolare dotq
-        outputFile << "Pseudo Inverse: " << std::endl << pseudoInverse(J) << std::endl;
-        Eigen::MatrixXd dumpedPseudoInverse = dampedPseudoInverse(J);
-        outputFile << "Pseudo Inverse Damped: " << std::endl << dumpedPseudoInverse << std::endl;
-        Eigen::VectorXd dotQ_base = dumpedPseudoInverse * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
-
-        // ritorno un dotQ con solo uno zero per indicare che abbiamo una singolarità
-        dotQ.resize(1); // Assicurati che dotQ abbia dimensione 1
-        dotQ(0) = 0.0;
-        
-        outputFile << std::endl  << "J inversa" <<  std::endl << J.inverse() <<  std::endl;
-        outputFile << std::endl  << "J'" <<  std::endl << pseudoInverse(J)<<  std::endl;
-        outputFile << std::endl  << "I - J'J" << std::endl << (Eigen::MatrixXd::Identity(J.cols(), J.cols()) - pseudoInverse(J) * J)<< std::endl;
-        // std::cout << std::endl << "Original q: " << dotQ_base.transpose()<< std::endl;
-        // std::cout << "second_task : " << second_task.transpose() << std::endl ;
-        // std::cout << "Dot q: " << dotQ.transpose();
         outputFile << std::endl << std::endl;
+
+        if(!exploitRedundancy){
+            // ritorno un dotQ con solo uno zero per indicare che abbiamo una singolarità
+            dotQ.resize(1); // Assicurati che dotQ abbia dimensione 1
+            dotQ(0) = 0.0;
+
+        }else{
+
+            std::cout << std::endl << "EXPLOITING REDUNDANCY" << std::endl;
+            // Per esplicitare la ridondanza non considero l'orinetazione
+            Eigen::VectorXd dotQ_base =  pseudoInverse(J).topRows(3) * (Eigen::VectorXd(3) << (vd + Kp * (xd - xe))).finished();
+            Eigen::VectorXd correction = K0 * wDerived(q, scaleFactor);
+
+            dotQ = dotQ_base + correction;
+            std::cout <<"dotQ_base: " << dotQ_base.transpose() << std::endl << "correction: " << correction.transpose();
+            std::cout << std::endl << "dotQ " << dotQ.transpose() << std::endl;
+        }
+        
+        
         
     }else{
         
+        Eigen::MatrixXd InversJ = J.inverse();
+        outputFile << std::endl  << "J inversa" <<  std::endl << InversJ <<  std::endl;
+
+        if(detJ < 5){
+            //uso una damped psudo inverse per calcolare dotq
+            outputFile << "Pseudo Inverse: " << std::endl << pseudoInverse(J) << std::endl;
+            InversJ = dampedPseudoInverse(J);
+            outputFile << "Pseudo Inverse Damped: " << std::endl << InversJ << std::endl;
+        }
+
         //Calcolo la derivata di q: dotQ usando la formula
-        Eigen::VectorXd dotQ_base = J.inverse() * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
+        Eigen::VectorXd dotQ_base = InversJ * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
+
         //Eigen::VectorXd second_task = wDerived(q,  scaleFactor);
         dotQ = dotQ_base; 
         /* stampe di debug
@@ -725,6 +735,7 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
     Eigen::MatrixXd xef,            // posizione finale end-effector
     Eigen::Quaterniond q0,          // quaternione iniziale end-effector 
     Eigen::Quaterniond qf,          // quaternione finale end-effector
+    double exploitRedundancy,
     std::ofstream& outputFile       // file text in cui scrivere gli output
 ) {
     // Dichiaro la matrice q dove ogni riga corrisponde ad uno step temporale ed contiene le configurazioni dei joint in quel preciso step temporale
@@ -781,7 +792,7 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
 
         // calcolo la derivata del quaternione 
         Eigen::VectorXd dotqk = invDiffKinematiControlCompleteQuaternion(
-            qk, xe, pd(T[i],Tf, xe0, xef), vd, omegad, qe, qd(T[i],Tf, q0, qf), Kp, Kq, scaleFactor, outputFile
+            qk, xe, pd(T[i],Tf, xe0, xef), vd, omegad, qe, qd(T[i],Tf, q0, qf), Kp, Kq, scaleFactor, exploitRedundancy, outputFile
         );
 
         // controllo che non ci siano singolarità, se ci sono ritorno una matrice 1x1
@@ -802,11 +813,13 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
 
         // calcolo con una funzione lineare le configurazioni dei joint a fine step e li inserisco nella matrice configurazioni q
         qk = qk + dotqk * Dt;
-        outputFile << "Configurazione fine step: " << qk.transpose() <<std::endl <<std::endl;
-        // std::cout << "Posizione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).pe.transpose() << std::endl;
+        // outputFile << "Configurazione fine step: " << qk.transpose() <<std::endl <<std::endl;
+        // outputFile << "Posizione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).pe.transpose() << std::endl;
         // std::cout << "Rotazione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).Re << std::endl << std::endl;
         q.push_back(qk);
     }
+
+    outputFile << std::endl << "Posizione end effector raggiunta: " << CinematicaDiretta(q[q.size()-1], scaleFactor).pe.transpose() << std::endl;
 
     
     // Convert the vector of vectors q to a matrix
@@ -973,14 +986,16 @@ bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scal
         double x = Th(i,0);
         double y = Th(i,1);
         double z = Th(i,2);
-        outputFile << "GIUNTO: " << i ;
-        outputFile << "X: " << x << ", Y: " << y << ", Z: " << z << " -> ";        
+        // outputFile << "GIUNTO: " << i ;
+        // outputFile << "X: " << x << ", Y: " << y << ", Z: " << z << " -> ";        
 
         if(z-offset < ZTavolo && z+offset > ZTetto){
-            outputFile << "correttamente sopra il tavolo" << std::endl;  
+            // outputFile << "correttamente sopra il tavolo" << std::endl;  
             if(y+offset < YGradino){
                 outputFile << "sul gradino" << std::endl;  
                 if(x-offset < XCol1 && x+offset > XCol2){
+                    outputFile << "GIUNTO: " << i ;
+                    outputFile << "X: " << x << ", Y: " << y << ", Z: " << z << " -> ";      
                     if(z-offset > ZGradino){
                         outputFile << "nel gradino" << std::endl;  
                         result = true;
@@ -1140,11 +1155,14 @@ Eigen::MatrixXd alternativeTrajectory(
     Eigen::MatrixXd Th1;
     Eigen::MatrixXd Th2;
 
-    while(check){
+    int tent =0;
+
+    while(check && tent < 10){
         // trovo una punto intermedio per cui passare e trovo le configurazioni del braccio per raggiungerlo
         Eigen::VectorXd point_mid = randomPoint(scaleFactor);
         std::cout << "Punto Intermedio:" << point_mid.transpose() << " -> ";
-        Th1 = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, point_mid, q0, q_mid, outputFile);
+        tent++;
+        Th1 = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, point_mid, q0, q_mid, false, outputFile);
 
         // flag per il controllo collisioni e singolarità
         bool checkTh1 = false;
@@ -1153,7 +1171,7 @@ Eigen::MatrixXd alternativeTrajectory(
         if(!checkTh1){
             std::cout << " TH1 VALIDO -> ";
             Eigen::VectorXd xe_mid = posizioneGiunti(Th1.row(99), scaleFactor).row(5);
-            Th2 = invDiffKinematicControlSimCompleteQuaternion(Th1.row(99), Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe_mid, xef, q_mid, qf, outputFile);
+            Th2 = invDiffKinematicControlSimCompleteQuaternion(Th1.row(99), Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe_mid, xef, q_mid, qf, false, outputFile);
 
             bool checkTh2 = false;
             checkTh2 = checkCollisionSingularity(Th2, scaleFactor, outputFile);
@@ -1165,14 +1183,21 @@ Eigen::MatrixXd alternativeTrajectory(
         }
     }
 
-    std::cout << "GENERAZIONE MATRICE DOPPIA" << std::endl;
-    for(int i=0; i<100; i++){
-        result.row(i) = Th1.row(i);
-    }
-    std::cout << "PRIMA PARTE INSERITA" << std::endl;
-    for(int i=0; i<100; i++){
+    if(Th1.rows()==100){
+        std::cout << "GENERAZIONE MATRICE DOPPIA " << std::endl;
+        for(int i=0; i<100; i++){
+            result.row(i) = Th1.row(i);
+        }
+        std::cout << "PRIMA PARTE INSERITA" << std::endl;
+            for(int i=0; i<100; i++){
         result.row(i+100) = Th2.row(i);
+        }
+    }else{
+        std::cout << "NESSUN PUNTO INTEMEDIO TROVATO, ESPLICITO LA RIDONDANZA " << std::endl;
+        invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, xef, q0, qf, true, outputFile);
     }
+
+    
 
     return result;
 }

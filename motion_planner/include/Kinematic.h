@@ -26,7 +26,8 @@
 #define END_EFFECTOR_WIDTH 0.05
 #define BLOCK_WIDTH_MIN 0.1
 
-#define DER_H 0.0001
+#define DER_H 0.04
+#define K0 0.01
 
 #ifndef __KINEMATIC_H__
 #define __KINEMATIC_H__
@@ -137,6 +138,7 @@
         const Eigen::MatrixXd& Kp,          // matrice di errore lineare     
         const Eigen::MatrixXd& Kq,          // matrice di errore quaternione
         double scaleFactor,
+        double exploitRedundancy,
         std::ofstream& outputFile           // file di stampa 
     );
 
@@ -186,6 +188,7 @@
         Eigen::MatrixXd xef,            // posizione finale end-effector
         Eigen::Quaterniond q0,          // quaternione iniziale end-effector 
         Eigen::Quaterniond qf,          // quaternione finale end-effector
+        double exploitRedundancy,
         std::ofstream& outputFile       // file di stampa 
     );
 
