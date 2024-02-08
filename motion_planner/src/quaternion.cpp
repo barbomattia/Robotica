@@ -1,4 +1,6 @@
 #include "../include/Kinematic.h"
+#define ONE_WIDTH_BLOCK 0.031
+#define TWO_WIDTH_BLOCK 0.063
 
 /*
 int main(){
@@ -151,6 +153,46 @@ int main() {
 
 
     return 0;
+}
+
+double Gripper(std::string blockName){
+    
+    double result = 0;
+
+    std::vector<std::string> OneWidth = {
+        "X1-Y2-Z1",
+        "X1-Y3-Z2",
+        "X1-Y2-Z2-TWINFILLET",
+        "X1-Y4-Z1",
+        "X1-Y4-Z1",
+        "X1-Y3-Z2-FILLET",
+        "X1-Y1-Z2",
+        "X1-Y2-Z2",
+        "X1-Y2-Z2-CHAMFER",
+        "X1-Y4-Z2"
+    };
+
+    std::vector<std::string> TwoWidth = {
+        "X2-Y2-Z2",
+        "X2-Y2-Z2-FILLET"
+    };
+
+    for (const std::string& s : OneWidth) {
+        if (blockName == s) {
+            result = (END_EFFECTOR_WIDTH - ONE_WIDTH_BLOCK)/2.0;
+        }
+    }
+
+    for (const std::string& s : TwoWidth) {
+        if (blockName == s) {
+            result =  (END_EFFECTOR_WIDTH - TWO_WIDTH_BLOCK)/2.0;
+        }
+    }
+
+    if(result == 0){
+        std::cout << "nome del blocco non riconosciuto" << std::endl;
+    }
+    return result;
 }
 
 
