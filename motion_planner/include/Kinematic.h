@@ -137,7 +137,7 @@
         const Eigen::MatrixXd& Kp,          // matrice di errore lineare     
         const Eigen::MatrixXd& Kq,          // matrice di errore quaternione
         double scaleFactor,
-        std::ofstream& outputFile        // file di stampa 
+        std::ofstream& outputFile           // file di stampa 
     );
 
 
@@ -185,23 +185,17 @@
         Eigen::MatrixXd xe0,            // posizione iniziale end-effector 
         Eigen::MatrixXd xef,            // posizione finale end-effector
         Eigen::Quaterniond q0,          // quaternione iniziale end-effector 
-        Eigen::Quaterniond qf,           // quaternione finale end-effector
-        std::ofstream& outputFile        // file di stampa 
+        Eigen::Quaterniond qf,          // quaternione finale end-effector
+        std::ofstream& outputFile       // file di stampa 
     );
 
 
     NaNColumn getFirstColumnWithoutNaN(Eigen::MatrixXd& inputMatrix);
 
-    // funzioni per facilitare lo sviluppo; non centrano con il puro calcolo della cinematica
-
-    std::string vectorToString(const Eigen::VectorXd& vec);
-    std::string matrix3dToString(const Eigen::Matrix3d& mat);
-    std::string matrixToString(const Eigen::MatrixXd& matrice); 
-    std::string quaternioToString(const Eigen::Quaterniond& quaternion); 
-
     Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor);
 
-    bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scaleFactor);
+    bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scaleFactor, std::ofstream& outputFile);
+    bool checkCollisionSingularity(Eigen::MatrixXd& Th, double scaleFactor, std::ofstream& outputFile);
 
     Eigen::Quaterniond slerpFunction(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2, double t);
 
@@ -212,6 +206,30 @@
     //Eigen::VectorXd wDerived(const Eigen::VectorXd& q, double scaleFactor);
 
     Eigen::VectorXd randomPoint(double scaleFactor);
+
+    Eigen::MatrixXd alternativeTrajectory(
+        const Eigen::VectorXd& jointstate, 
+        const Eigen::MatrixXd& Kp,      
+        const Eigen::MatrixXd& Kq,      
+        const Eigen::VectorXd& T,       
+        double minT,                    
+        double maxT,                     
+        double DeltaT,                       
+        double scaleFactor,
+        double Tf,                       
+        Eigen::MatrixXd xe0,             
+        Eigen::MatrixXd xef,            
+        Eigen::Quaterniond q0,           
+        Eigen::Quaterniond qf,          
+        std::ofstream& outputFile 
+    );
+
+
+    // funzioni per facilitare lo sviluppo; non centrano con il puro calcolo della cinematica
+    std::string vectorToString(const Eigen::VectorXd& vec);
+    std::string matrix3dToString(const Eigen::Matrix3d& mat);
+    std::string matrixToString(const Eigen::MatrixXd& matrice); 
+    std::string quaternioToString(const Eigen::Quaterniond& quaternion); 
 
     
 

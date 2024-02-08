@@ -8,7 +8,7 @@
 
 int motion_request = 0;
 
-bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::InverseKinematic::Response &res, double dist){
+bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::InverseKinematic::Response &res){
     double scaleFactor = 10.0;
     double Tf = 4.0; 
     double DeltaT = 0.04;
@@ -87,38 +87,39 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf, outputFile);
     ROS_INFO("DERIVED q");
     std::cout << "Dimensioni di Th: " << Th.rows() << " " << Th.cols() << std::endl  << std::endl;
-    outputFile << std::endl << "MATRICE di q" << std::endl << matrixToString(Th).c_str();
+    outputFile << std::endl << "MATRICE di q" << std::endl << matrixToString(Th).c_str() << std::endl << std::endl;
 
-    //controllo collisioni
-    bool collision = false;
-
-    //per tutte le 100 configurazioni trovate della traiettoria, ricavo le posizioni dei giunti e controllo che non ci siano collisioni
-    for(int i=0; i < Th.rows(); i++){
-        Eigen::MatrixXd giunti = posizioneGiunti(Th.row(i), scaleFactor);
-        
-        if(checkCollisioni(giunti, 0.025, 0.05, scaleFactor)){
-            std::cout << "congifurazione con collisione" << std::endl;
-            collisione = true;
-            break;
-        }
-    }
+    
+    // flag per il controllo collisioni e singolarità
+    bool check = false;
+    check = checkCollisionSingularity(Th, scaleFactor, outputFile);
 
     //se non ci sono collisioni ritorno la matrice Th altrimenti calcolo una traiettoria alternativa
-    if(!collision){
+    if(!check){
+
+        std::cout << "Assenza di collisioni o singolarità " << std::endl << std::endl;
 
         //copio la matrice th nella risposta
         for (int i = 0; i < Th.rows(); i++) { 
             for (int j = 0; j < Th.cols(); j++) {
-                //res.array_q.push_back(Th(i,j));
-                if (i >= 0 && i < Th.rows() && j >= 0 && j < Th.cols()) {
-                    res.array_q.push_back(Th(i, j));
-                } else {
-                    ROS_ERROR("Indici fuori dai limiti: i=%d, j=%d", i, j);
-                }
+                res.array_q.push_back(Th(i, j));
             }
         }
+
+        res.two_step = false;
+
     } else {
+        std::cout << std::endl << "Presenza di collisioni o singolarità, 2 step strategi " << std::endl;
         Eigen::MatrixXd alternative = alternativeTrajectory(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf, outputFile);
+    
+        //copio la matrice th nella risposta
+        for (int i = 0; i < alternative.rows(); i++) { 
+            for (int j = 0; j < alternative.cols(); j++) {
+                    res.array_q.push_back(alternative(i, j));
+            }
+        }
+
+        res.two_step = true;
     }
     
 
@@ -129,7 +130,7 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     std::cout<<"\n";
     */
 
-    ROS_INFO("END REQUEST --------------------------\n\n");
+    ROS_INFO("END REQUEST ---------------------------------------------------------------------\n\n");
 
     
     return true;

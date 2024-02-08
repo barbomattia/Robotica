@@ -88,7 +88,7 @@ void callback(const sensor_msgs::JointState::ConstPtr& msg, std::vector<double>*
     *received_positions = msg->position;
 
     std::stringstream stampa;
-    stampa << "Joint State Attuale: " << stampaVector(*received_positions).str() << "\n";
+    // stampa << "Joint State Attuale: " << stampaVector(*received_positions).str() << "\n";
     std::cout << stampa.str().c_str();
     
 }
@@ -186,11 +186,11 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
     if (service_client.call(srv)){
 
         // Se la chiamata ha successo 
-        std::cout << "\nCONFIGURAZIONI di q CALCOLATE: \n";
+        std::cout << "\n\t    CONFIGURAZIONI di q CALCOLATE: ";
+        if(srv.response.two_step) std::cout << "SOLUZIONE a 2 Step";
+        std::cout << std::endl;
 
         ret.resize(srv.response.array_q.size() / 6, 6);     
-        std::stringstream q_received;
-
         for(int i=0; i < srv.response.array_q.size() / 6; i++){
             for(int j=0; j<6; j++){
                 ret(i,j) = srv.response.array_q[(i*6)+j];
@@ -200,7 +200,7 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
         
     } else {
         // Se la chiamata non ha successo stmapo un errore
-        std::cout << "Failed to call service 'calculate_inverse_kinematics' \n";
+        std::cout << "\n\t   Failed to call service 'calculate_inverse_kinematics' \n";
     }
 
     return ret;
@@ -251,12 +251,12 @@ void control_gazebo_arm(ros::NodeHandle& n, std::vector<double> q){
 void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q, bool goingBack){
 
     ros::Publisher pub = n.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1);
-    std::vector<std_msgs::Float64MultiArray> jointPositions(100);
+    std::vector<std_msgs::Float64MultiArray> jointPositions(q.rows());
 
     for(int i = 0; i < q.rows(); i++){
         Eigen::MatrixXd qi;
 
-        if(goingBack){ qi = q.row(99-i); }
+        if(goingBack){ qi = q.row(q.rows()-1-i); }
         else { qi = q.row(i); }
         
         std::vector<double> qi_vector(qi.data(), qi.data() + qi.size());
@@ -273,7 +273,7 @@ void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q, bool goingBack)
     ros::Rate loop_rate(25); 
     int count = 0;
    
-    while (count != 100) {
+    while (count != q.rows()) {
         pub.publish(jointPositions[count]);
         count++;
         ros::spinOnce(); 

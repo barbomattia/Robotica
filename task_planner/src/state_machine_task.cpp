@@ -13,12 +13,10 @@ bool ordering_block(ros::NodeHandle& n, Block& blocco){
 
     std::cout << "\n\t -> REACHING THE BLOCK \n";
     
-    /* for(int i = 0; i < q.rows(); i++){
-        Eigen::MatrixXd qi = q.row(i);          // std::cout<<qi<<"\n";
-        std::vector<double> qi_vector(qi.data(), qi.data() + qi.size());
-        for (const auto& elem : qi_vector) {       std::cout << elem << " ";}
-        std::cout << std::endl;  control_gazebo_arm(n,qi_vector);  std::cout <<"\n";
-    } */
+    /*for(int i = 0; i < q.rows(); i++){
+        Eigen::MatrixXd qi = q.row(i);           
+        std::cout<< "["<< i << "]" << qi <<"\n";
+    }*/
     
     control_gazebo_arm_2(n,q,false);
 
@@ -48,22 +46,22 @@ bool ordering_block(ros::NodeHandle& n, Block& blocco){
         return false;
     }
 
-    std::cout << "\tPosizione Ordinata del blocco: \n";
+    std::cout << "\t    Posizione Ordinata del blocco: \n";
 
-    std::cout << "\t\tx: ";
+    std::cout << "\t\t  x: ";
     for (double d : end_block_position_x) { 
         std::cout << d << " ";
     }
     std::cout << std::endl;
 
-    std::cout << "\t\tphi: ";
+    std::cout << "\t\t  phi: ";
     for (double d : end_block_position_phi) {
         std::cout << d << " ";
     }
     std::cout << std::endl;
 
     Eigen::MatrixXd q_end = ask_inverse_kinematic(n, end_block_position_x, end_block_position_phi);
-    std::cout << std::endl << "\tReaching the order coordinate\n" <<std::endl;
+    std::cout << std::endl << "\t    Reaching the order coordinate\n" <<std::endl;
     control_gazebo_arm_2(n,q_end,false);
 
     return true;

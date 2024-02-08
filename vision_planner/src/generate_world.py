@@ -100,8 +100,8 @@ def generate_world_sdf():
             block_pose.text = generate_random_pose(x_range, y_range, z_value)
             overlap = any(
                 (
-                    abs(float(other_block_pose.split()[0]) - float(block_pose.text.split()[0])) < 0.1
-                    and abs(float(other_block_pose.split()[1]) - float(block_pose.text.split()[1])) < 0.1
+                    abs(float(other_block_pose.split()[0]) - float(block_pose.text.split()[0])) < 0.14
+                    and abs(float(other_block_pose.split()[1]) - float(block_pose.text.split()[1])) < 0.14
                 )
                 for other_block_pose in [tavolo_pose.text] + [include.find("pose").text if include.find("pose") is not None else "" for include in world.findall("include") if include != block_include and include.find("pose") is not None]
             )
