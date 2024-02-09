@@ -1,4 +1,14 @@
+<<<<<<< HEAD
 ---
 float64[] xBlocks
 float64[] phiBlocks
 string[] nameBlocks
+=======
+# Request
+---
+# Response
+
+float64[] xBlocks
+float64[] phiBlocks
+string[] nameBlocks
+>>>>>>> vision

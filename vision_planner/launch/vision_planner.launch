@@ -1,0 +1,6 @@
+<launch>
+  <!-- Launch the vision_planner node -->
+  <node pkg="vision_planner" pkg="vision_planner" type="main.py" name="vision_planner_node" output="screen">
+    <!-- Add vision planner node specific parameters if needed -->
+  </node>
+</launch>
