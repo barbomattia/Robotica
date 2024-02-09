@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nancolumn_11',['NaNColumn',['../structNaNColumn.html',1,'']]]
+  ['detection_49',['Detection',['../classdetection_1_1Detection.html',1,'detection']]]
 ];

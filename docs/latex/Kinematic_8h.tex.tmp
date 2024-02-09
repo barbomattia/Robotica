@@ -39,11 +39,17 @@ struct \mbox{\hyperlink{structPoint}{Point}}
 \mbox{\Hypertarget{Kinematic_8h_afec19c1440a6ca4d037948156e4b4482}\label{Kinematic_8h_afec19c1440a6ca4d037948156e4b4482}} 
 \#define {\bfseries END\+\_\+\+EFFECTOR\+\_\+\+WIDTH}~0.\+05
 \item 
-\mbox{\Hypertarget{Kinematic_8h_a4189bc6056474373bddf078e2eb80f47}\label{Kinematic_8h_a4189bc6056474373bddf078e2eb80f47}} 
-\#define {\bfseries BLOCK\+\_\+\+WIDTH\+\_\+\+MIN}~0.\+1
+\mbox{\Hypertarget{Kinematic_8h_a291ca4a87d4f7f0509a37e2e9efd66d0}\label{Kinematic_8h_a291ca4a87d4f7f0509a37e2e9efd66d0}} 
+\#define {\bfseries ONE\+\_\+\+WIDTH\+\_\+\+BLOCK}~0.\+031
+\item 
+\mbox{\Hypertarget{Kinematic_8h_adf1f1cc17ca0cebd4a72e81a7c231c4f}\label{Kinematic_8h_adf1f1cc17ca0cebd4a72e81a7c231c4f}} 
+\#define {\bfseries TWO\+\_\+\+WIDTH\+\_\+\+BLOCK}~0.\+063
 \item 
 \mbox{\Hypertarget{Kinematic_8h_a23780492fbcc91a51eba6ff4fc1e4836}\label{Kinematic_8h_a23780492fbcc91a51eba6ff4fc1e4836}} 
-\#define {\bfseries DER\+\_\+H}~0.\+0001
+\#define {\bfseries DER\+\_\+H}~0.\+04
+\item 
+\mbox{\Hypertarget{Kinematic_8h_a307c72605e3713972b4f4fb2d53ea20e}\label{Kinematic_8h_a307c72605e3713972b4f4fb2d53ea20e}} 
+\#define {\bfseries K0}~0.\+01
 \item 
 \mbox{\Hypertarget{Kinematic_8h_ae4f594e91188af03ab1cade788f8de3c}\label{Kinematic_8h_ae4f594e91188af03ab1cade788f8de3c}} 
 \#define {\bfseries \+\_\+\+\_\+\+KINEMATIC\+\_\+\+H\+\_\+\+\_\+}
@@ -52,15 +58,13 @@ struct \mbox{\hyperlink{structPoint}{Point}}
 \begin{DoxyCompactItemize}
 \item 
 int \mbox{\hyperlink{Kinematic_8h_ad5755de87d8b9181d2d4f9915dd918b4}{random}} (int min, int max)
-\begin{DoxyCompactList}\small\item\em return a random int value between the lower and the higher values \end{DoxyCompactList}\item 
+\begin{DoxyCompactList}\small\item\em Return a random int value between the lower and the higher values. \end{DoxyCompactList}\item 
 \mbox{\hyperlink{structCinDir}{Cin\+Dir}} \mbox{\hyperlink{Kinematic_8h_a022ae771b6ad351f574783a99a1eec3d}{Cinematica\+Diretta}} (const Eigen\+::\+Vector\+Xd \&Th, double scale\+Factor)
-\begin{DoxyCompactList}\small\item\em Function that calculates the direct kinematics and returns a vector containing the position reached by the end effector and a matrix corresponding to the orientation of the end effector in the world frame. \end{DoxyCompactList}\item 
-\mbox{\Hypertarget{Kinematic_8h_a1a85bf779278fbb52c9e9f71c5cb5623}\label{Kinematic_8h_a1a85bf779278fbb52c9e9f71c5cb5623}} 
-Eigen\+::\+Matrix\+Xd {\bfseries cinematica\+Inversa} (Eigen\+::\+Vector3d p60, Eigen\+::\+Matrix3d R60, double scale\+Factor)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_a1d89d08f64cf77eb31bb8bb577ebcaca}\label{Kinematic_8h_a1d89d08f64cf77eb31bb8bb577ebcaca}} 
-Eigen\+::\+Matrix\+Xd {\bfseries ur5\+Jac} (const Eigen\+::\+Vector\+Xd \&Th, double scale\+Factor)
-\item 
+\begin{DoxyCompactList}\small\item\em Computes the forward kinematics for a robotic arm using Denavit-\/\+Hartenberg parameters. \end{DoxyCompactList}\item 
+Eigen\+::\+Matrix\+Xd \mbox{\hyperlink{Kinematic_8h_a1a85bf779278fbb52c9e9f71c5cb5623}{cinematica\+Inversa}} (Eigen\+::\+Vector3d p60, Eigen\+::\+Matrix3d R60, double scale\+Factor)
+\begin{DoxyCompactList}\small\item\em Computes the inverse kinematics for a robotic arm given the end effector position and orientation. \end{DoxyCompactList}\item 
+Eigen\+::\+Matrix\+Xd \mbox{\hyperlink{Kinematic_8h_a1d89d08f64cf77eb31bb8bb577ebcaca}{ur5\+Jac}} (const Eigen\+::\+Vector\+Xd \&Th, double scale\+Factor)
+\begin{DoxyCompactList}\small\item\em Computes the Jacobian matrix for the UR5 robotic arm. \end{DoxyCompactList}\item 
 \mbox{\Hypertarget{Kinematic_8h_abbde76b0417af102832d5e76fcbe3a63}\label{Kinematic_8h_abbde76b0417af102832d5e76fcbe3a63}} 
 Eigen\+::\+Quaterniond {\bfseries quatconj} (const Eigen\+::\+Quaterniond \&q)
 \item 
@@ -70,60 +74,46 @@ Eigen\+::\+Quaterniond {\bfseries quatmultiply} (const Eigen\+::\+Quaterniond \&
 \mbox{\Hypertarget{Kinematic_8h_a68570f4c1662cff0cc6b21013163450f}\label{Kinematic_8h_a68570f4c1662cff0cc6b21013163450f}} 
 Eigen\+::\+Vector3d {\bfseries parts} (const Eigen\+::\+Quaterniond \&q)
 \item 
-\mbox{\Hypertarget{Kinematic_8h_aff2bfd339ab21d80bbb9ff75d0704f77}\label{Kinematic_8h_aff2bfd339ab21d80bbb9ff75d0704f77}} 
-Eigen\+::\+Matrix\+Xd {\bfseries damped\+Pseudo\+Inverse} (const Eigen\+::\+Matrix\+Xd \&J)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_a48d2a0fdb8861b570671234d0a31f698}\label{Kinematic_8h_a48d2a0fdb8861b570671234d0a31f698}} 
-Eigen\+::\+Vector\+Xd {\bfseries inv\+Diff\+Kinemati\+Control\+Complete\+Quaternion} (const Eigen\+::\+Vector\+Xd \&q, const Eigen\+::\+Vector\+Xd \&xe, const Eigen\+::\+Vector\+Xd \&xd, const Eigen\+::\+Vector\+Xd \&vd, const Eigen\+::\+Vector\+Xd \&omegad, const Eigen\+::\+Quaterniond \&qe, const Eigen\+::\+Quaterniond \&qd, const Eigen\+::\+Matrix\+Xd \&Kp, const Eigen\+::\+Matrix\+Xd \&Kq, double scale\+Factor, std\+::ofstream \&output\+File)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_a764d0200f6a88f8746d0e8d016bf3106}\label{Kinematic_8h_a764d0200f6a88f8746d0e8d016bf3106}} 
-Eigen\+::\+Matrix\+Xd {\bfseries pd} (double tb, double Tf, Eigen\+::\+Matrix\+Xd xe0, Eigen\+::\+Matrix\+Xd xef)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_ad36b6bbec8ef8707e24b7176c790d553}\label{Kinematic_8h_ad36b6bbec8ef8707e24b7176c790d553}} 
-Eigen\+::\+Matrix\+Xd {\bfseries phid} (double tb, double Tf, Eigen\+::\+Matrix\+Xd phief, Eigen\+::\+Matrix\+Xd phie0)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_ac7f4de83c93ccc4ffa187ac5282990b5}\label{Kinematic_8h_ac7f4de83c93ccc4ffa187ac5282990b5}} 
-Eigen\+::\+Quaterniond {\bfseries qd} (double tb, double Tf, Eigen\+::\+Quaterniond q0, Eigen\+::\+Quaterniond qf)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_a56ccf6005b49d2817232a5abdf36946b}\label{Kinematic_8h_a56ccf6005b49d2817232a5abdf36946b}} 
-Eigen\+::\+Matrix3d {\bfseries euler2\+Rotation\+Matrix} (const Eigen\+::\+Vector3d \&euler\+\_\+angles, const std\+::string \&order)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_aab0118437a5555eb3e17f9dc9ba5c8ec}\label{Kinematic_8h_aab0118437a5555eb3e17f9dc9ba5c8ec}} 
-Eigen\+::\+Matrix\+Xd {\bfseries inv\+Diff\+Kinematic\+Control\+Sim\+Complete\+Quaternion} (const Eigen\+::\+Vector\+Xd \&TH0, const Eigen\+::\+Matrix\+Xd \&Kp, const Eigen\+::\+Matrix\+Xd \&Kq, const Eigen\+::\+Vector\+Xd \&T, double minT, double maxT, double Dt, double scale\+Factor, double Tf, Eigen\+::\+Matrix\+Xd xe0, Eigen\+::\+Matrix\+Xd xef, Eigen\+::\+Quaterniond q0, Eigen\+::\+Quaterniond qf, std\+::ofstream \&output\+File)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_a675d15dd58442ece131b3bc1f85b383a}\label{Kinematic_8h_a675d15dd58442ece131b3bc1f85b383a}} 
-\mbox{\hyperlink{structNaNColumn}{Na\+NColumn}} {\bfseries get\+First\+Column\+Without\+NaN} (Eigen\+::\+Matrix\+Xd \&input\+Matrix)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_a8d276a20223f0c5b4ab549196b167ee3}\label{Kinematic_8h_a8d276a20223f0c5b4ab549196b167ee3}} 
-std\+::string {\bfseries vector\+To\+String} (const Eigen\+::\+Vector\+Xd \&vec)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_ae639d22d5c4e2d425fb45698d4dbee86}\label{Kinematic_8h_ae639d22d5c4e2d425fb45698d4dbee86}} 
-std\+::string {\bfseries matrix3d\+To\+String} (const Eigen\+::\+Matrix3d \&mat)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_a52bafca417bc23227b885764c4180619}\label{Kinematic_8h_a52bafca417bc23227b885764c4180619}} 
-std\+::string {\bfseries matrix\+To\+String} (const Eigen\+::\+Matrix\+Xd \&matrice)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_a11ca42345e139af29a5e9f9595eeb990}\label{Kinematic_8h_a11ca42345e139af29a5e9f9595eeb990}} 
-std\+::string {\bfseries quaternio\+To\+String} (const Eigen\+::\+Quaterniond \&quaternion)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_a5b5565001339d358e4fb0e8997fbc7dd}\label{Kinematic_8h_a5b5565001339d358e4fb0e8997fbc7dd}} 
-Eigen\+::\+Matrix\+Xd {\bfseries posizione\+Giunti} (Eigen\+::\+Vector\+Xd Th, double scale\+Factor)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_a18011714c0863e8c977512c491846be4}\label{Kinematic_8h_a18011714c0863e8c977512c491846be4}} 
-bool {\bfseries check\+Collisioni} (Eigen\+::\+Matrix\+Xd Th, double offset, double dist, double scale\+Factor)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_a9ebe551bcf345cc6d35463054d139d3a}\label{Kinematic_8h_a9ebe551bcf345cc6d35463054d139d3a}} 
-Eigen\+::\+Quaterniond {\bfseries slerp\+Function} (const Eigen\+::\+Quaterniond \&q1, const Eigen\+::\+Quaterniond \&q2, double t)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_af402503c52262f913fbb08f81601b7df}\label{Kinematic_8h_af402503c52262f913fbb08f81601b7df}} 
-double {\bfseries Gripper} (std\+::string block\+Name)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_a1935633056f0551c77cf061d8628691e}\label{Kinematic_8h_a1935633056f0551c77cf061d8628691e}} 
-double {\bfseries Derivata\+Parziale\+DetJ} (const Eigen\+::\+Vector\+Xd \&q, int i, double scale\+Factor)
-\item 
-\mbox{\Hypertarget{Kinematic_8h_aef41f528669e7a45ddc9e6a6407d4f78}\label{Kinematic_8h_aef41f528669e7a45ddc9e6a6407d4f78}} 
-Eigen\+::\+Vector\+Xd {\bfseries random\+Point} (double scale\+Factor)
-\end{DoxyCompactItemize}
+Eigen\+::\+Matrix\+Xd \mbox{\hyperlink{Kinematic_8h_aff2bfd339ab21d80bbb9ff75d0704f77}{damped\+Pseudo\+Inverse}} (const Eigen\+::\+Matrix\+Xd \&J)
+\begin{DoxyCompactList}\small\item\em Computes the damped pseudo-\/inverse of a matrix using the Moore-\/\+Penrose inverse. \end{DoxyCompactList}\item 
+Eigen\+::\+Vector\+Xd \mbox{\hyperlink{Kinematic_8h_aeefa2f557a025b7de77e59ccae2d2865}{inv\+Diff\+Kinemati\+Control\+Complete\+Quaternion}} (const Eigen\+::\+Vector\+Xd \&q, const Eigen\+::\+Vector\+Xd \&xe, const Eigen\+::\+Vector\+Xd \&xd, const Eigen\+::\+Vector\+Xd \&vd, const Eigen\+::\+Vector\+Xd \&omegad, const Eigen\+::\+Quaterniond \&qe, const Eigen\+::\+Quaterniond \&\mbox{\hyperlink{Kinematic_8h_ac7f4de83c93ccc4ffa187ac5282990b5}{qd}}, const Eigen\+::\+Matrix\+Xd \&Kp, const Eigen\+::\+Matrix\+Xd \&Kq, double scale\+Factor, double exploit\+Redundancy, std\+::ofstream \&output\+File)
+\begin{DoxyCompactList}\small\item\em Computes the inverse differential kinematic control for a UR5 robotic arm with quaternion representation. \end{DoxyCompactList}\item 
+Eigen\+::\+Matrix\+Xd \mbox{\hyperlink{Kinematic_8h_a764d0200f6a88f8746d0e8d016bf3106}{pd}} (double tb, double Tf, Eigen\+::\+Matrix\+Xd xe0, Eigen\+::\+Matrix\+Xd xef)
+\begin{DoxyCompactList}\small\item\em Performs position interpolation between initial and final positions based on normalized time. \end{DoxyCompactList}\item 
+Eigen\+::\+Matrix\+Xd \mbox{\hyperlink{Kinematic_8h_ad36b6bbec8ef8707e24b7176c790d553}{phid}} (double tb, double Tf, Eigen\+::\+Matrix\+Xd phief, Eigen\+::\+Matrix\+Xd phie0)
+\begin{DoxyCompactList}\small\item\em Performs orientation interpolation between initial and final orientations based on normalized time. \end{DoxyCompactList}\item 
+Eigen\+::\+Quaterniond \mbox{\hyperlink{Kinematic_8h_ac7f4de83c93ccc4ffa187ac5282990b5}{qd}} (double tb, double Tf, Eigen\+::\+Quaterniond q0, Eigen\+::\+Quaterniond qf)
+\begin{DoxyCompactList}\small\item\em Performs quaternion interpolation between initial and final quaternions based on normalized time. \end{DoxyCompactList}\item 
+Eigen\+::\+Matrix3d \mbox{\hyperlink{Kinematic_8h_a56ccf6005b49d2817232a5abdf36946b}{euler2\+Rotation\+Matrix}} (const Eigen\+::\+Vector3d \&euler\+\_\+angles, const std\+::string \&order)
+\begin{DoxyCompactList}\small\item\em Converts Euler angles to a rotation matrix. \end{DoxyCompactList}\item 
+Eigen\+::\+Matrix\+Xd \mbox{\hyperlink{Kinematic_8h_a2564f830f67cd6a9dac12d094846db17}{inv\+Diff\+Kinematic\+Control\+Sim\+Complete\+Quaternion}} (const Eigen\+::\+Vector\+Xd \&TH0, const Eigen\+::\+Matrix\+Xd \&Kp, const Eigen\+::\+Matrix\+Xd \&Kq, const Eigen\+::\+Vector\+Xd \&T, double minT, double maxT, double Dt, double scale\+Factor, double Tf, Eigen\+::\+Matrix\+Xd xe0, Eigen\+::\+Matrix\+Xd xef, Eigen\+::\+Quaterniond q0, Eigen\+::\+Quaterniond qf, double exploit\+Redundancy, std\+::ofstream \&output\+File)
+\begin{DoxyCompactList}\small\item\em Inverse Differential Kinematic Control Simulation with Complete Quaternion. \end{DoxyCompactList}\item 
+\mbox{\hyperlink{structNaNColumn}{Na\+NColumn}} \mbox{\hyperlink{Kinematic_8h_a675d15dd58442ece131b3bc1f85b383a}{get\+First\+Column\+Without\+NaN}} (Eigen\+::\+Matrix\+Xd \&input\+Matrix)
+\begin{DoxyCompactList}\small\item\em Get the first column without NaN values in a matrix. \end{DoxyCompactList}\item 
+Eigen\+::\+Matrix\+Xd \mbox{\hyperlink{Kinematic_8h_a5b5565001339d358e4fb0e8997fbc7dd}{posizione\+Giunti}} (Eigen\+::\+Vector\+Xd Th, double scale\+Factor)
+\begin{DoxyCompactList}\small\item\em Calculate the positions of the joints given the joint angles. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{Kinematic_8h_a9a84e7fd49d299351ef6409eed59381b}{check\+Collisioni}} (Eigen\+::\+Matrix\+Xd Th, double offset, double dist, double scale\+Factor, std\+::ofstream \&output\+File)
+\begin{DoxyCompactList}\small\item\em Check for collisions between the robot arm and obstacles. \end{DoxyCompactList}\item 
+bool \mbox{\hyperlink{Kinematic_8h_a0e2ed6b1337fe29f88b4722c13b66b95}{check\+Collision\+Singularity}} (Eigen\+::\+Matrix\+Xd \&Th, double scale\+Factor, std\+::ofstream \&output\+File)
+\begin{DoxyCompactList}\small\item\em Checks for collision or singularity in a trajectory. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{Kinematic_8h_af402503c52262f913fbb08f81601b7df}{Gripper}} (std\+::string block\+Name)
+\begin{DoxyCompactList}\small\item\em Calculates the width adjustment for the gripper based on the provided block name. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{Kinematic_8h_a1935633056f0551c77cf061d8628691e}{Derivata\+Parziale\+DetJ}} (const Eigen\+::\+Vector\+Xd \&q, int i, double scale\+Factor)
+\begin{DoxyCompactList}\small\item\em Computes the partial derivative of the determinant of the Jacobian with respect to the i-\/th element of q. \end{DoxyCompactList}\item 
+Eigen\+::\+Vector\+Xd \mbox{\hyperlink{Kinematic_8h_aef41f528669e7a45ddc9e6a6407d4f78}{random\+Point}} (double scale\+Factor)
+\begin{DoxyCompactList}\small\item\em Generates a random 3D point with scaled coordinates. \end{DoxyCompactList}\item 
+Eigen\+::\+Matrix\+Xd \mbox{\hyperlink{Kinematic_8h_addbb84aa6a2c2ca3a0ab7049e79f9690}{alternative\+Trajectory}} (const Eigen\+::\+Vector\+Xd \&jointstate, const Eigen\+::\+Matrix\+Xd \&Kp, const Eigen\+::\+Matrix\+Xd \&Kq, const Eigen\+::\+Vector\+Xd \&T, double minT, double maxT, double DeltaT, double scale\+Factor, double Tf, Eigen\+::\+Matrix\+Xd xe0, Eigen\+::\+Matrix\+Xd xef, Eigen\+::\+Quaterniond q0, Eigen\+::\+Quaterniond qf, std\+::ofstream \&output\+File)
+\begin{DoxyCompactList}\small\item\em Generates an alternative trajectory with two or three steps. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{Kinematic_8h_a8d276a20223f0c5b4ab549196b167ee3}{vector\+To\+String}} (const Eigen\+::\+Vector\+Xd \&vec)
+\begin{DoxyCompactList}\small\item\em Convert a Eigen\+::\+Vector\+Xd to a string. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{Kinematic_8h_ae639d22d5c4e2d425fb45698d4dbee86}{matrix3d\+To\+String}} (const Eigen\+::\+Matrix3d \&mat)
+\begin{DoxyCompactList}\small\item\em Convert an Eigen\+::\+Matrix3d to a string. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{Kinematic_8h_a52bafca417bc23227b885764c4180619}{matrix\+To\+String}} (const Eigen\+::\+Matrix\+Xd \&matrice)
+\begin{DoxyCompactList}\small\item\em Convert an Eigen\+::\+Matrix\+Xd to a string. \end{DoxyCompactList}\item 
+std\+::string \mbox{\hyperlink{Kinematic_8h_a11ca42345e139af29a5e9f9595eeb990}{quaternio\+To\+String}} (const Eigen\+::\+Quaterniond \&quaternion)
+\begin{DoxyCompactList}\small\item\em Convert an Eigen\+::\+Quaterniond to a string. \end{DoxyCompactList}\item 
+Eigen\+::\+Vector\+Xd \mbox{\hyperlink{Kinematic_8h_a8f82a61916ec40bb9c84ee2b9e9ee7b8}{w\+Derived}} (const Eigen\+::\+Vector\+Xd \&q, double scale\+Factor)
+\begin{DoxyCompactList}\small\item\em Computes the derivative of a function w(q) with respect to each element of q using the chain rule. \end{DoxyCompactList}\end{DoxyCompactItemize}
 
 
 \doxysubsection{Detailed Description}
@@ -138,6 +128,110 @@ Mattia Barborini, Matteo Grisenti
 
 
 \doxysubsection{Function Documentation}
+\mbox{\Hypertarget{Kinematic_8h_addbb84aa6a2c2ca3a0ab7049e79f9690}\label{Kinematic_8h_addbb84aa6a2c2ca3a0ab7049e79f9690}} 
+\index{Kinematic.h@{Kinematic.h}!alternativeTrajectory@{alternativeTrajectory}}
+\index{alternativeTrajectory@{alternativeTrajectory}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{alternativeTrajectory()}{alternativeTrajectory()}}
+{\footnotesize\ttfamily Eigen\+::\+Matrix\+Xd alternative\+Trajectory (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector\+Xd \&}]{jointstate,  }\item[{const Eigen\+::\+Matrix\+Xd \&}]{Kp,  }\item[{const Eigen\+::\+Matrix\+Xd \&}]{Kq,  }\item[{const Eigen\+::\+Vector\+Xd \&}]{T,  }\item[{double}]{minT,  }\item[{double}]{maxT,  }\item[{double}]{DeltaT,  }\item[{double}]{scale\+Factor,  }\item[{double}]{Tf,  }\item[{Eigen\+::\+Matrix\+Xd}]{xe0,  }\item[{Eigen\+::\+Matrix\+Xd}]{xef,  }\item[{Eigen\+::\+Quaterniond}]{q0,  }\item[{Eigen\+::\+Quaterniond}]{qf,  }\item[{std\+::ofstream \&}]{output\+File }\end{DoxyParamCaption})}
+
+
+
+Generates an alternative trajectory with two or three steps. 
+
+This function generates an alternative trajectory with either two or three steps depending on whether the conditions for a two-\/step trajectory are met or not.
+
+For a two-\/step trajectory\+: finds a middle point based on the current joint state or generates a random point, calculates the arm configurations (Th1 and Th2) to reach the middle point and the final point, checks for collision and singularity in each configuration.
+
+For a three-\/step trajectory\+: attempts to generate a trajectory by considering three intermediate points, calculates the arm configurations (Th1, Th2, and Th3) to reach each intermediate point and the final point, checks for collision and singularity in each configuration.
+
+If a valid trajectory is found, it concatenates the arm configurations into a single matrix and returns it. Otherwise, it returns a matrix with a single entry indicating failure.
+
+
+\begin{DoxyParams}{Parameters}
+{\em jointstate} & The current joint state of the robot. \\
+\hline
+{\em Kp} & The proportional gains matrix for the inverse kinematics controller. \\
+\hline
+{\em Kq} & The derivative gains matrix for the inverse kinematics controller. \\
+\hline
+{\em T} & The joint torque limits. \\
+\hline
+{\em minT} & The minimum torque limit. \\
+\hline
+{\em maxT} & The maximum torque limit. \\
+\hline
+{\em DeltaT} & The time step for trajectory generation. \\
+\hline
+{\em scale\+Factor} & The scaling factor applied to the trajectory and joint positions. \\
+\hline
+{\em Tf} & The final time for trajectory execution. \\
+\hline
+{\em xe0} & The initial end effector position. \\
+\hline
+{\em xef} & The final end effector position. \\
+\hline
+{\em q0} & The initial orientation quaternion. \\
+\hline
+{\em qf} & The final orientation quaternion. \\
+\hline
+{\em output\+File} & Reference to the output file stream to log trajectory generation information.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A matrix containing the generated arm configurations for the alternative trajectory. If a valid trajectory is founf, for a two-\/step trajectory\+: A matrix with 200 rows and 6 columns containing Th1 and Th2. For a three-\/step trajectory\+: A matrix with 300 rows and 6 columns containing Th1, Th2, and Th3. If no valid trajectory is found\+: A matrix with a single entry indicating failure. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{Kinematic_8h_a9a84e7fd49d299351ef6409eed59381b}\label{Kinematic_8h_a9a84e7fd49d299351ef6409eed59381b}} 
+\index{Kinematic.h@{Kinematic.h}!checkCollisioni@{checkCollisioni}}
+\index{checkCollisioni@{checkCollisioni}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{checkCollisioni()}{checkCollisioni()}}
+{\footnotesize\ttfamily bool check\+Collisioni (\begin{DoxyParamCaption}\item[{Eigen\+::\+Matrix\+Xd}]{Th,  }\item[{double}]{offset,  }\item[{double}]{dist,  }\item[{double}]{scale\+Factor,  }\item[{std\+::ofstream \&}]{output\+File }\end{DoxyParamCaption})}
+
+
+
+Check for collisions between the robot arm and obstacles. 
+
+This function checks for collisions between the robot arm and obstacles based on the joint positions.
+
+
+\begin{DoxyParams}{Parameters}
+{\em Th} & Matrix containing joint positions \\
+\hline
+{\em offset} & Offset value for collision detection \\
+\hline
+{\em dist} & Distance of the table from the ground \\
+\hline
+{\em scale\+Factor} & Scale factor for the robot arm dimensions \\
+\hline
+{\em output\+File} & Output file stream for logging \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if collisions are detected, false otherwise 
+\end{DoxyReturn}
+\mbox{\Hypertarget{Kinematic_8h_a0e2ed6b1337fe29f88b4722c13b66b95}\label{Kinematic_8h_a0e2ed6b1337fe29f88b4722c13b66b95}} 
+\index{Kinematic.h@{Kinematic.h}!checkCollisionSingularity@{checkCollisionSingularity}}
+\index{checkCollisionSingularity@{checkCollisionSingularity}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{checkCollisionSingularity()}{checkCollisionSingularity()}}
+{\footnotesize\ttfamily bool check\+Collision\+Singularity (\begin{DoxyParamCaption}\item[{Eigen\+::\+Matrix\+Xd \&}]{Th,  }\item[{double}]{scale\+Factor,  }\item[{std\+::ofstream \&}]{output\+File }\end{DoxyParamCaption})}
+
+
+
+Checks for collision or singularity in a trajectory. 
+
+This function first checks if the trajectory has a singularity by verifying if it contains only one row. If the trajectory has only one row, indicating a singularity, it prints a message and returns true. Otherwise, it iterates through each configuration in the trajectory, obtains the joint positions, and checks for collisions. If any collision is detected, it prints a message and returns true. If no collision or singularity is found, it returns false.
+
+
+\begin{DoxyParams}{Parameters}
+{\em Th} & The trajectory represented as a matrix where each row represents a configuration. \\
+\hline
+{\em scale\+Factor} & The scaling factor applied to the trajectory and joint positions. \\
+\hline
+{\em output\+File} & Reference to the output file stream to log collision or singularity information.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A boolean value indicating whether a collision or singularity was detected. I could be true\+: Collision or singularity detected. Or false\+: No collision or singularity detected. 
+\end{DoxyReturn}
 \mbox{\Hypertarget{Kinematic_8h_a022ae771b6ad351f574783a99a1eec3d}\label{Kinematic_8h_a022ae771b6ad351f574783a99a1eec3d}} 
 \index{Kinematic.h@{Kinematic.h}!CinematicaDiretta@{CinematicaDiretta}}
 \index{CinematicaDiretta@{CinematicaDiretta}!Kinematic.h@{Kinematic.h}}
@@ -146,17 +240,462 @@ Mattia Barborini, Matteo Grisenti
 
 
 
-Function that calculates the direct kinematics and returns a vector containing the position reached by the end effector and a matrix corresponding to the orientation of the end effector in the world frame. 
+Computes the forward kinematics for a robotic arm using Denavit-\/\+Hartenberg parameters. 
+
+This function calculates the forward kinematics of a robotic arm given the joint angles and a scaling factor. It utilizes Denavit-\/\+Hartenberg parameters to define the robot\textquotesingle{}s kinematic chain.
 
 
 \begin{DoxyParams}{Parameters}
-{\em Th} & vector containing the q values ​​of the joints \\
+{\em Th} & The joint angles vector. \\
 \hline
-{\em scale\+Factor} & scale factor \\
+{\em scale\+Factor} & The scaling factor applied to the Denavit-\/\+Hartenberg parameters. \\
 \hline
 \end{DoxyParams}
 \begin{DoxyReturn}{Returns}
-\mbox{\hyperlink{structCinDir}{Cin\+Dir}} 
+A \mbox{\hyperlink{structCinDir}{Cin\+Dir}} object containing the position and orientation of the end effector.
+\end{DoxyReturn}
+The function initializes the DH parameters A, D, and Alpha of the robot arm and computes the transformation matrices for each link using the provided joint angles and DH parameters. It then calculates the final transformation matrix representing the end effector\textquotesingle{}s position and orientation.
+
+The transformation matrices are computed using the provided joint angles, DH parameters, and a given scaling factor.
+
+\begin{DoxyNote}{Note}
+This function assumes rotational joints only. 
+
+The joint angles vector Th should have a size of 6, representing the angles for each joint. 
+\end{DoxyNote}
+\mbox{\Hypertarget{Kinematic_8h_a1a85bf779278fbb52c9e9f71c5cb5623}\label{Kinematic_8h_a1a85bf779278fbb52c9e9f71c5cb5623}} 
+\index{Kinematic.h@{Kinematic.h}!cinematicaInversa@{cinematicaInversa}}
+\index{cinematicaInversa@{cinematicaInversa}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{cinematicaInversa()}{cinematicaInversa()}}
+{\footnotesize\ttfamily Eigen\+::\+Matrix\+Xd cinematica\+Inversa (\begin{DoxyParamCaption}\item[{Eigen\+::\+Vector3d}]{p60,  }\item[{Eigen\+::\+Matrix3d}]{R60,  }\item[{double}]{scale\+Factor }\end{DoxyParamCaption})}
+
+
+
+Computes the inverse kinematics for a robotic arm given the end effector position and orientation. 
+
+This function calculates the inverse kinematics of a robotic arm to determine the joint angles required to achieve a specific end effector position and orientation.
+
+
+\begin{DoxyParams}{Parameters}
+{\em p60} & The position vector of the end effector. \\
+\hline
+{\em R60} & The orientation matrix of the end effector. \\
+\hline
+{\em scale\+Factor} & The scaling factor applied to the Denavit-\/\+Hartenberg parameters. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A matrix containing the joint angles configuration for the robotic arm.
+\end{DoxyReturn}
+The function initializes the DH parameters A, D, and Alpha of the robot arm and computes the joint angles required to achieve the given end effector position and orientation.
+
+The joint angles are calculated based on the provided end effector position, orientation, and scaling factor.
+
+\begin{DoxyNote}{Note}
+This function assumes rotational joints only. 
+
+The input position vector p60 should have three elements representing x, y, and z coordinates respectively. 
+
+The input orientation matrix R60 should be a 3x3 rotation matrix representing the end effector\textquotesingle{}s orientation. 
+
+The returned matrix Th contains the joint angles for the robot arm in an 6x8 configuration, each column represents a specific joint angle configuration, and each row represents a specific joint angle for the respective column. 
+\end{DoxyNote}
+\mbox{\Hypertarget{Kinematic_8h_aff2bfd339ab21d80bbb9ff75d0704f77}\label{Kinematic_8h_aff2bfd339ab21d80bbb9ff75d0704f77}} 
+\index{Kinematic.h@{Kinematic.h}!dampedPseudoInverse@{dampedPseudoInverse}}
+\index{dampedPseudoInverse@{dampedPseudoInverse}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{dampedPseudoInverse()}{dampedPseudoInverse()}}
+{\footnotesize\ttfamily Eigen\+::\+Matrix\+Xd damped\+Pseudo\+Inverse (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Matrix\+Xd \&}]{J }\end{DoxyParamCaption})}
+
+
+
+Computes the damped pseudo-\/inverse of a matrix using the Moore-\/\+Penrose inverse. 
+
+This function calculates the damped pseudo-\/inverse of a matrix J using the Moore-\/\+Penrose inverse, with an additional damping factor added to the diagonal elements of the product J $\ast$ J$^\wedge$T before inversion.
+
+
+\begin{DoxyParams}{Parameters}
+{\em J} & The matrix for which the damped pseudo-\/inverse is computed. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The damped pseudo-\/inverse of the input matrix J.
+\end{DoxyReturn}
+The damped pseudo-\/inverse is useful for computing the pseudo-\/inverse of matrices that are close to singular, where regularization helps stabilize the inversion process.
+
+\begin{DoxyNote}{Note}
+This function assumes that the input matrix J is not necessarily square and may be of full rank or rank-\/deficient. 
+
+The damping factor is a small positive scalar added to the diagonal elements of J $\ast$ J$^\wedge$T before inversion. 
+
+The returned pseudo-\/inverse matrix has the dimensions of J$^\wedge$T, i.\+e., J.\+columns() x J.\+rows(). 
+\end{DoxyNote}
+\mbox{\Hypertarget{Kinematic_8h_a1935633056f0551c77cf061d8628691e}\label{Kinematic_8h_a1935633056f0551c77cf061d8628691e}} 
+\index{Kinematic.h@{Kinematic.h}!DerivataParzialeDetJ@{DerivataParzialeDetJ}}
+\index{DerivataParzialeDetJ@{DerivataParzialeDetJ}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{DerivataParzialeDetJ()}{DerivataParzialeDetJ()}}
+{\footnotesize\ttfamily double Derivata\+Parziale\+DetJ (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector\+Xd \&}]{q,  }\item[{int}]{i,  }\item[{double}]{scale\+Factor }\end{DoxyParamCaption})}
+
+
+
+Computes the partial derivative of the determinant of the Jacobian with respect to the i-\/th element of q. 
+
+This function calculates the partial derivative of the determinant of the Jacobian with respect to the i-\/th element of q. It approximates the derivative using the definition of a derivative and a small increment defined in \mbox{\hyperlink{Kinematic_8h}{Kinematic.\+h}}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em q} & The vector of joint positions. \\
+\hline
+{\em i} & The index of the element of q with respect to which the derivative is computed. \\
+\hline
+{\em scale\+Factor} & The scaling factor applied to the UR5 parameters. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The partial derivative of the determinant of the Jacobian with respect to the i-\/th element of q.
+\end{DoxyReturn}
+This function calculates an approximation of the derivative by incrementing the i-\/th element of q by a small value h, computing the Jacobians J(q) and J(q + h), and then applying the definition of a derivative.
+
+\begin{DoxyNote}{Note}
+This function assumes that the input vector q represents the joint positions of the UR5 robotic arm. 
+
+The small increment value h is defined in the \mbox{\hyperlink{Kinematic_8h}{Kinematic.\+h}} header file. 
+\end{DoxyNote}
+\mbox{\Hypertarget{Kinematic_8h_a56ccf6005b49d2817232a5abdf36946b}\label{Kinematic_8h_a56ccf6005b49d2817232a5abdf36946b}} 
+\index{Kinematic.h@{Kinematic.h}!euler2RotationMatrix@{euler2RotationMatrix}}
+\index{euler2RotationMatrix@{euler2RotationMatrix}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{euler2RotationMatrix()}{euler2RotationMatrix()}}
+{\footnotesize\ttfamily Eigen\+::\+Matrix3d euler2\+Rotation\+Matrix (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector3d \&}]{euler\+\_\+angles,  }\item[{const std\+::string \&}]{order }\end{DoxyParamCaption})}
+
+
+
+Converts Euler angles to a rotation matrix. 
+
+This function converts Euler angles specified in radians to a rotation matrix based on the specified order of rotations.
+
+
+\begin{DoxyParams}{Parameters}
+{\em euler\+\_\+angles} & The Euler angles in radians (in the order specified by the \textquotesingle{}order\textquotesingle{} parameter). \\
+\hline
+{\em order} & The order of rotations (\textquotesingle{}XYZ\textquotesingle{} or \textquotesingle{}ZYX\textquotesingle{}). \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The rotation matrix corresponding to the given Euler angles and rotation order.
+\end{DoxyReturn}
+The function constructs the rotation matrix based on the given Euler angles and rotation order. It supports two commonly used rotation orders\+:
+\begin{DoxyItemize}
+\item \textquotesingle{}XYZ\textquotesingle{}\+: Rotation about the X-\/axis followed by rotation about the Y-\/axis followed by rotation about the Z-\/axis.
+\item \textquotesingle{}ZYX\textquotesingle{}\+: Rotation about the Z-\/axis followed by rotation about the Y-\/axis followed by rotation about the X-\/axis. XYZ rotation will always be used in the code, however during the translation phase from Matlab code to C++ we preferred to remain faithful to the original Matlab function, so as not to have problems for any future implementation
+\end{DoxyItemize}
+
+If the provided rotation order is not supported, the function throws an invalid\+\_\+argument exception.
+
+\begin{DoxyNote}{Note}
+This function assumes that Euler angles are specified in radians. 
+\end{DoxyNote}
+\mbox{\Hypertarget{Kinematic_8h_a675d15dd58442ece131b3bc1f85b383a}\label{Kinematic_8h_a675d15dd58442ece131b3bc1f85b383a}} 
+\index{Kinematic.h@{Kinematic.h}!getFirstColumnWithoutNaN@{getFirstColumnWithoutNaN}}
+\index{getFirstColumnWithoutNaN@{getFirstColumnWithoutNaN}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{getFirstColumnWithoutNaN()}{getFirstColumnWithoutNaN()}}
+{\footnotesize\ttfamily \mbox{\hyperlink{structNaNColumn}{Na\+NColumn}} get\+First\+Column\+Without\+NaN (\begin{DoxyParamCaption}\item[{Eigen\+::\+Matrix\+Xd \&}]{input\+Matrix }\end{DoxyParamCaption})}
+
+
+
+Get the first column without NaN values in a matrix. 
+
+This function returns the first column in the input matrix that does not contain any NaN values.
+
+
+\begin{DoxyParams}{Parameters}
+{\em input\+Matrix} & The input matrix \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A \mbox{\hyperlink{structNaNColumn}{Na\+NColumn}} struct containing the first column without NaN values and a flag indicating if such a column was found
+\end{DoxyReturn}
+The function iterates over each column of the input matrix and checks if it contains any NaN values. If a column without NaN values is found, it returns that column and sets all its elements to NaN in the input matrix. If no valid configuration is found, it returns an empty \mbox{\hyperlink{structNaNColumn}{Na\+NColumn}} struct with the flag set to false. \mbox{\Hypertarget{Kinematic_8h_af402503c52262f913fbb08f81601b7df}\label{Kinematic_8h_af402503c52262f913fbb08f81601b7df}} 
+\index{Kinematic.h@{Kinematic.h}!Gripper@{Gripper}}
+\index{Gripper@{Gripper}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{Gripper()}{Gripper()}}
+{\footnotesize\ttfamily double Gripper (\begin{DoxyParamCaption}\item[{std\+::string}]{block\+Name }\end{DoxyParamCaption})}
+
+
+
+Calculates the width adjustment for the gripper based on the provided block name. 
+
+This function determines the gripper width adjustment according to the specified block name. If the block name matches any in the One\+Width vector, it computes half the difference between the end effector width and the width of a single-\/width block. If it matches any in the Two\+Width vector, it computes half the difference between the end effector width and the width of a double-\/width block. If the provided block name does not match any predefined block names, it prints a message indicating an unrecognized block name.
+
+
+\begin{DoxyParams}{Parameters}
+{\em block\+Name} & The name of the block for which the gripper width adjustment is calculated.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The width adjustment for the gripper. If the block name is recognized\+: for single-\/width blocks\+: half the difference between the end effector width and the width of a single-\/width block. For double-\/width blocks\+: half the difference between the end effector widt and the width of a double-\/width block. If the block name is unrecognized returns 0. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{Kinematic_8h_a2564f830f67cd6a9dac12d094846db17}\label{Kinematic_8h_a2564f830f67cd6a9dac12d094846db17}} 
+\index{Kinematic.h@{Kinematic.h}!invDiffKinematicControlSimCompleteQuaternion@{invDiffKinematicControlSimCompleteQuaternion}}
+\index{invDiffKinematicControlSimCompleteQuaternion@{invDiffKinematicControlSimCompleteQuaternion}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{invDiffKinematicControlSimCompleteQuaternion()}{invDiffKinematicControlSimCompleteQuaternion()}}
+{\footnotesize\ttfamily Eigen\+::\+Matrix\+Xd inv\+Diff\+Kinematic\+Control\+Sim\+Complete\+Quaternion (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector\+Xd \&}]{TH0,  }\item[{const Eigen\+::\+Matrix\+Xd \&}]{Kp,  }\item[{const Eigen\+::\+Matrix\+Xd \&}]{Kq,  }\item[{const Eigen\+::\+Vector\+Xd \&}]{T,  }\item[{double}]{minT,  }\item[{double}]{maxT,  }\item[{double}]{Dt,  }\item[{double}]{scale\+Factor,  }\item[{double}]{Tf,  }\item[{Eigen\+::\+Matrix\+Xd}]{xe0,  }\item[{Eigen\+::\+Matrix\+Xd}]{xef,  }\item[{Eigen\+::\+Quaterniond}]{q0,  }\item[{Eigen\+::\+Quaterniond}]{qf,  }\item[{double}]{exploit\+Redundancy,  }\item[{std\+::ofstream \&}]{output\+File }\end{DoxyParamCaption})}
+
+
+
+Inverse Differential Kinematic Control Simulation with Complete Quaternion. 
+
+This function performs inverse differential kinematic control simulation using complete quaternions.
+
+
+\begin{DoxyParams}{Parameters}
+{\em TH0} & Initial joint configurations. \\
+\hline
+{\em Kp} & Linear error matrix. \\
+\hline
+{\em Kq} & Quaternion error matrix. \\
+\hline
+{\em T} & Vector containing time steps. \\
+\hline
+{\em minT} & Minimum number of time steps. \\
+\hline
+{\em maxT} & Maximum number of time steps. \\
+\hline
+{\em Dt} & Time step size. \\
+\hline
+{\em scale\+Factor} & Scale factor. \\
+\hline
+{\em Tf} & Final time of motion. \\
+\hline
+{\em xe0} & Initial end-\/effector position. \\
+\hline
+{\em xef} & Final end-\/effector position. \\
+\hline
+{\em q0} & Initial end-\/effector quaternion. \\
+\hline
+{\em qf} & Final end-\/effector quaternion. \\
+\hline
+{\em exploit\+Redundancy} & Flag indicating whether to exploit redundancy. \\
+\hline
+{\em output\+File} & Output file stream to write the results. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Matrix containing joint configurations for each time step.
+\end{DoxyReturn}
+This function simulates the inverse differential kinematic control of a robotic manipulator using complete quaternions. It takes the initial joint configurations, linear and quaternion error matrices, time steps, minimum and maximum number of time steps, time step size, scale factor, final time of motion, initial and final end-\/effector positions and quaternions, and a flag indicating whether to exploit redundancy. It returns a matrix containing joint configurations for each time step.
+
+The function iterates over each time step, computes the end-\/effector position and orientation at the beginning of the step using forward kinematics, calculates the desired end-\/effector position and orientation changes within the current time step, determines the desired end-\/effector linear and angular velocities, computes the inverse differential kinematic control to obtain joint velocity changes, updates the joint configurations for the next time step, and stores the joint configurations in a matrix. If a singularity is encountered during the computation, a 1x1 matrix containing a zero is returned.
+
+\begin{DoxyNote}{Note}
+The output joint configurations are stored in a matrix, where each row corresponds to a time step and contains the joint configurations for that step. 
+\end{DoxyNote}
+\mbox{\Hypertarget{Kinematic_8h_aeefa2f557a025b7de77e59ccae2d2865}\label{Kinematic_8h_aeefa2f557a025b7de77e59ccae2d2865}} 
+\index{Kinematic.h@{Kinematic.h}!invDiffKinematiControlCompleteQuaternion@{invDiffKinematiControlCompleteQuaternion}}
+\index{invDiffKinematiControlCompleteQuaternion@{invDiffKinematiControlCompleteQuaternion}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{invDiffKinematiControlCompleteQuaternion()}{invDiffKinematiControlCompleteQuaternion()}}
+{\footnotesize\ttfamily Eigen\+::\+Vector\+Xd inv\+Diff\+Kinemati\+Control\+Complete\+Quaternion (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector\+Xd \&}]{q,  }\item[{const Eigen\+::\+Vector\+Xd \&}]{xe,  }\item[{const Eigen\+::\+Vector\+Xd \&}]{xd,  }\item[{const Eigen\+::\+Vector\+Xd \&}]{vd,  }\item[{const Eigen\+::\+Vector\+Xd \&}]{omegad,  }\item[{const Eigen\+::\+Quaterniond \&}]{qe,  }\item[{const Eigen\+::\+Quaterniond \&}]{qd,  }\item[{const Eigen\+::\+Matrix\+Xd \&}]{Kp,  }\item[{const Eigen\+::\+Matrix\+Xd \&}]{Kq,  }\item[{double}]{scale\+Factor,  }\item[{double}]{exploit\+Redundancy,  }\item[{std\+::ofstream \&}]{output\+File }\end{DoxyParamCaption})}
+
+
+
+Computes the inverse differential kinematic control for a UR5 robotic arm with quaternion representation. 
+
+This function calculates the inverse differential kinematic control for a UR5 robotic arm with quaternion representation. It computes the joint velocity vector dotQ required to move the end effector from its current configuration xe to the desired configuration xd.
+
+
+\begin{DoxyParams}{Parameters}
+{\em q} & The vector of current joint positions. \\
+\hline
+{\em xe} & The current configuration of the end effector. \\
+\hline
+{\em xd} & The desired configuration of the end effector. \\
+\hline
+{\em vd} & The desired linear velocity of the end effector. \\
+\hline
+{\em omegad} & The desired angular velocity of the end effector. \\
+\hline
+{\em qe} & The current quaternion configuration of the end effector. \\
+\hline
+{\em qd} & The desired quaternion configuration of the end effector. \\
+\hline
+{\em Kp} & The linear error matrix. \\
+\hline
+{\em Kq} & The quaternion error matrix. \\
+\hline
+{\em scale\+Factor} & The scaling factor applied to the UR5 parameters. \\
+\hline
+{\em exploit\+Redundancy} & Flag indicating whether to exploit redundancy (true) or not (false). \\
+\hline
+{\em output\+File} & The output stream to write debug information. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The joint velocity vector dotQ.
+\end{DoxyReturn}
+This function calculates the inverse differential kinematic control to generate joint velocities for the UR5 robotic arm. It first computes the Jacobian matrix J for the current arm configuration, then calculates the orientation error and the determinant of J. Depending on the value of exploit\+Redundancy and the singularity condition, it either computes dotQ directly using the inverse Jacobian, or applies damped pseudo-\/inverse if near singularity, or returns a singular dotQ vector.
+
+\begin{DoxyNote}{Note}
+This function assumes that the UR5 robotic arm is represented with quaternion orientation. 
+
+The output debug information is written to the specified output\+File stream. 
+\end{DoxyNote}
+\mbox{\Hypertarget{Kinematic_8h_ae639d22d5c4e2d425fb45698d4dbee86}\label{Kinematic_8h_ae639d22d5c4e2d425fb45698d4dbee86}} 
+\index{Kinematic.h@{Kinematic.h}!matrix3dToString@{matrix3dToString}}
+\index{matrix3dToString@{matrix3dToString}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{matrix3dToString()}{matrix3dToString()}}
+{\footnotesize\ttfamily std\+::string matrix3d\+To\+String (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Matrix3d \&}]{mat }\end{DoxyParamCaption})}
+
+
+
+Convert an Eigen\+::\+Matrix3d to a string. 
+
+This function converts an Eigen\+::\+Matrix3d to a string, with each element separated by a space and each row separated by a newline character.
+
+
+\begin{DoxyParams}{Parameters}
+{\em mat} & The Eigen\+::\+Matrix3d to convert \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A string representation of the Eigen\+::\+Matrix3d 
+\end{DoxyReturn}
+\mbox{\Hypertarget{Kinematic_8h_a52bafca417bc23227b885764c4180619}\label{Kinematic_8h_a52bafca417bc23227b885764c4180619}} 
+\index{Kinematic.h@{Kinematic.h}!matrixToString@{matrixToString}}
+\index{matrixToString@{matrixToString}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{matrixToString()}{matrixToString()}}
+{\footnotesize\ttfamily std\+::string matrix\+To\+String (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Matrix\+Xd \&}]{matrice }\end{DoxyParamCaption})}
+
+
+
+Convert an Eigen\+::\+Matrix\+Xd to a string. 
+
+This function converts an Eigen\+::\+Matrix\+Xd to a string, with each element separated by a space and each row separated by a newline character.
+
+
+\begin{DoxyParams}{Parameters}
+{\em mat} & The Eigen\+::\+Matrix\+Xd to convert \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A string representation of the Eigen\+::\+Matrix\+Xd 
+\end{DoxyReturn}
+\mbox{\Hypertarget{Kinematic_8h_a764d0200f6a88f8746d0e8d016bf3106}\label{Kinematic_8h_a764d0200f6a88f8746d0e8d016bf3106}} 
+\index{Kinematic.h@{Kinematic.h}!pd@{pd}}
+\index{pd@{pd}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{pd()}{pd()}}
+{\footnotesize\ttfamily Eigen\+::\+Matrix\+Xd pd (\begin{DoxyParamCaption}\item[{double}]{tb,  }\item[{double}]{Tf,  }\item[{Eigen\+::\+Matrix\+Xd}]{xe0,  }\item[{Eigen\+::\+Matrix\+Xd}]{xef }\end{DoxyParamCaption})}
+
+
+
+Performs position interpolation between initial and final positions based on normalized time. 
+
+This function interpolates between initial and final positions based on the normalized time parameter \textquotesingle{}t\textquotesingle{} between 0 (start of motion) and 1 (end of motion).
+
+
+\begin{DoxyParams}{Parameters}
+{\em tb} & The current time instant. \\
+\hline
+{\em Tf} & The total duration of the motion. \\
+\hline
+{\em xe0} & The initial position matrix. \\
+\hline
+{\em xef} & The final position matrix. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The interpolated position matrix at the current time instant.
+\end{DoxyReturn}
+If the current time \textquotesingle{}t\textquotesingle{} exceeds 1, indicating that the current time has surpassed the total duration, the function returns the final position matrix \textquotesingle{}xef\textquotesingle{}. Otherwise, it performs linear interpolation between \textquotesingle{}xe0\textquotesingle{} and \textquotesingle{}xef\textquotesingle{} based on \textquotesingle{}t\textquotesingle{}. \mbox{\Hypertarget{Kinematic_8h_ad36b6bbec8ef8707e24b7176c790d553}\label{Kinematic_8h_ad36b6bbec8ef8707e24b7176c790d553}} 
+\index{Kinematic.h@{Kinematic.h}!phid@{phid}}
+\index{phid@{phid}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{phid()}{phid()}}
+{\footnotesize\ttfamily Eigen\+::\+Matrix\+Xd phid (\begin{DoxyParamCaption}\item[{double}]{tb,  }\item[{double}]{Tf,  }\item[{Eigen\+::\+Matrix\+Xd}]{phief,  }\item[{Eigen\+::\+Matrix\+Xd}]{phie0 }\end{DoxyParamCaption})}
+
+
+
+Performs orientation interpolation between initial and final orientations based on normalized time. 
+
+This function interpolates between initial and final orientations based on the normalized time parameter \textquotesingle{}t\textquotesingle{} between 0 (start of motion) and 1 (end of motion).
+
+
+\begin{DoxyParams}{Parameters}
+{\em tb} & The current time instant. \\
+\hline
+{\em Tf} & The total duration of the motion. \\
+\hline
+{\em phief} & The final orientation matrix. \\
+\hline
+{\em phie0} & The initial orientation matrix. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The interpolated orientation matrix at the current time instant.
+\end{DoxyReturn}
+If the current time \textquotesingle{}t\textquotesingle{} exceeds 1, indicating that the current time has surpassed the total duration, the function returns the final orientation matrix \textquotesingle{}phief\textquotesingle{}. Otherwise, it performs linear interpolation between \textquotesingle{}phie0\textquotesingle{} and \textquotesingle{}phief\textquotesingle{} based on \textquotesingle{}t\textquotesingle{}. \mbox{\Hypertarget{Kinematic_8h_a5b5565001339d358e4fb0e8997fbc7dd}\label{Kinematic_8h_a5b5565001339d358e4fb0e8997fbc7dd}} 
+\index{Kinematic.h@{Kinematic.h}!posizioneGiunti@{posizioneGiunti}}
+\index{posizioneGiunti@{posizioneGiunti}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{posizioneGiunti()}{posizioneGiunti()}}
+{\footnotesize\ttfamily Eigen\+::\+Matrix\+Xd posizione\+Giunti (\begin{DoxyParamCaption}\item[{Eigen\+::\+Vector\+Xd}]{Th,  }\item[{double}]{scale\+Factor }\end{DoxyParamCaption})}
+
+
+
+Calculate the positions of the joints given the joint angles. 
+
+This function calculates the positions of the joints of a robot arm given the joint angles.
+
+
+\begin{DoxyParams}{Parameters}
+{\em Th} & The vector of joint angles \\
+\hline
+{\em scale\+Factor} & The scale factor for the robot arm dimensions \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A matrix containing the positions of the joints 
+\end{DoxyReturn}
+\mbox{\Hypertarget{Kinematic_8h_ac7f4de83c93ccc4ffa187ac5282990b5}\label{Kinematic_8h_ac7f4de83c93ccc4ffa187ac5282990b5}} 
+\index{Kinematic.h@{Kinematic.h}!qd@{qd}}
+\index{qd@{qd}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{qd()}{qd()}}
+{\footnotesize\ttfamily Eigen\+::\+Quaterniond qd (\begin{DoxyParamCaption}\item[{double}]{tb,  }\item[{double}]{Tf,  }\item[{Eigen\+::\+Quaterniond}]{q0,  }\item[{Eigen\+::\+Quaterniond}]{qf }\end{DoxyParamCaption})}
+
+
+
+Performs quaternion interpolation between initial and final quaternions based on normalized time. 
+
+This function interpolates between initial and final quaternions based on the normalized time parameter \textquotesingle{}t\textquotesingle{} between 0 (start of motion) and 1 (end of motion).
+
+
+\begin{DoxyParams}{Parameters}
+{\em tb} & The current time instant. \\
+\hline
+{\em Tf} & The total duration of the motion. \\
+\hline
+{\em q0} & The initial quaternion. \\
+\hline
+{\em qf} & The final quaternion. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The interpolated quaternion at the current time instant.
+\end{DoxyReturn}
+If the current time \textquotesingle{}t\textquotesingle{} exceeds 1, indicating that the current time has surpassed the total duration, the function returns the final quaternion \textquotesingle{}qf\textquotesingle{}. Otherwise, it performs spherical linear interpolation (slerp) between \textquotesingle{}q0\textquotesingle{} and \textquotesingle{}qf\textquotesingle{} based on \textquotesingle{}t\textquotesingle{}. \mbox{\Hypertarget{Kinematic_8h_a11ca42345e139af29a5e9f9595eeb990}\label{Kinematic_8h_a11ca42345e139af29a5e9f9595eeb990}} 
+\index{Kinematic.h@{Kinematic.h}!quaternioToString@{quaternioToString}}
+\index{quaternioToString@{quaternioToString}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{quaternioToString()}{quaternioToString()}}
+{\footnotesize\ttfamily std\+::string quaternio\+To\+String (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Quaterniond \&}]{quaternion }\end{DoxyParamCaption})}
+
+
+
+Convert an Eigen\+::\+Quaterniond to a string. 
+
+This function converts an Eigen\+::\+Quaterniond to a string representation of its components, separated by commas.
+
+
+\begin{DoxyParams}{Parameters}
+{\em quaternion} & The Eigen\+::\+Quaterniond to convert \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A string representation of the Eigen\+::\+Quaterniond 
 \end{DoxyReturn}
 \mbox{\Hypertarget{Kinematic_8h_ad5755de87d8b9181d2d4f9915dd918b4}\label{Kinematic_8h_ad5755de87d8b9181d2d4f9915dd918b4}} 
 \index{Kinematic.h@{Kinematic.h}!random@{random}}
@@ -166,7 +705,7 @@ Function that calculates the direct kinematics and returns a vector containing t
 
 
 
-return a random int value between the lower and the higher values 
+Return a random int value between the lower and the higher values. 
 
 
 \begin{DoxyParams}{Parameters}
@@ -178,3 +717,103 @@ return a random int value between the lower and the higher values
 \begin{DoxyReturn}{Returns}
 int 
 \end{DoxyReturn}
+\mbox{\Hypertarget{Kinematic_8h_aef41f528669e7a45ddc9e6a6407d4f78}\label{Kinematic_8h_aef41f528669e7a45ddc9e6a6407d4f78}} 
+\index{Kinematic.h@{Kinematic.h}!randomPoint@{randomPoint}}
+\index{randomPoint@{randomPoint}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{randomPoint()}{randomPoint()}}
+{\footnotesize\ttfamily Eigen\+::\+Vector\+Xd random\+Point (\begin{DoxyParamCaption}\item[{double}]{scale\+Factor }\end{DoxyParamCaption})}
+
+
+
+Generates a random 3D point with scaled coordinates. 
+
+This function generates a random 3D point with coordinates in the range \mbox{[}-\/0.\+25, 0.\+25\mbox{]} for x, \mbox{[}-\/0.\+30, 0.\+18\mbox{]} or \mbox{[}-\/0.\+10, 0.\+10\mbox{]} for y, and \mbox{[}0.\+40, 0.\+65\mbox{]} for z.
+
+
+\begin{DoxyParams}{Parameters}
+{\em scale\+Factor} & The scaling factor applied to the generated point.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A 3D vector representing the random point with scaled coordinates. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{Kinematic_8h_a1d89d08f64cf77eb31bb8bb577ebcaca}\label{Kinematic_8h_a1d89d08f64cf77eb31bb8bb577ebcaca}} 
+\index{Kinematic.h@{Kinematic.h}!ur5Jac@{ur5Jac}}
+\index{ur5Jac@{ur5Jac}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{ur5Jac()}{ur5Jac()}}
+{\footnotesize\ttfamily Eigen\+::\+Matrix\+Xd ur5\+Jac (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector\+Xd \&}]{Th,  }\item[{double}]{scale\+Factor }\end{DoxyParamCaption})}
+
+
+
+Computes the Jacobian matrix for the UR5 robotic arm. 
+
+This function calculates the Jacobian matrix for the UR5 robotic arm given the joint angles configuration Th and a scaling factor scale\+Factor applied to the Denavit-\/\+Hartenberg parameters.
+
+
+\begin{DoxyParams}{Parameters}
+{\em Th} & The joint angles configuration of the UR5 robotic arm. \\
+\hline
+{\em scale\+Factor} & The scaling factor applied to the Denavit-\/\+Hartenberg parameters. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The Jacobian matrix for the UR5 robotic arm.
+\end{DoxyReturn}
+The Jacobian matrix provides a mapping between the joint velocities and the end effector\textquotesingle{}s linear and angular velocities.
+
+\begin{DoxyNote}{Note}
+This function assumes rotational joints only. 
+
+The input joint angles configuration Th should be a vector of length 6 representing the joint angles. 
+
+The returned Jacobian matrix J is a 6x6 matrix, each column represents the linear and angular velocities of the end effector corresponding to the respective joint, and each row represents a specific component of the end effector\textquotesingle{}s velocity. 
+\end{DoxyNote}
+\mbox{\Hypertarget{Kinematic_8h_a8d276a20223f0c5b4ab549196b167ee3}\label{Kinematic_8h_a8d276a20223f0c5b4ab549196b167ee3}} 
+\index{Kinematic.h@{Kinematic.h}!vectorToString@{vectorToString}}
+\index{vectorToString@{vectorToString}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{vectorToString()}{vectorToString()}}
+{\footnotesize\ttfamily std\+::string vector\+To\+String (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector\+Xd \&}]{vec }\end{DoxyParamCaption})}
+
+
+
+Convert a Eigen\+::\+Vector\+Xd to a string. 
+
+This function converts an Eigen\+::\+Vector\+Xd to a string, with each element separated by a space.
+
+
+\begin{DoxyParams}{Parameters}
+{\em vec} & The Eigen\+::\+Vector\+Xd to convert \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A string representation of the Eigen\+::\+Vector\+Xd 
+\end{DoxyReturn}
+\mbox{\Hypertarget{Kinematic_8h_a8f82a61916ec40bb9c84ee2b9e9ee7b8}\label{Kinematic_8h_a8f82a61916ec40bb9c84ee2b9e9ee7b8}} 
+\index{Kinematic.h@{Kinematic.h}!wDerived@{wDerived}}
+\index{wDerived@{wDerived}!Kinematic.h@{Kinematic.h}}
+\doxysubsubsection{\texorpdfstring{wDerived()}{wDerived()}}
+{\footnotesize\ttfamily Eigen\+::\+Vector\+Xd w\+Derived (\begin{DoxyParamCaption}\item[{const Eigen\+::\+Vector\+Xd \&}]{q,  }\item[{double}]{scale\+Factor }\end{DoxyParamCaption})}
+
+
+
+Computes the derivative of a function w(q) with respect to each element of q using the chain rule. 
+
+This function calculates the derivative of a function w(q) with respect to each element of q, where w(q) is derived from the Jacobian of a UR5 robotic arm with joint positions q.
+
+
+\begin{DoxyParams}{Parameters}
+{\em q} & The vector of joint positions. \\
+\hline
+{\em scale\+Factor} & The scaling factor applied to the UR5 parameters. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The vector of derivatives of w(q) with respect to each element of q.
+\end{DoxyReturn}
+This function computes the derivative using the chain rule and the determinant of the Jacobian J(q). The derivative of w(q) with respect to each element of q is obtained by multiplying a constant K with the partial derivative of the determinant of J(q) with respect to each element of q.
+
+\begin{DoxyNote}{Note}
+This function assumes that the input vector q represents the joint positions of the UR5 robotic arm. 
+
+The scaling factor is applied to the UR5 parameters before computing the Jacobian. 
+\end{DoxyNote}

@@ -8,6 +8,7 @@ int random(int min, int max){
     return rand()%(max-min+1)+min;
 }
 
+
 // CINEMATICA DIRETTA --------------------------------------------------------------------------------------------------------- 
 CinDir CinematicaDiretta(const Eigen::VectorXd& Th, double scaleFactor) {
     /* Inizializzazione dei vettori A e D e del vettore Alpha con i valori del braccio robotico:
@@ -644,7 +645,6 @@ Eigen::MatrixXd pd(double tb, double Tf, Eigen::MatrixXd xe0, Eigen::MatrixXd xe
 }
 
 
-
 // INTERPOLAZIONE LINEARE tra due ORIENTAZIONI dell'end effector su un tempo NORMALIZZATO ----------------------------------------
 Eigen::MatrixXd phid(double tb, double Tf, Eigen::MatrixXd phief, Eigen::MatrixXd phie0) {
     
@@ -857,19 +857,6 @@ NaNColumn getFirstColumnWithoutNaN(Eigen::MatrixXd& inputMatrix) {
 }
 
 
-Eigen::Quaterniond quatconj(const Eigen::Quaterniond& q) {
-    return Eigen::Quaterniond(q.w(), -q.x(), -q.y(), -q.z());
-}
-
-    
-Eigen::Quaterniond quatmultiply(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2) {
-    return q1 * q2;
-}
-
-    
-Eigen::Vector3d parts(const Eigen::Quaterniond& q) {
-    return q.vec();
-}
 
 std::string vectorToString(const Eigen::VectorXd& vec) {
     std::stringstream ss;
@@ -909,6 +896,7 @@ std::string quaternioToString(const Eigen::Quaterniond& quaternion){
     ss << quaternion.w() << ", " << quaternion.x() << ", " << quaternion.y() << ", " << quaternion.z();
     return ss.str();
 }
+
 
 Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor){
 
@@ -1033,50 +1021,45 @@ bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scal
     return result; 
 }
 
-Eigen::Quaterniond slerpFunction(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2, double t) {
-    // Normalizzazione dei quaternioni
-    Eigen::Quaterniond quat1 = q1.normalized();
-    Eigen::Quaterniond quat2 = q2.normalized();
 
-    // Calcolo del prodotto scalare tra i quaternioni
-    double dotProduct = quat1.coeffs().dot(quat2.coeffs());
+double Gripper(std::string blockName){
+    
+    double result = 0;
 
-    // Se il prodotto scalare è negativo, inverti uno dei quaternioni
-    if (dotProduct < 0) {
-        quat1.coeffs() = -quat1.coeffs();
-        dotProduct = -dotProduct;
-    }
-
-    // Calcolo dell'angolo tra i quaternioni
-    double theta = acos(dotProduct);
-    double sinTheta = sin(theta);
-
-    // Calcolo dell'interpolazione sferica
-    Eigen::Quaterniond result = Eigen::Quaterniond(
-        (sin((1 - t) * theta) / sinTheta) * quat1.coeffs() + (sin(t * theta) / sinTheta) * quat2.coeffs()
-    );
-
-    // Normalizzazione del risultato
-    return result.normalized();
-}
-
-double Gripper(std::string blockName){ 
-    bool check = false;
     std::vector<std::string> OneWidth = {
+        "X1-Y2-Z1",
+        "X1-Y3-Z2",
+        "X1-Y2-Z2-TWINFILLET",
+        "X1-Y4-Z1",
+        "X1-Y4-Z1",
+        "X1-Y3-Z2-FILLET",
+        "X1-Y1-Z2",
+        "X1-Y2-Z2",
+        "X1-Y2-Z2-CHAMFER",
+        "X1-Y4-Z2"
+    };
 
+    std::vector<std::string> TwoWidth = {
+        "X2-Y2-Z2",
+        "X2-Y2-Z2-FILLET"
     };
 
     for (const std::string& s : OneWidth) {
         if (blockName == s) {
-            check = true;
+            result = (END_EFFECTOR_WIDTH - ONE_WIDTH_BLOCK)/2.0;
         }
     }
 
-    if(check){
-        return (END_EFFECTOR_WIDTH - BLOCK_WIDTH_MIN)/2.0;
+    for (const std::string& s : TwoWidth) {
+        if (blockName == s) {
+            result =  (END_EFFECTOR_WIDTH - TWO_WIDTH_BLOCK)/2.0;
+        }
     }
 
-    return (END_EFFECTOR_WIDTH - BLOCK_WIDTH_MIN*2)/2.0;
+    if(result == 0){
+        std::cout << "nome del blocco non riconosciuto" << std::endl;
+    }
+    return result;
 }
 
 Eigen::VectorXd randomPoint(double scaleFactor){
@@ -1096,6 +1079,7 @@ Eigen::VectorXd randomPoint(double scaleFactor){
 
     return result;
 }
+
 
 
 bool checkCollisionSingularity(Eigen::MatrixXd& Th, double scaleFactor, std::ofstream& outputFile){

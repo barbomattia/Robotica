@@ -119,12 +119,18 @@ Macros</h2></td></tr>
 <tr class="memitem:afec19c1440a6ca4d037948156e4b4482"><td class="memItemLeft" align="right" valign="top"><a id="afec19c1440a6ca4d037948156e4b4482"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>END_EFFECTOR_WIDTH</b>&#160;&#160;&#160;0.05</td></tr>
 <tr class="separator:afec19c1440a6ca4d037948156e4b4482"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a4189bc6056474373bddf078e2eb80f47"><td class="memItemLeft" align="right" valign="top"><a id="a4189bc6056474373bddf078e2eb80f47"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>BLOCK_WIDTH_MIN</b>&#160;&#160;&#160;0.1</td></tr>
-<tr class="separator:a4189bc6056474373bddf078e2eb80f47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a291ca4a87d4f7f0509a37e2e9efd66d0"><td class="memItemLeft" align="right" valign="top"><a id="a291ca4a87d4f7f0509a37e2e9efd66d0"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>ONE_WIDTH_BLOCK</b>&#160;&#160;&#160;0.031</td></tr>
+<tr class="separator:a291ca4a87d4f7f0509a37e2e9efd66d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adf1f1cc17ca0cebd4a72e81a7c231c4f"><td class="memItemLeft" align="right" valign="top"><a id="adf1f1cc17ca0cebd4a72e81a7c231c4f"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>TWO_WIDTH_BLOCK</b>&#160;&#160;&#160;0.063</td></tr>
+<tr class="separator:adf1f1cc17ca0cebd4a72e81a7c231c4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a23780492fbcc91a51eba6ff4fc1e4836"><td class="memItemLeft" align="right" valign="top"><a id="a23780492fbcc91a51eba6ff4fc1e4836"></a>
-#define&#160;</td><td class="memItemRight" valign="bottom"><b>DER_H</b>&#160;&#160;&#160;0.0001</td></tr>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>DER_H</b>&#160;&#160;&#160;0.04</td></tr>
 <tr class="separator:a23780492fbcc91a51eba6ff4fc1e4836"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a307c72605e3713972b4f4fb2d53ea20e"><td class="memItemLeft" align="right" valign="top"><a id="a307c72605e3713972b4f4fb2d53ea20e"></a>
+#define&#160;</td><td class="memItemRight" valign="bottom"><b>K0</b>&#160;&#160;&#160;0.01</td></tr>
+<tr class="separator:a307c72605e3713972b4f4fb2d53ea20e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae4f594e91188af03ab1cade788f8de3c"><td class="memItemLeft" align="right" valign="top"><a id="ae4f594e91188af03ab1cade788f8de3c"></a>
 #define&#160;</td><td class="memItemRight" valign="bottom"><b>__KINEMATIC_H__</b></td></tr>
 <tr class="separator:ae4f594e91188af03ab1cade788f8de3c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -132,16 +138,16 @@ Macros</h2></td></tr>
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
 <tr class="memitem:ad5755de87d8b9181d2d4f9915dd918b4"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#ad5755de87d8b9181d2d4f9915dd918b4">random</a> (int min, int max)</td></tr>
-<tr class="memdesc:ad5755de87d8b9181d2d4f9915dd918b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">return a random int value between the lower and the higher values  <a href="Kinematic_8h.html#ad5755de87d8b9181d2d4f9915dd918b4">More...</a><br /></td></tr>
+<tr class="memdesc:ad5755de87d8b9181d2d4f9915dd918b4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Return a random int value between the lower and the higher values.  <a href="Kinematic_8h.html#ad5755de87d8b9181d2d4f9915dd918b4">More...</a><br /></td></tr>
 <tr class="separator:ad5755de87d8b9181d2d4f9915dd918b4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a022ae771b6ad351f574783a99a1eec3d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structCinDir.html">CinDir</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a022ae771b6ad351f574783a99a1eec3d">CinematicaDiretta</a> (const Eigen::VectorXd &amp;Th, double scaleFactor)</td></tr>
-<tr class="memdesc:a022ae771b6ad351f574783a99a1eec3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function that calculates the direct kinematics and returns a vector containing the position reached by the end effector and a matrix corresponding to the orientation of the end effector in the world frame.  <a href="Kinematic_8h.html#a022ae771b6ad351f574783a99a1eec3d">More...</a><br /></td></tr>
+<tr class="memdesc:a022ae771b6ad351f574783a99a1eec3d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the forward kinematics for a robotic arm using Denavit-Hartenberg parameters.  <a href="Kinematic_8h.html#a022ae771b6ad351f574783a99a1eec3d">More...</a><br /></td></tr>
 <tr class="separator:a022ae771b6ad351f574783a99a1eec3d"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a85bf779278fbb52c9e9f71c5cb5623"><td class="memItemLeft" align="right" valign="top"><a id="a1a85bf779278fbb52c9e9f71c5cb5623"></a>
-Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><b>cinematicaInversa</b> (Eigen::Vector3d p60, Eigen::Matrix3d R60, double scaleFactor)</td></tr>
+<tr class="memitem:a1a85bf779278fbb52c9e9f71c5cb5623"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a1a85bf779278fbb52c9e9f71c5cb5623">cinematicaInversa</a> (Eigen::Vector3d p60, Eigen::Matrix3d R60, double scaleFactor)</td></tr>
+<tr class="memdesc:a1a85bf779278fbb52c9e9f71c5cb5623"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the inverse kinematics for a robotic arm given the end effector position and orientation.  <a href="Kinematic_8h.html#a1a85bf779278fbb52c9e9f71c5cb5623">More...</a><br /></td></tr>
 <tr class="separator:a1a85bf779278fbb52c9e9f71c5cb5623"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1d89d08f64cf77eb31bb8bb577ebcaca"><td class="memItemLeft" align="right" valign="top"><a id="a1d89d08f64cf77eb31bb8bb577ebcaca"></a>
-Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><b>ur5Jac</b> (const Eigen::VectorXd &amp;Th, double scaleFactor)</td></tr>
+<tr class="memitem:a1d89d08f64cf77eb31bb8bb577ebcaca"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a1d89d08f64cf77eb31bb8bb577ebcaca">ur5Jac</a> (const Eigen::VectorXd &amp;Th, double scaleFactor)</td></tr>
+<tr class="memdesc:a1d89d08f64cf77eb31bb8bb577ebcaca"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the Jacobian matrix for the UR5 robotic arm.  <a href="Kinematic_8h.html#a1d89d08f64cf77eb31bb8bb577ebcaca">More...</a><br /></td></tr>
 <tr class="separator:a1d89d08f64cf77eb31bb8bb577ebcaca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abbde76b0417af102832d5e76fcbe3a63"><td class="memItemLeft" align="right" valign="top"><a id="abbde76b0417af102832d5e76fcbe3a63"></a>
 Eigen::Quaterniond&#160;</td><td class="memItemRight" valign="bottom"><b>quatconj</b> (const Eigen::Quaterniond &amp;q)</td></tr>
@@ -152,66 +158,304 @@ Eigen::Quaterniond&#160;</td><td class="memItemRight" valign="bottom"><b>quatmul
 <tr class="memitem:a68570f4c1662cff0cc6b21013163450f"><td class="memItemLeft" align="right" valign="top"><a id="a68570f4c1662cff0cc6b21013163450f"></a>
 Eigen::Vector3d&#160;</td><td class="memItemRight" valign="bottom"><b>parts</b> (const Eigen::Quaterniond &amp;q)</td></tr>
 <tr class="separator:a68570f4c1662cff0cc6b21013163450f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff2bfd339ab21d80bbb9ff75d0704f77"><td class="memItemLeft" align="right" valign="top"><a id="aff2bfd339ab21d80bbb9ff75d0704f77"></a>
-Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><b>dampedPseudoInverse</b> (const Eigen::MatrixXd &amp;J)</td></tr>
+<tr class="memitem:aff2bfd339ab21d80bbb9ff75d0704f77"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#aff2bfd339ab21d80bbb9ff75d0704f77">dampedPseudoInverse</a> (const Eigen::MatrixXd &amp;J)</td></tr>
+<tr class="memdesc:aff2bfd339ab21d80bbb9ff75d0704f77"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the damped pseudo-inverse of a matrix using the Moore-Penrose inverse.  <a href="Kinematic_8h.html#aff2bfd339ab21d80bbb9ff75d0704f77">More...</a><br /></td></tr>
 <tr class="separator:aff2bfd339ab21d80bbb9ff75d0704f77"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a48d2a0fdb8861b570671234d0a31f698"><td class="memItemLeft" align="right" valign="top"><a id="a48d2a0fdb8861b570671234d0a31f698"></a>
-Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>invDiffKinematiControlCompleteQuaternion</b> (const Eigen::VectorXd &amp;q, const Eigen::VectorXd &amp;xe, const Eigen::VectorXd &amp;xd, const Eigen::VectorXd &amp;vd, const Eigen::VectorXd &amp;omegad, const Eigen::Quaterniond &amp;qe, const Eigen::Quaterniond &amp;qd, const Eigen::MatrixXd &amp;Kp, const Eigen::MatrixXd &amp;Kq, double scaleFactor, std::ofstream &amp;outputFile)</td></tr>
-<tr class="separator:a48d2a0fdb8861b570671234d0a31f698"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a764d0200f6a88f8746d0e8d016bf3106"><td class="memItemLeft" align="right" valign="top"><a id="a764d0200f6a88f8746d0e8d016bf3106"></a>
-Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><b>pd</b> (double tb, double Tf, Eigen::MatrixXd xe0, Eigen::MatrixXd xef)</td></tr>
+<tr class="memitem:aeefa2f557a025b7de77e59ccae2d2865"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#aeefa2f557a025b7de77e59ccae2d2865">invDiffKinematiControlCompleteQuaternion</a> (const Eigen::VectorXd &amp;q, const Eigen::VectorXd &amp;xe, const Eigen::VectorXd &amp;xd, const Eigen::VectorXd &amp;vd, const Eigen::VectorXd &amp;omegad, const Eigen::Quaterniond &amp;qe, const Eigen::Quaterniond &amp;<a class="el" href="Kinematic_8h.html#ac7f4de83c93ccc4ffa187ac5282990b5">qd</a>, const Eigen::MatrixXd &amp;Kp, const Eigen::MatrixXd &amp;Kq, double scaleFactor, double exploitRedundancy, std::ofstream &amp;outputFile)</td></tr>
+<tr class="memdesc:aeefa2f557a025b7de77e59ccae2d2865"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the inverse differential kinematic control for a UR5 robotic arm with quaternion representation.  <a href="Kinematic_8h.html#aeefa2f557a025b7de77e59ccae2d2865">More...</a><br /></td></tr>
+<tr class="separator:aeefa2f557a025b7de77e59ccae2d2865"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a764d0200f6a88f8746d0e8d016bf3106"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a764d0200f6a88f8746d0e8d016bf3106">pd</a> (double tb, double Tf, Eigen::MatrixXd xe0, Eigen::MatrixXd xef)</td></tr>
+<tr class="memdesc:a764d0200f6a88f8746d0e8d016bf3106"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs position interpolation between initial and final positions based on normalized time.  <a href="Kinematic_8h.html#a764d0200f6a88f8746d0e8d016bf3106">More...</a><br /></td></tr>
 <tr class="separator:a764d0200f6a88f8746d0e8d016bf3106"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ad36b6bbec8ef8707e24b7176c790d553"><td class="memItemLeft" align="right" valign="top"><a id="ad36b6bbec8ef8707e24b7176c790d553"></a>
-Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><b>phid</b> (double tb, double Tf, Eigen::MatrixXd phief, Eigen::MatrixXd phie0)</td></tr>
+<tr class="memitem:ad36b6bbec8ef8707e24b7176c790d553"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#ad36b6bbec8ef8707e24b7176c790d553">phid</a> (double tb, double Tf, Eigen::MatrixXd phief, Eigen::MatrixXd phie0)</td></tr>
+<tr class="memdesc:ad36b6bbec8ef8707e24b7176c790d553"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs orientation interpolation between initial and final orientations based on normalized time.  <a href="Kinematic_8h.html#ad36b6bbec8ef8707e24b7176c790d553">More...</a><br /></td></tr>
 <tr class="separator:ad36b6bbec8ef8707e24b7176c790d553"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac7f4de83c93ccc4ffa187ac5282990b5"><td class="memItemLeft" align="right" valign="top"><a id="ac7f4de83c93ccc4ffa187ac5282990b5"></a>
-Eigen::Quaterniond&#160;</td><td class="memItemRight" valign="bottom"><b>qd</b> (double tb, double Tf, Eigen::Quaterniond q0, Eigen::Quaterniond qf)</td></tr>
+<tr class="memitem:ac7f4de83c93ccc4ffa187ac5282990b5"><td class="memItemLeft" align="right" valign="top">Eigen::Quaterniond&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#ac7f4de83c93ccc4ffa187ac5282990b5">qd</a> (double tb, double Tf, Eigen::Quaterniond q0, Eigen::Quaterniond qf)</td></tr>
+<tr class="memdesc:ac7f4de83c93ccc4ffa187ac5282990b5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Performs quaternion interpolation between initial and final quaternions based on normalized time.  <a href="Kinematic_8h.html#ac7f4de83c93ccc4ffa187ac5282990b5">More...</a><br /></td></tr>
 <tr class="separator:ac7f4de83c93ccc4ffa187ac5282990b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a56ccf6005b49d2817232a5abdf36946b"><td class="memItemLeft" align="right" valign="top"><a id="a56ccf6005b49d2817232a5abdf36946b"></a>
-Eigen::Matrix3d&#160;</td><td class="memItemRight" valign="bottom"><b>euler2RotationMatrix</b> (const Eigen::Vector3d &amp;euler_angles, const std::string &amp;order)</td></tr>
+<tr class="memitem:a56ccf6005b49d2817232a5abdf36946b"><td class="memItemLeft" align="right" valign="top">Eigen::Matrix3d&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a56ccf6005b49d2817232a5abdf36946b">euler2RotationMatrix</a> (const Eigen::Vector3d &amp;euler_angles, const std::string &amp;order)</td></tr>
+<tr class="memdesc:a56ccf6005b49d2817232a5abdf36946b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Converts Euler angles to a rotation matrix.  <a href="Kinematic_8h.html#a56ccf6005b49d2817232a5abdf36946b">More...</a><br /></td></tr>
 <tr class="separator:a56ccf6005b49d2817232a5abdf36946b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aab0118437a5555eb3e17f9dc9ba5c8ec"><td class="memItemLeft" align="right" valign="top"><a id="aab0118437a5555eb3e17f9dc9ba5c8ec"></a>
-Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><b>invDiffKinematicControlSimCompleteQuaternion</b> (const Eigen::VectorXd &amp;TH0, const Eigen::MatrixXd &amp;Kp, const Eigen::MatrixXd &amp;Kq, const Eigen::VectorXd &amp;T, double minT, double maxT, double Dt, double scaleFactor, double Tf, Eigen::MatrixXd xe0, Eigen::MatrixXd xef, Eigen::Quaterniond q0, Eigen::Quaterniond qf, std::ofstream &amp;outputFile)</td></tr>
-<tr class="separator:aab0118437a5555eb3e17f9dc9ba5c8ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a675d15dd58442ece131b3bc1f85b383a"><td class="memItemLeft" align="right" valign="top"><a id="a675d15dd58442ece131b3bc1f85b383a"></a>
-<a class="el" href="structNaNColumn.html">NaNColumn</a>&#160;</td><td class="memItemRight" valign="bottom"><b>getFirstColumnWithoutNaN</b> (Eigen::MatrixXd &amp;inputMatrix)</td></tr>
+<tr class="memitem:a2564f830f67cd6a9dac12d094846db17"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a2564f830f67cd6a9dac12d094846db17">invDiffKinematicControlSimCompleteQuaternion</a> (const Eigen::VectorXd &amp;TH0, const Eigen::MatrixXd &amp;Kp, const Eigen::MatrixXd &amp;Kq, const Eigen::VectorXd &amp;T, double minT, double maxT, double Dt, double scaleFactor, double Tf, Eigen::MatrixXd xe0, Eigen::MatrixXd xef, Eigen::Quaterniond q0, Eigen::Quaterniond qf, double exploitRedundancy, std::ofstream &amp;outputFile)</td></tr>
+<tr class="memdesc:a2564f830f67cd6a9dac12d094846db17"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inverse Differential Kinematic Control Simulation with Complete Quaternion.  <a href="Kinematic_8h.html#a2564f830f67cd6a9dac12d094846db17">More...</a><br /></td></tr>
+<tr class="separator:a2564f830f67cd6a9dac12d094846db17"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a675d15dd58442ece131b3bc1f85b383a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="structNaNColumn.html">NaNColumn</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a675d15dd58442ece131b3bc1f85b383a">getFirstColumnWithoutNaN</a> (Eigen::MatrixXd &amp;inputMatrix)</td></tr>
+<tr class="memdesc:a675d15dd58442ece131b3bc1f85b383a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the first column without NaN values in a matrix.  <a href="Kinematic_8h.html#a675d15dd58442ece131b3bc1f85b383a">More...</a><br /></td></tr>
 <tr class="separator:a675d15dd58442ece131b3bc1f85b383a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d276a20223f0c5b4ab549196b167ee3"><td class="memItemLeft" align="right" valign="top"><a id="a8d276a20223f0c5b4ab549196b167ee3"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>vectorToString</b> (const Eigen::VectorXd &amp;vec)</td></tr>
-<tr class="separator:a8d276a20223f0c5b4ab549196b167ee3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae639d22d5c4e2d425fb45698d4dbee86"><td class="memItemLeft" align="right" valign="top"><a id="ae639d22d5c4e2d425fb45698d4dbee86"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>matrix3dToString</b> (const Eigen::Matrix3d &amp;mat)</td></tr>
-<tr class="separator:ae639d22d5c4e2d425fb45698d4dbee86"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a52bafca417bc23227b885764c4180619"><td class="memItemLeft" align="right" valign="top"><a id="a52bafca417bc23227b885764c4180619"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>matrixToString</b> (const Eigen::MatrixXd &amp;matrice)</td></tr>
-<tr class="separator:a52bafca417bc23227b885764c4180619"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11ca42345e139af29a5e9f9595eeb990"><td class="memItemLeft" align="right" valign="top"><a id="a11ca42345e139af29a5e9f9595eeb990"></a>
-std::string&#160;</td><td class="memItemRight" valign="bottom"><b>quaternioToString</b> (const Eigen::Quaterniond &amp;quaternion)</td></tr>
-<tr class="separator:a11ca42345e139af29a5e9f9595eeb990"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5b5565001339d358e4fb0e8997fbc7dd"><td class="memItemLeft" align="right" valign="top"><a id="a5b5565001339d358e4fb0e8997fbc7dd"></a>
-Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><b>posizioneGiunti</b> (Eigen::VectorXd Th, double scaleFactor)</td></tr>
+<tr class="memitem:a5b5565001339d358e4fb0e8997fbc7dd"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a5b5565001339d358e4fb0e8997fbc7dd">posizioneGiunti</a> (Eigen::VectorXd Th, double scaleFactor)</td></tr>
+<tr class="memdesc:a5b5565001339d358e4fb0e8997fbc7dd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculate the positions of the joints given the joint angles.  <a href="Kinematic_8h.html#a5b5565001339d358e4fb0e8997fbc7dd">More...</a><br /></td></tr>
 <tr class="separator:a5b5565001339d358e4fb0e8997fbc7dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a18011714c0863e8c977512c491846be4"><td class="memItemLeft" align="right" valign="top"><a id="a18011714c0863e8c977512c491846be4"></a>
-bool&#160;</td><td class="memItemRight" valign="bottom"><b>checkCollisioni</b> (Eigen::MatrixXd Th, double offset, double dist, double scaleFactor)</td></tr>
-<tr class="separator:a18011714c0863e8c977512c491846be4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9ebe551bcf345cc6d35463054d139d3a"><td class="memItemLeft" align="right" valign="top"><a id="a9ebe551bcf345cc6d35463054d139d3a"></a>
-Eigen::Quaterniond&#160;</td><td class="memItemRight" valign="bottom"><b>slerpFunction</b> (const Eigen::Quaterniond &amp;q1, const Eigen::Quaterniond &amp;q2, double t)</td></tr>
-<tr class="separator:a9ebe551bcf345cc6d35463054d139d3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af402503c52262f913fbb08f81601b7df"><td class="memItemLeft" align="right" valign="top"><a id="af402503c52262f913fbb08f81601b7df"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>Gripper</b> (std::string blockName)</td></tr>
+<tr class="memitem:a9a84e7fd49d299351ef6409eed59381b"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a9a84e7fd49d299351ef6409eed59381b">checkCollisioni</a> (Eigen::MatrixXd Th, double offset, double dist, double scaleFactor, std::ofstream &amp;outputFile)</td></tr>
+<tr class="memdesc:a9a84e7fd49d299351ef6409eed59381b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Check for collisions between the robot arm and obstacles.  <a href="Kinematic_8h.html#a9a84e7fd49d299351ef6409eed59381b">More...</a><br /></td></tr>
+<tr class="separator:a9a84e7fd49d299351ef6409eed59381b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e2ed6b1337fe29f88b4722c13b66b95"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a0e2ed6b1337fe29f88b4722c13b66b95">checkCollisionSingularity</a> (Eigen::MatrixXd &amp;Th, double scaleFactor, std::ofstream &amp;outputFile)</td></tr>
+<tr class="memdesc:a0e2ed6b1337fe29f88b4722c13b66b95"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for collision or singularity in a trajectory.  <a href="Kinematic_8h.html#a0e2ed6b1337fe29f88b4722c13b66b95">More...</a><br /></td></tr>
+<tr class="separator:a0e2ed6b1337fe29f88b4722c13b66b95"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af402503c52262f913fbb08f81601b7df"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#af402503c52262f913fbb08f81601b7df">Gripper</a> (std::string blockName)</td></tr>
+<tr class="memdesc:af402503c52262f913fbb08f81601b7df"><td class="mdescLeft">&#160;</td><td class="mdescRight">Calculates the width adjustment for the gripper based on the provided block name.  <a href="Kinematic_8h.html#af402503c52262f913fbb08f81601b7df">More...</a><br /></td></tr>
 <tr class="separator:af402503c52262f913fbb08f81601b7df"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1935633056f0551c77cf061d8628691e"><td class="memItemLeft" align="right" valign="top"><a id="a1935633056f0551c77cf061d8628691e"></a>
-double&#160;</td><td class="memItemRight" valign="bottom"><b>DerivataParzialeDetJ</b> (const Eigen::VectorXd &amp;q, int i, double scaleFactor)</td></tr>
+<tr class="memitem:a1935633056f0551c77cf061d8628691e"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a1935633056f0551c77cf061d8628691e">DerivataParzialeDetJ</a> (const Eigen::VectorXd &amp;q, int i, double scaleFactor)</td></tr>
+<tr class="memdesc:a1935633056f0551c77cf061d8628691e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the partial derivative of the determinant of the Jacobian with respect to the i-th element of q.  <a href="Kinematic_8h.html#a1935633056f0551c77cf061d8628691e">More...</a><br /></td></tr>
 <tr class="separator:a1935633056f0551c77cf061d8628691e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef41f528669e7a45ddc9e6a6407d4f78"><td class="memItemLeft" align="right" valign="top"><a id="aef41f528669e7a45ddc9e6a6407d4f78"></a>
-Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>randomPoint</b> (double scaleFactor)</td></tr>
+<tr class="memitem:aef41f528669e7a45ddc9e6a6407d4f78"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#aef41f528669e7a45ddc9e6a6407d4f78">randomPoint</a> (double scaleFactor)</td></tr>
+<tr class="memdesc:aef41f528669e7a45ddc9e6a6407d4f78"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates a random 3D point with scaled coordinates.  <a href="Kinematic_8h.html#aef41f528669e7a45ddc9e6a6407d4f78">More...</a><br /></td></tr>
 <tr class="separator:aef41f528669e7a45ddc9e6a6407d4f78"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:addbb84aa6a2c2ca3a0ab7049e79f9690"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#addbb84aa6a2c2ca3a0ab7049e79f9690">alternativeTrajectory</a> (const Eigen::VectorXd &amp;jointstate, const Eigen::MatrixXd &amp;Kp, const Eigen::MatrixXd &amp;Kq, const Eigen::VectorXd &amp;T, double minT, double maxT, double DeltaT, double scaleFactor, double Tf, Eigen::MatrixXd xe0, Eigen::MatrixXd xef, Eigen::Quaterniond q0, Eigen::Quaterniond qf, std::ofstream &amp;outputFile)</td></tr>
+<tr class="memdesc:addbb84aa6a2c2ca3a0ab7049e79f9690"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates an alternative trajectory with two or three steps.  <a href="Kinematic_8h.html#addbb84aa6a2c2ca3a0ab7049e79f9690">More...</a><br /></td></tr>
+<tr class="separator:addbb84aa6a2c2ca3a0ab7049e79f9690"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d276a20223f0c5b4ab549196b167ee3"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a8d276a20223f0c5b4ab549196b167ee3">vectorToString</a> (const Eigen::VectorXd &amp;vec)</td></tr>
+<tr class="memdesc:a8d276a20223f0c5b4ab549196b167ee3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a Eigen::VectorXd to a string.  <a href="Kinematic_8h.html#a8d276a20223f0c5b4ab549196b167ee3">More...</a><br /></td></tr>
+<tr class="separator:a8d276a20223f0c5b4ab549196b167ee3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae639d22d5c4e2d425fb45698d4dbee86"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#ae639d22d5c4e2d425fb45698d4dbee86">matrix3dToString</a> (const Eigen::Matrix3d &amp;mat)</td></tr>
+<tr class="memdesc:ae639d22d5c4e2d425fb45698d4dbee86"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert an Eigen::Matrix3d to a string.  <a href="Kinematic_8h.html#ae639d22d5c4e2d425fb45698d4dbee86">More...</a><br /></td></tr>
+<tr class="separator:ae639d22d5c4e2d425fb45698d4dbee86"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52bafca417bc23227b885764c4180619"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a52bafca417bc23227b885764c4180619">matrixToString</a> (const Eigen::MatrixXd &amp;matrice)</td></tr>
+<tr class="memdesc:a52bafca417bc23227b885764c4180619"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert an Eigen::MatrixXd to a string.  <a href="Kinematic_8h.html#a52bafca417bc23227b885764c4180619">More...</a><br /></td></tr>
+<tr class="separator:a52bafca417bc23227b885764c4180619"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11ca42345e139af29a5e9f9595eeb990"><td class="memItemLeft" align="right" valign="top">std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a11ca42345e139af29a5e9f9595eeb990">quaternioToString</a> (const Eigen::Quaterniond &amp;quaternion)</td></tr>
+<tr class="memdesc:a11ca42345e139af29a5e9f9595eeb990"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert an Eigen::Quaterniond to a string.  <a href="Kinematic_8h.html#a11ca42345e139af29a5e9f9595eeb990">More...</a><br /></td></tr>
+<tr class="separator:a11ca42345e139af29a5e9f9595eeb990"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8f82a61916ec40bb9c84ee2b9e9ee7b8"><td class="memItemLeft" align="right" valign="top">Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="Kinematic_8h.html#a8f82a61916ec40bb9c84ee2b9e9ee7b8">wDerived</a> (const Eigen::VectorXd &amp;q, double scaleFactor)</td></tr>
+<tr class="memdesc:a8f82a61916ec40bb9c84ee2b9e9ee7b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Computes the derivative of a function w(q) with respect to each element of q using the chain rule.  <a href="Kinematic_8h.html#a8f82a61916ec40bb9c84ee2b9e9ee7b8">More...</a><br /></td></tr>
+<tr class="separator:a8f82a61916ec40bb9c84ee2b9e9ee7b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Header file containing the declarations of the functions necessary for the arm movement. </p>
 <dl class="section author"><dt>Author</dt><dd>Mattia Barborini, Matteo Grisenti </dd></dl>
 <dl class="section date"><dt>Date</dt><dd>2024-02-07 </dd></dl>
 </div><h2 class="groupheader">Function Documentation</h2>
+<a id="addbb84aa6a2c2ca3a0ab7049e79f9690"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#addbb84aa6a2c2ca3a0ab7049e79f9690">&#9670;&nbsp;</a></span>alternativeTrajectory()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::MatrixXd alternativeTrajectory </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>jointstate</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>Kp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>Kq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>T</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>minT</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>maxT</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>DeltaT</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scaleFactor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>Tf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::MatrixXd&#160;</td>
+          <td class="paramname"><em>xe0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::MatrixXd&#160;</td>
+          <td class="paramname"><em>xef</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Quaterniond&#160;</td>
+          <td class="paramname"><em>q0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Quaterniond&#160;</td>
+          <td class="paramname"><em>qf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::ofstream &amp;&#160;</td>
+          <td class="paramname"><em>outputFile</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Generates an alternative trajectory with two or three steps. </p>
+<p>This function generates an alternative trajectory with either two or three steps depending on whether the conditions for a two-step trajectory are met or not.</p>
+<p>For a two-step trajectory: finds a middle point based on the current joint state or generates a random point, calculates the arm configurations (Th1 and Th2) to reach the middle point and the final point, checks for collision and singularity in each configuration.</p>
+<p>For a three-step trajectory: attempts to generate a trajectory by considering three intermediate points, calculates the arm configurations (Th1, Th2, and Th3) to reach each intermediate point and the final point, checks for collision and singularity in each configuration.</p>
+<p>If a valid trajectory is found, it concatenates the arm configurations into a single matrix and returns it. Otherwise, it returns a matrix with a single entry indicating failure.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">jointstate</td><td>The current joint state of the robot. </td></tr>
+    <tr><td class="paramname">Kp</td><td>The proportional gains matrix for the inverse kinematics controller. </td></tr>
+    <tr><td class="paramname">Kq</td><td>The derivative gains matrix for the inverse kinematics controller. </td></tr>
+    <tr><td class="paramname">T</td><td>The joint torque limits. </td></tr>
+    <tr><td class="paramname">minT</td><td>The minimum torque limit. </td></tr>
+    <tr><td class="paramname">maxT</td><td>The maximum torque limit. </td></tr>
+    <tr><td class="paramname">DeltaT</td><td>The time step for trajectory generation. </td></tr>
+    <tr><td class="paramname">scaleFactor</td><td>The scaling factor applied to the trajectory and joint positions. </td></tr>
+    <tr><td class="paramname">Tf</td><td>The final time for trajectory execution. </td></tr>
+    <tr><td class="paramname">xe0</td><td>The initial end effector position. </td></tr>
+    <tr><td class="paramname">xef</td><td>The final end effector position. </td></tr>
+    <tr><td class="paramname">q0</td><td>The initial orientation quaternion. </td></tr>
+    <tr><td class="paramname">qf</td><td>The final orientation quaternion. </td></tr>
+    <tr><td class="paramname">outputFile</td><td>Reference to the output file stream to log trajectory generation information.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A matrix containing the generated arm configurations for the alternative trajectory. If a valid trajectory is founf, for a two-step trajectory: A matrix with 200 rows and 6 columns containing Th1 and Th2. For a three-step trajectory: A matrix with 300 rows and 6 columns containing Th1, Th2, and Th3. If no valid trajectory is found: A matrix with a single entry indicating failure. </dd></dl>
+
+</div>
+</div>
+<a id="a9a84e7fd49d299351ef6409eed59381b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9a84e7fd49d299351ef6409eed59381b">&#9670;&nbsp;</a></span>checkCollisioni()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool checkCollisioni </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::MatrixXd&#160;</td>
+          <td class="paramname"><em>Th</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>offset</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>dist</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scaleFactor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::ofstream &amp;&#160;</td>
+          <td class="paramname"><em>outputFile</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Check for collisions between the robot arm and obstacles. </p>
+<p>This function checks for collisions between the robot arm and obstacles based on the joint positions.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">Th</td><td>Matrix containing joint positions </td></tr>
+    <tr><td class="paramname">offset</td><td>Offset value for collision detection </td></tr>
+    <tr><td class="paramname">dist</td><td>Distance of the table from the ground </td></tr>
+    <tr><td class="paramname">scaleFactor</td><td>Scale factor for the robot arm dimensions </td></tr>
+    <tr><td class="paramname">outputFile</td><td>Output file stream for logging </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>True if collisions are detected, false otherwise </dd></dl>
+
+</div>
+</div>
+<a id="a0e2ed6b1337fe29f88b4722c13b66b95"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e2ed6b1337fe29f88b4722c13b66b95">&#9670;&nbsp;</a></span>checkCollisionSingularity()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool checkCollisionSingularity </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>Th</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scaleFactor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::ofstream &amp;&#160;</td>
+          <td class="paramname"><em>outputFile</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Checks for collision or singularity in a trajectory. </p>
+<p>This function first checks if the trajectory has a singularity by verifying if it contains only one row. If the trajectory has only one row, indicating a singularity, it prints a message and returns true. Otherwise, it iterates through each configuration in the trajectory, obtains the joint positions, and checks for collisions. If any collision is detected, it prints a message and returns true. If no collision or singularity is found, it returns false.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">Th</td><td>The trajectory represented as a matrix where each row represents a configuration. </td></tr>
+    <tr><td class="paramname">scaleFactor</td><td>The scaling factor applied to the trajectory and joint positions. </td></tr>
+    <tr><td class="paramname">outputFile</td><td>Reference to the output file stream to log collision or singularity information.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A boolean value indicating whether a collision or singularity was detected. I could be true: Collision or singularity detected. Or false: No collision or singularity detected. </dd></dl>
+
+</div>
+</div>
 <a id="a022ae771b6ad351f574783a99a1eec3d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a022ae771b6ad351f574783a99a1eec3d">&#9670;&nbsp;</a></span>CinematicaDiretta()</h2>
 
@@ -238,15 +482,793 @@ Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>randomPoin
       </table>
 </div><div class="memdoc">
 
-<p>Function that calculates the direct kinematics and returns a vector containing the position reached by the end effector and a matrix corresponding to the orientation of the end effector in the world frame. </p>
+<p>Computes the forward kinematics for a robotic arm using Denavit-Hartenberg parameters. </p>
+<p>This function calculates the forward kinematics of a robotic arm given the joint angles and a scaling factor. It utilizes Denavit-Hartenberg parameters to define the robot's kinematic chain.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">Th</td><td>vector containing the q values ​​of the joints </td></tr>
-    <tr><td class="paramname">scaleFactor</td><td>scale factor </td></tr>
+    <tr><td class="paramname">Th</td><td>The joint angles vector. </td></tr>
+    <tr><td class="paramname">scaleFactor</td><td>The scaling factor applied to the Denavit-Hartenberg parameters. </td></tr>
   </table>
   </dd>
 </dl>
-<dl class="section return"><dt>Returns</dt><dd><a class="el" href="structCinDir.html" title="Struct containing the return values ​​of the CinematicaDiretta function.">CinDir</a> </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="structCinDir.html" title="Struct containing the return values ​​of the CinematicaDiretta function.">CinDir</a> object containing the position and orientation of the end effector.</dd></dl>
+<p>The function initializes the DH parameters A, D, and Alpha of the robot arm and computes the transformation matrices for each link using the provided joint angles and DH parameters. It then calculates the final transformation matrix representing the end effector's position and orientation.</p>
+<p>The transformation matrices are computed using the provided joint angles, DH parameters, and a given scaling factor.</p>
+<dl class="section note"><dt>Note</dt><dd>This function assumes rotational joints only. </dd>
+<dd>
+The joint angles vector Th should have a size of 6, representing the angles for each joint. </dd></dl>
+
+</div>
+</div>
+<a id="a1a85bf779278fbb52c9e9f71c5cb5623"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a85bf779278fbb52c9e9f71c5cb5623">&#9670;&nbsp;</a></span>cinematicaInversa()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::MatrixXd cinematicaInversa </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::Vector3d&#160;</td>
+          <td class="paramname"><em>p60</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Matrix3d&#160;</td>
+          <td class="paramname"><em>R60</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scaleFactor</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the inverse kinematics for a robotic arm given the end effector position and orientation. </p>
+<p>This function calculates the inverse kinematics of a robotic arm to determine the joint angles required to achieve a specific end effector position and orientation.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">p60</td><td>The position vector of the end effector. </td></tr>
+    <tr><td class="paramname">R60</td><td>The orientation matrix of the end effector. </td></tr>
+    <tr><td class="paramname">scaleFactor</td><td>The scaling factor applied to the Denavit-Hartenberg parameters. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A matrix containing the joint angles configuration for the robotic arm.</dd></dl>
+<p>The function initializes the DH parameters A, D, and Alpha of the robot arm and computes the joint angles required to achieve the given end effector position and orientation.</p>
+<p>The joint angles are calculated based on the provided end effector position, orientation, and scaling factor.</p>
+<dl class="section note"><dt>Note</dt><dd>This function assumes rotational joints only. </dd>
+<dd>
+The input position vector p60 should have three elements representing x, y, and z coordinates respectively. </dd>
+<dd>
+The input orientation matrix R60 should be a 3x3 rotation matrix representing the end effector's orientation. </dd>
+<dd>
+The returned matrix Th contains the joint angles for the robot arm in an 6x8 configuration, each column represents a specific joint angle configuration, and each row represents a specific joint angle for the respective column. </dd></dl>
+
+</div>
+</div>
+<a id="aff2bfd339ab21d80bbb9ff75d0704f77"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aff2bfd339ab21d80bbb9ff75d0704f77">&#9670;&nbsp;</a></span>dampedPseudoInverse()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::MatrixXd dampedPseudoInverse </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>J</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the damped pseudo-inverse of a matrix using the Moore-Penrose inverse. </p>
+<p>This function calculates the damped pseudo-inverse of a matrix J using the Moore-Penrose inverse, with an additional damping factor added to the diagonal elements of the product J * J^T before inversion.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">J</td><td>The matrix for which the damped pseudo-inverse is computed. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The damped pseudo-inverse of the input matrix J.</dd></dl>
+<p>The damped pseudo-inverse is useful for computing the pseudo-inverse of matrices that are close to singular, where regularization helps stabilize the inversion process.</p>
+<dl class="section note"><dt>Note</dt><dd>This function assumes that the input matrix J is not necessarily square and may be of full rank or rank-deficient. </dd>
+<dd>
+The damping factor is a small positive scalar added to the diagonal elements of J * J^T before inversion. </dd>
+<dd>
+The returned pseudo-inverse matrix has the dimensions of J^T, i.e., J.columns() x J.rows(). </dd></dl>
+
+</div>
+</div>
+<a id="a1935633056f0551c77cf061d8628691e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1935633056f0551c77cf061d8628691e">&#9670;&nbsp;</a></span>DerivataParzialeDetJ()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double DerivataParzialeDetJ </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>q</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">int&#160;</td>
+          <td class="paramname"><em>i</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scaleFactor</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the partial derivative of the determinant of the Jacobian with respect to the i-th element of q. </p>
+<p>This function calculates the partial derivative of the determinant of the Jacobian with respect to the i-th element of q. It approximates the derivative using the definition of a derivative and a small increment defined in <a class="el" href="Kinematic_8h.html" title="Header file containing the declarations of the functions necessary for the arm movement.">Kinematic.h</a>.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">q</td><td>The vector of joint positions. </td></tr>
+    <tr><td class="paramname">i</td><td>The index of the element of q with respect to which the derivative is computed. </td></tr>
+    <tr><td class="paramname">scaleFactor</td><td>The scaling factor applied to the UR5 parameters. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The partial derivative of the determinant of the Jacobian with respect to the i-th element of q.</dd></dl>
+<p>This function calculates an approximation of the derivative by incrementing the i-th element of q by a small value h, computing the Jacobians J(q) and J(q + h), and then applying the definition of a derivative.</p>
+<dl class="section note"><dt>Note</dt><dd>This function assumes that the input vector q represents the joint positions of the UR5 robotic arm. </dd>
+<dd>
+The small increment value h is defined in the <a class="el" href="Kinematic_8h.html" title="Header file containing the declarations of the functions necessary for the arm movement.">Kinematic.h</a> header file. </dd></dl>
+
+</div>
+</div>
+<a id="a56ccf6005b49d2817232a5abdf36946b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a56ccf6005b49d2817232a5abdf36946b">&#9670;&nbsp;</a></span>euler2RotationMatrix()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::Matrix3d euler2RotationMatrix </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::Vector3d &amp;&#160;</td>
+          <td class="paramname"><em>euler_angles</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>order</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Converts Euler angles to a rotation matrix. </p>
+<p>This function converts Euler angles specified in radians to a rotation matrix based on the specified order of rotations.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">euler_angles</td><td>The Euler angles in radians (in the order specified by the 'order' parameter). </td></tr>
+    <tr><td class="paramname">order</td><td>The order of rotations ('XYZ' or 'ZYX'). </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The rotation matrix corresponding to the given Euler angles and rotation order.</dd></dl>
+<p>The function constructs the rotation matrix based on the given Euler angles and rotation order. It supports two commonly used rotation orders:</p><ul>
+<li>'XYZ': Rotation about the X-axis followed by rotation about the Y-axis followed by rotation about the Z-axis.</li>
+<li>'ZYX': Rotation about the Z-axis followed by rotation about the Y-axis followed by rotation about the X-axis. XYZ rotation will always be used in the code, however during the translation phase from Matlab code to C++ we preferred to remain faithful to the original Matlab function, so as not to have problems for any future implementation</li>
+</ul>
+<p>If the provided rotation order is not supported, the function throws an invalid_argument exception.</p>
+<dl class="section note"><dt>Note</dt><dd>This function assumes that Euler angles are specified in radians. </dd></dl>
+
+</div>
+</div>
+<a id="a675d15dd58442ece131b3bc1f85b383a"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a675d15dd58442ece131b3bc1f85b383a">&#9670;&nbsp;</a></span>getFirstColumnWithoutNaN()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="structNaNColumn.html">NaNColumn</a> getFirstColumnWithoutNaN </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>inputMatrix</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get the first column without NaN values in a matrix. </p>
+<p>This function returns the first column in the input matrix that does not contain any NaN values.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">inputMatrix</td><td>The input matrix </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A <a class="el" href="structNaNColumn.html" title="Struct containing the return values ​​of the getFirstColumnWithoutNaN function.">NaNColumn</a> struct containing the first column without NaN values and a flag indicating if such a column was found</dd></dl>
+<p>The function iterates over each column of the input matrix and checks if it contains any NaN values. If a column without NaN values is found, it returns that column and sets all its elements to NaN in the input matrix. If no valid configuration is found, it returns an empty <a class="el" href="structNaNColumn.html" title="Struct containing the return values ​​of the getFirstColumnWithoutNaN function.">NaNColumn</a> struct with the flag set to false. </p>
+
+</div>
+</div>
+<a id="af402503c52262f913fbb08f81601b7df"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af402503c52262f913fbb08f81601b7df">&#9670;&nbsp;</a></span>Gripper()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">double Gripper </td>
+          <td>(</td>
+          <td class="paramtype">std::string&#160;</td>
+          <td class="paramname"><em>blockName</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Calculates the width adjustment for the gripper based on the provided block name. </p>
+<p>This function determines the gripper width adjustment according to the specified block name. If the block name matches any in the OneWidth vector, it computes half the difference between the end effector width and the width of a single-width block. If it matches any in the TwoWidth vector, it computes half the difference between the end effector width and the width of a double-width block. If the provided block name does not match any predefined block names, it prints a message indicating an unrecognized block name.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">blockName</td><td>The name of the block for which the gripper width adjustment is calculated.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The width adjustment for the gripper. If the block name is recognized: for single-width blocks: half the difference between the end effector width and the width of a single-width block. For double-width blocks: half the difference between the end effector widt and the width of a double-width block. If the block name is unrecognized returns 0. </dd></dl>
+
+</div>
+</div>
+<a id="a2564f830f67cd6a9dac12d094846db17"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2564f830f67cd6a9dac12d094846db17">&#9670;&nbsp;</a></span>invDiffKinematicControlSimCompleteQuaternion()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>TH0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>Kp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>Kq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>T</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>minT</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>maxT</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>Dt</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scaleFactor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>Tf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::MatrixXd&#160;</td>
+          <td class="paramname"><em>xe0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::MatrixXd&#160;</td>
+          <td class="paramname"><em>xef</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Quaterniond&#160;</td>
+          <td class="paramname"><em>q0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Quaterniond&#160;</td>
+          <td class="paramname"><em>qf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>exploitRedundancy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::ofstream &amp;&#160;</td>
+          <td class="paramname"><em>outputFile</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Inverse Differential Kinematic Control Simulation with Complete Quaternion. </p>
+<p>This function performs inverse differential kinematic control simulation using complete quaternions.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">TH0</td><td>Initial joint configurations. </td></tr>
+    <tr><td class="paramname">Kp</td><td>Linear error matrix. </td></tr>
+    <tr><td class="paramname">Kq</td><td>Quaternion error matrix. </td></tr>
+    <tr><td class="paramname">T</td><td>Vector containing time steps. </td></tr>
+    <tr><td class="paramname">minT</td><td>Minimum number of time steps. </td></tr>
+    <tr><td class="paramname">maxT</td><td>Maximum number of time steps. </td></tr>
+    <tr><td class="paramname">Dt</td><td>Time step size. </td></tr>
+    <tr><td class="paramname">scaleFactor</td><td>Scale factor. </td></tr>
+    <tr><td class="paramname">Tf</td><td>Final time of motion. </td></tr>
+    <tr><td class="paramname">xe0</td><td>Initial end-effector position. </td></tr>
+    <tr><td class="paramname">xef</td><td>Final end-effector position. </td></tr>
+    <tr><td class="paramname">q0</td><td>Initial end-effector quaternion. </td></tr>
+    <tr><td class="paramname">qf</td><td>Final end-effector quaternion. </td></tr>
+    <tr><td class="paramname">exploitRedundancy</td><td>Flag indicating whether to exploit redundancy. </td></tr>
+    <tr><td class="paramname">outputFile</td><td>Output file stream to write the results. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>Matrix containing joint configurations for each time step.</dd></dl>
+<p>This function simulates the inverse differential kinematic control of a robotic manipulator using complete quaternions. It takes the initial joint configurations, linear and quaternion error matrices, time steps, minimum and maximum number of time steps, time step size, scale factor, final time of motion, initial and final end-effector positions and quaternions, and a flag indicating whether to exploit redundancy. It returns a matrix containing joint configurations for each time step.</p>
+<p>The function iterates over each time step, computes the end-effector position and orientation at the beginning of the step using forward kinematics, calculates the desired end-effector position and orientation changes within the current time step, determines the desired end-effector linear and angular velocities, computes the inverse differential kinematic control to obtain joint velocity changes, updates the joint configurations for the next time step, and stores the joint configurations in a matrix. If a singularity is encountered during the computation, a 1x1 matrix containing a zero is returned.</p>
+<dl class="section note"><dt>Note</dt><dd>The output joint configurations are stored in a matrix, where each row corresponds to a time step and contains the joint configurations for that step. </dd></dl>
+
+</div>
+</div>
+<a id="aeefa2f557a025b7de77e59ccae2d2865"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aeefa2f557a025b7de77e59ccae2d2865">&#9670;&nbsp;</a></span>invDiffKinematiControlCompleteQuaternion()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::VectorXd invDiffKinematiControlCompleteQuaternion </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>q</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>xe</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>xd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>vd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>omegad</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::Quaterniond &amp;&#160;</td>
+          <td class="paramname"><em>qe</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::Quaterniond &amp;&#160;</td>
+          <td class="paramname"><em>qd</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>Kp</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>Kq</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scaleFactor</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>exploitRedundancy</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">std::ofstream &amp;&#160;</td>
+          <td class="paramname"><em>outputFile</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the inverse differential kinematic control for a UR5 robotic arm with quaternion representation. </p>
+<p>This function calculates the inverse differential kinematic control for a UR5 robotic arm with quaternion representation. It computes the joint velocity vector dotQ required to move the end effector from its current configuration xe to the desired configuration xd.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">q</td><td>The vector of current joint positions. </td></tr>
+    <tr><td class="paramname">xe</td><td>The current configuration of the end effector. </td></tr>
+    <tr><td class="paramname">xd</td><td>The desired configuration of the end effector. </td></tr>
+    <tr><td class="paramname">vd</td><td>The desired linear velocity of the end effector. </td></tr>
+    <tr><td class="paramname">omegad</td><td>The desired angular velocity of the end effector. </td></tr>
+    <tr><td class="paramname">qe</td><td>The current quaternion configuration of the end effector. </td></tr>
+    <tr><td class="paramname">qd</td><td>The desired quaternion configuration of the end effector. </td></tr>
+    <tr><td class="paramname">Kp</td><td>The linear error matrix. </td></tr>
+    <tr><td class="paramname">Kq</td><td>The quaternion error matrix. </td></tr>
+    <tr><td class="paramname">scaleFactor</td><td>The scaling factor applied to the UR5 parameters. </td></tr>
+    <tr><td class="paramname">exploitRedundancy</td><td>Flag indicating whether to exploit redundancy (true) or not (false). </td></tr>
+    <tr><td class="paramname">outputFile</td><td>The output stream to write debug information. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The joint velocity vector dotQ.</dd></dl>
+<p>This function calculates the inverse differential kinematic control to generate joint velocities for the UR5 robotic arm. It first computes the Jacobian matrix J for the current arm configuration, then calculates the orientation error and the determinant of J. Depending on the value of exploitRedundancy and the singularity condition, it either computes dotQ directly using the inverse Jacobian, or applies damped pseudo-inverse if near singularity, or returns a singular dotQ vector.</p>
+<dl class="section note"><dt>Note</dt><dd>This function assumes that the UR5 robotic arm is represented with quaternion orientation. </dd>
+<dd>
+The output debug information is written to the specified outputFile stream. </dd></dl>
+
+</div>
+</div>
+<a id="ae639d22d5c4e2d425fb45698d4dbee86"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae639d22d5c4e2d425fb45698d4dbee86">&#9670;&nbsp;</a></span>matrix3dToString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string matrix3dToString </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::Matrix3d &amp;&#160;</td>
+          <td class="paramname"><em>mat</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convert an Eigen::Matrix3d to a string. </p>
+<p>This function converts an Eigen::Matrix3d to a string, with each element separated by a space and each row separated by a newline character.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mat</td><td>The Eigen::Matrix3d to convert </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A string representation of the Eigen::Matrix3d </dd></dl>
+
+</div>
+</div>
+<a id="a52bafca417bc23227b885764c4180619"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52bafca417bc23227b885764c4180619">&#9670;&nbsp;</a></span>matrixToString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string matrixToString </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::MatrixXd &amp;&#160;</td>
+          <td class="paramname"><em>matrice</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convert an Eigen::MatrixXd to a string. </p>
+<p>This function converts an Eigen::MatrixXd to a string, with each element separated by a space and each row separated by a newline character.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">mat</td><td>The Eigen::MatrixXd to convert </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A string representation of the Eigen::MatrixXd </dd></dl>
+
+</div>
+</div>
+<a id="a764d0200f6a88f8746d0e8d016bf3106"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a764d0200f6a88f8746d0e8d016bf3106">&#9670;&nbsp;</a></span>pd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::MatrixXd pd </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>tb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>Tf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::MatrixXd&#160;</td>
+          <td class="paramname"><em>xe0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::MatrixXd&#160;</td>
+          <td class="paramname"><em>xef</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Performs position interpolation between initial and final positions based on normalized time. </p>
+<p>This function interpolates between initial and final positions based on the normalized time parameter 't' between 0 (start of motion) and 1 (end of motion).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tb</td><td>The current time instant. </td></tr>
+    <tr><td class="paramname">Tf</td><td>The total duration of the motion. </td></tr>
+    <tr><td class="paramname">xe0</td><td>The initial position matrix. </td></tr>
+    <tr><td class="paramname">xef</td><td>The final position matrix. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The interpolated position matrix at the current time instant.</dd></dl>
+<p>If the current time 't' exceeds 1, indicating that the current time has surpassed the total duration, the function returns the final position matrix 'xef'. Otherwise, it performs linear interpolation between 'xe0' and 'xef' based on 't'. </p>
+
+</div>
+</div>
+<a id="ad36b6bbec8ef8707e24b7176c790d553"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad36b6bbec8ef8707e24b7176c790d553">&#9670;&nbsp;</a></span>phid()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::MatrixXd phid </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>tb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>Tf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::MatrixXd&#160;</td>
+          <td class="paramname"><em>phief</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::MatrixXd&#160;</td>
+          <td class="paramname"><em>phie0</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Performs orientation interpolation between initial and final orientations based on normalized time. </p>
+<p>This function interpolates between initial and final orientations based on the normalized time parameter 't' between 0 (start of motion) and 1 (end of motion).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tb</td><td>The current time instant. </td></tr>
+    <tr><td class="paramname">Tf</td><td>The total duration of the motion. </td></tr>
+    <tr><td class="paramname">phief</td><td>The final orientation matrix. </td></tr>
+    <tr><td class="paramname">phie0</td><td>The initial orientation matrix. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The interpolated orientation matrix at the current time instant.</dd></dl>
+<p>If the current time 't' exceeds 1, indicating that the current time has surpassed the total duration, the function returns the final orientation matrix 'phief'. Otherwise, it performs linear interpolation between 'phie0' and 'phief' based on 't'. </p>
+
+</div>
+</div>
+<a id="a5b5565001339d358e4fb0e8997fbc7dd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b5565001339d358e4fb0e8997fbc7dd">&#9670;&nbsp;</a></span>posizioneGiunti()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::MatrixXd posizioneGiunti </td>
+          <td>(</td>
+          <td class="paramtype">Eigen::VectorXd&#160;</td>
+          <td class="paramname"><em>Th</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scaleFactor</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Calculate the positions of the joints given the joint angles. </p>
+<p>This function calculates the positions of the joints of a robot arm given the joint angles.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">Th</td><td>The vector of joint angles </td></tr>
+    <tr><td class="paramname">scaleFactor</td><td>The scale factor for the robot arm dimensions </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A matrix containing the positions of the joints </dd></dl>
+
+</div>
+</div>
+<a id="ac7f4de83c93ccc4ffa187ac5282990b5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac7f4de83c93ccc4ffa187ac5282990b5">&#9670;&nbsp;</a></span>qd()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::Quaterniond qd </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>tb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>Tf</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Quaterniond&#160;</td>
+          <td class="paramname"><em>q0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">Eigen::Quaterniond&#160;</td>
+          <td class="paramname"><em>qf</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Performs quaternion interpolation between initial and final quaternions based on normalized time. </p>
+<p>This function interpolates between initial and final quaternions based on the normalized time parameter 't' between 0 (start of motion) and 1 (end of motion).</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">tb</td><td>The current time instant. </td></tr>
+    <tr><td class="paramname">Tf</td><td>The total duration of the motion. </td></tr>
+    <tr><td class="paramname">q0</td><td>The initial quaternion. </td></tr>
+    <tr><td class="paramname">qf</td><td>The final quaternion. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The interpolated quaternion at the current time instant.</dd></dl>
+<p>If the current time 't' exceeds 1, indicating that the current time has surpassed the total duration, the function returns the final quaternion 'qf'. Otherwise, it performs spherical linear interpolation (slerp) between 'q0' and 'qf' based on 't'. </p>
+
+</div>
+</div>
+<a id="a11ca42345e139af29a5e9f9595eeb990"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a11ca42345e139af29a5e9f9595eeb990">&#9670;&nbsp;</a></span>quaternioToString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string quaternioToString </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::Quaterniond &amp;&#160;</td>
+          <td class="paramname"><em>quaternion</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convert an Eigen::Quaterniond to a string. </p>
+<p>This function converts an Eigen::Quaterniond to a string representation of its components, separated by commas.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">quaternion</td><td>The Eigen::Quaterniond to convert </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A string representation of the Eigen::Quaterniond </dd></dl>
 
 </div>
 </div>
@@ -276,7 +1298,7 @@ Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>randomPoin
       </table>
 </div><div class="memdoc">
 
-<p>return a random int value between the lower and the higher values </p>
+<p>Return a random int value between the lower and the higher values. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">min</td><td>lower value </td></tr>
@@ -285,6 +1307,150 @@ Eigen::VectorXd&#160;</td><td class="memItemRight" valign="bottom"><b>randomPoin
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>int </dd></dl>
+
+</div>
+</div>
+<a id="aef41f528669e7a45ddc9e6a6407d4f78"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aef41f528669e7a45ddc9e6a6407d4f78">&#9670;&nbsp;</a></span>randomPoint()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::VectorXd randomPoint </td>
+          <td>(</td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scaleFactor</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Generates a random 3D point with scaled coordinates. </p>
+<p>This function generates a random 3D point with coordinates in the range [-0.25, 0.25] for x, [-0.30, 0.18] or [-0.10, 0.10] for y, and [0.40, 0.65] for z.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">scaleFactor</td><td>The scaling factor applied to the generated point.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A 3D vector representing the random point with scaled coordinates. </dd></dl>
+
+</div>
+</div>
+<a id="a1d89d08f64cf77eb31bb8bb577ebcaca"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1d89d08f64cf77eb31bb8bb577ebcaca">&#9670;&nbsp;</a></span>ur5Jac()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::MatrixXd ur5Jac </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>Th</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scaleFactor</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the Jacobian matrix for the UR5 robotic arm. </p>
+<p>This function calculates the Jacobian matrix for the UR5 robotic arm given the joint angles configuration Th and a scaling factor scaleFactor applied to the Denavit-Hartenberg parameters.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">Th</td><td>The joint angles configuration of the UR5 robotic arm. </td></tr>
+    <tr><td class="paramname">scaleFactor</td><td>The scaling factor applied to the Denavit-Hartenberg parameters. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The Jacobian matrix for the UR5 robotic arm.</dd></dl>
+<p>The Jacobian matrix provides a mapping between the joint velocities and the end effector's linear and angular velocities.</p>
+<dl class="section note"><dt>Note</dt><dd>This function assumes rotational joints only. </dd>
+<dd>
+The input joint angles configuration Th should be a vector of length 6 representing the joint angles. </dd>
+<dd>
+The returned Jacobian matrix J is a 6x6 matrix, each column represents the linear and angular velocities of the end effector corresponding to the respective joint, and each row represents a specific component of the end effector's velocity. </dd></dl>
+
+</div>
+</div>
+<a id="a8d276a20223f0c5b4ab549196b167ee3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8d276a20223f0c5b4ab549196b167ee3">&#9670;&nbsp;</a></span>vectorToString()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::string vectorToString </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>vec</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Convert a Eigen::VectorXd to a string. </p>
+<p>This function converts an Eigen::VectorXd to a string, with each element separated by a space.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">vec</td><td>The Eigen::VectorXd to convert </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>A string representation of the Eigen::VectorXd </dd></dl>
+
+</div>
+</div>
+<a id="a8f82a61916ec40bb9c84ee2b9e9ee7b8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f82a61916ec40bb9c84ee2b9e9ee7b8">&#9670;&nbsp;</a></span>wDerived()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::VectorXd wDerived </td>
+          <td>(</td>
+          <td class="paramtype">const Eigen::VectorXd &amp;&#160;</td>
+          <td class="paramname"><em>q</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">double&#160;</td>
+          <td class="paramname"><em>scaleFactor</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Computes the derivative of a function w(q) with respect to each element of q using the chain rule. </p>
+<p>This function calculates the derivative of a function w(q) with respect to each element of q, where w(q) is derived from the Jacobian of a UR5 robotic arm with joint positions q.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">q</td><td>The vector of joint positions. </td></tr>
+    <tr><td class="paramname">scaleFactor</td><td>The scaling factor applied to the UR5 parameters. </td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="section return"><dt>Returns</dt><dd>The vector of derivatives of w(q) with respect to each element of q.</dd></dl>
+<p>This function computes the derivative using the chain rule and the determinant of the Jacobian J(q). The derivative of w(q) with respect to each element of q is obtained by multiplying a constant K with the partial derivative of the determinant of J(q) with respect to each element of q.</p>
+<dl class="section note"><dt>Note</dt><dd>This function assumes that the input vector q represents the joint positions of the UR5 robotic arm. </dd>
+<dd>
+The scaling factor is applied to the UR5 parameters before computing the Jacobian. </dd></dl>
 
 </div>
 </div>

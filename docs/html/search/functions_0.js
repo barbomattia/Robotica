@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['cinematicadiretta_15',['CinematicaDiretta',['../Kinematic_8h.html#a022ae771b6ad351f574783a99a1eec3d',1,'Kinematic.cpp']]]
+  ['_5f_5finit_5f_5f_58',['__init__',['../classdetection_1_1Detection.html#aa3d9bcae3b407a64016e57bd3220871b',1,'detection::Detection']]]
 ];

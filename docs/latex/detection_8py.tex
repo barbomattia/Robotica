@@ -1,0 +1,247 @@
+\hypertarget{detection_8py}{}\doxysection{/home/mattia/trento\+\_\+lab\+\_\+home/ros\+\_\+ws/src/\+Robotica/vision\+\_\+planner/src/detection.py File Reference}
+\label{detection_8py}\index{/home/mattia/trento\_lab\_home/ros\_ws/src/Robotica/vision\_planner/src/detection.py@{/home/mattia/trento\_lab\_home/ros\_ws/src/Robotica/vision\_planner/src/detection.py}}
+
+
+Performs block detection based on pre-\/trained ONNX model and Open\+CV\textquotesingle{}s Deep Neural Network submodule.  
+
+
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \mbox{\hyperlink{classdetection_1_1Detection}{detection.\+Detection}}
+\begin{DoxyCompactList}\small\item\em Main structure encapsulating all useful information about a single deteceted entity. \end{DoxyCompactList}\item 
+class \mbox{\hyperlink{classdetection_1_1Image}{detection.\+Image}}
+\begin{DoxyCompactList}\small\item\em Structure to get input image for neural network. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+cv.\+dnn.\+Net \mbox{\hyperlink{detection_8py_a6c630bf8bf8e85ddcd4af137aae8fec0}{detection.\+load\+ONNX}} ()
+\begin{DoxyCompactList}\small\item\em Load a neural network from an ONNX file. \end{DoxyCompactList}\item 
+Image \mbox{\hyperlink{detection_8py_a537bdf83c1f3cf31f601049a61752988}{detection.\+pad\+And\+Resize}} (cv.\+Mat frame)
+\begin{DoxyCompactList}\small\item\em Resize and pad an input image to a square shape for compatibility with YOLOv8 network input. \end{DoxyCompactList}\item 
+list \mbox{\hyperlink{detection_8py_a49d789df2cd829b3cb8edf40eaaa1e2d}{detection.\+inference}} (cv.\+Mat frame, cv.\+dnn.\+Net net)
+\begin{DoxyCompactList}\small\item\em Performs inference on an image based on a pre-\/trained YOLOv8 neural network converted to ONNX. \end{DoxyCompactList}\item 
+None \mbox{\hyperlink{detection_8py_aa6a2f183cf18c775cacd3c29bb76a9d7}{detection.\+show\+BBox}} (cv.\+Mat frame, list detections)
+\begin{DoxyCompactList}\small\item\em Show on screen the image on which inference has been performed with the detections. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{detection_8py_a7342ca931bf4f486204f97d4c43ad829}\label{detection_8py_a7342ca931bf4f486204f97d4c43ad829}} 
+string \mbox{\hyperlink{detection_8py_a7342ca931bf4f486204f97d4c43ad829}{detection.\+ONNX}} = \textquotesingle{}./yolov8.\+onnx\textquotesingle{}
+\begin{DoxyCompactList}\small\item\em Path to ONNX model. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{detection_8py_a3f6efccb1f0b950701097443ab97dc34}\label{detection_8py_a3f6efccb1f0b950701097443ab97dc34}} 
+int \mbox{\hyperlink{detection_8py_a3f6efccb1f0b950701097443ab97dc34}{detection.\+SQUARE}} = 640
+\begin{DoxyCompactList}\small\item\em Size of network input. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{detection_8py_abc90def2fedaac83d420f3a286923712}\label{detection_8py_abc90def2fedaac83d420f3a286923712}} 
+tuple \mbox{\hyperlink{detection_8py_abc90def2fedaac83d420f3a286923712}{detection.\+SIZE}} = (SQUARE, SQUARE)
+\begin{DoxyCompactList}\small\item\em XY size of network input. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{detection_8py_a439bb18b6984509794ffda2b10576b80}\label{detection_8py_a439bb18b6984509794ffda2b10576b80}} 
+float \mbox{\hyperlink{detection_8py_a439bb18b6984509794ffda2b10576b80}{detection.\+SCORETHRESH}} = 0.\+25
+\begin{DoxyCompactList}\small\item\em Threshold for confidence scores. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{detection_8py_acdafc20a7beb08823b91c32ed8b19489}\label{detection_8py_acdafc20a7beb08823b91c32ed8b19489}} 
+float \mbox{\hyperlink{detection_8py_acdafc20a7beb08823b91c32ed8b19489}{detection.\+NMSTHRESH}} = 0.\+50
+\begin{DoxyCompactList}\small\item\em Non-\/\+Maximum Suppression threshold. \end{DoxyCompactList}\item 
+list \mbox{\hyperlink{detection_8py_a4d6b9be010430a33f9a8f142df4af17b}{detection.\+class\+Names}}
+\begin{DoxyCompactList}\small\item\em Classes of possibly detected objects. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{detection_8py_aaf516cdbf7fc0d0c6485b10317e0bb77}\label{detection_8py_aaf516cdbf7fc0d0c6485b10317e0bb77}} 
+cv.\+dnn.\+Net {\bfseries detection.\+net} = load\+ONNX()
+\item 
+\mbox{\Hypertarget{detection_8py_a7a0a3bebc4aded293f1d1886b09998ea}\label{detection_8py_a7a0a3bebc4aded293f1d1886b09998ea}} 
+{\bfseries detection.\+frame} = cv.\+imread(f\textquotesingle{}./photos/photo1.\+jpg\textquotesingle{})
+\item 
+\mbox{\Hypertarget{detection_8py_ad2a828a5ef21371737992a8202e5a9c1}\label{detection_8py_ad2a828a5ef21371737992a8202e5a9c1}} 
+list {\bfseries detection.\+detections} = inference(frame, net)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Performs block detection based on pre-\/trained ONNX model and Open\+CV\textquotesingle{}s Deep Neural Network submodule. 
+
+\hypertarget{detection_8py_description_doxygen_example}{}\doxysubsection{Description}\label{detection_8py_description_doxygen_example}
+Give overview\+: TODO.\hypertarget{detection_8py_libraries_main}{}\doxysubsection{Libraries/\+Modules}\label{detection_8py_libraries_main}
+
+\begin{DoxyItemize}
+\item Open\+CV (\href{https://pypi.org/project/opencv-python/}{\texttt{ https\+://pypi.\+org/project/opencv-\/python/}})
+\begin{DoxyItemize}
+\item Pre-\/process the image to perform inference on.
+\item Input the image to the network.
+\item Get outputs of neural network.
+\end{DoxyItemize}
+\item Numpy (\href{https://numpy.org/}{\texttt{ https\+://numpy.\+org/}})
+\begin{DoxyItemize}
+\item Manage network output to extrapolate useful data. 
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{detection_8py_a49d789df2cd829b3cb8edf40eaaa1e2d}\label{detection_8py_a49d789df2cd829b3cb8edf40eaaa1e2d}} 
+\index{detection.py@{detection.py}!inference@{inference}}
+\index{inference@{inference}!detection.py@{detection.py}}
+\doxysubsubsection{\texorpdfstring{inference()}{inference()}}
+{\footnotesize\ttfamily  list detection.\+inference (\begin{DoxyParamCaption}\item[{cv.\+Mat}]{frame,  }\item[{cv.\+dnn.\+Net}]{net }\end{DoxyParamCaption})}
+
+
+
+Performs inference on an image based on a pre-\/trained YOLOv8 neural network converted to ONNX. 
+
+This function takes as input an image, pre-\/processes it to the required standards set by the neural network, and forward passes the blob to the DNN. Afterwards, it receives the outputs in YOLOv8 format \mbox{[}batch\+Size, 84, 8400\mbox{]} and processes them to extract meaningful data about the bounding boxes, class types, and confidence scores. Non-\/\+Maximum Suppression is then immediately applied to filter out possible overlapping or invalid bounding boxes, and a list of all successful detections is passed back.
+
+
+\begin{DoxyParams}{Parameters}
+{\em frame} & Input cv2 image to perform inference on. \\
+\hline
+{\em net} & Pre-\/trained loaded ONNX neural network for object detection.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A list of Detection objects.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The format \mbox{[}batch\+Size, 84, 8400\mbox{]} is interpreted as\+: 1 -\/ batch\+Size (should always be 1 since the inference is made on singular frames) 84 -\/ 0, 1, 2, 3 are the usual YOLO bounding box \mbox{[}centerX, centerY, width, height\mbox{]}, the rest are the probabilities for each class 8400 -\/ number of possible detected objects
+
+The classes are hard-\/coded; they can be replaced to work with a specific ONNX model.
+\end{DoxyNote}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{nn = loadONNX()}
+\DoxyCodeLine{input\_image = cv2.imread(\textcolor{stringliteral}{"{}path/to/image.jpeg"{}})}
+\DoxyCodeLine{detections = inference(input\_image, nn)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+pad\+And\+Resize 
+
+load\+ONNX 
+
+\href{https://github.com/ultralytics/ultralytics/issues/2670}{\texttt{ Github issue}} about YOLOv8 output 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{detection_8py_a6c630bf8bf8e85ddcd4af137aae8fec0}\label{detection_8py_a6c630bf8bf8e85ddcd4af137aae8fec0}} 
+\index{detection.py@{detection.py}!loadONNX@{loadONNX}}
+\index{loadONNX@{loadONNX}!detection.py@{detection.py}}
+\doxysubsubsection{\texorpdfstring{loadONNX()}{loadONNX()}}
+{\footnotesize\ttfamily  cv.\+dnn.\+Net detection.\+load\+ONNX (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+
+
+Load a neural network from an ONNX file. 
+
+This function loads a neural network model from an ONNX trained model file and configures it for inference. If CUDA-\/enabled GPUs are available, and CUDA runtime is built on the system, the function sets the backend and target to CUDA for faster inference. Otherwise, it defaults to CPU processing.
+
+\begin{DoxyReturn}{Returns}
+A cv2.\+dnn.\+Net object representing the loaded neural network.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+This is a hard-\/coded setup, hence the \textquotesingle{}yolov8.\+onnx\textquotesingle{} model is expected in the predefined folder
+\end{DoxyNote}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{nn = loadONNX()}
+\DoxyCodeLine{nn.setInput(blob)}
+\DoxyCodeLine{nn.forward(results, nn.getUnconnectedLayersNames())}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+cv2.\+dnn.\+read\+Net\+From\+ONNX 
+
+cv2.\+cuda.\+get\+Cuda\+Enabled\+Device\+Count 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{detection_8py_a537bdf83c1f3cf31f601049a61752988}\label{detection_8py_a537bdf83c1f3cf31f601049a61752988}} 
+\index{detection.py@{detection.py}!padAndResize@{padAndResize}}
+\index{padAndResize@{padAndResize}!detection.py@{detection.py}}
+\doxysubsubsection{\texorpdfstring{padAndResize()}{padAndResize()}}
+{\footnotesize\ttfamily  Image detection.\+pad\+And\+Resize (\begin{DoxyParamCaption}\item[{cv.\+Mat}]{frame }\end{DoxyParamCaption})}
+
+
+
+Resize and pad an input image to a square shape for compatibility with YOLOv8 network input. 
+
+This function takes an input image and resizes it to a square shape while maintaining the original aspect ratio. If the input image is different from a square shape, the aspect ratio is maintained and the rest of the image filled with zeroes (black pixels). Whichever the case, the image gets scaled to a specific square resolution.
+
+
+\begin{DoxyParams}{Parameters}
+{\em frame} & Input cv2 image to be resized and padded.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Processed image.
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The scaled image size is hard-\/coded to cv2.\+Size(640, 640), needs to be changed if the network input expects another size
+\end{DoxyNote}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{input\_image = cv2.imread(\textcolor{stringliteral}{"{}path/to/image.jpeg"{}})}
+\DoxyCodeLine{input\_image = padAndResize(input\_image)}
+
+\end{DoxyCode}
+ \mbox{\Hypertarget{detection_8py_aa6a2f183cf18c775cacd3c29bb76a9d7}\label{detection_8py_aa6a2f183cf18c775cacd3c29bb76a9d7}} 
+\index{detection.py@{detection.py}!showBBox@{showBBox}}
+\index{showBBox@{showBBox}!detection.py@{detection.py}}
+\doxysubsubsection{\texorpdfstring{showBBox()}{showBBox()}}
+{\footnotesize\ttfamily  None detection.\+show\+BBox (\begin{DoxyParamCaption}\item[{cv.\+Mat}]{frame,  }\item[{list}]{detections }\end{DoxyParamCaption})}
+
+
+
+Show on screen the image on which inference has been performed with the detections. 
+
+The function takes as input the image used for detection and the subsequent detections that the model has provided. Following this, bounding boxes are drawn on the image with the respective class names and confidence scores and shown on screen for any necessary assesment.
+
+
+\begin{DoxyParams}{Parameters}
+{\em frame} & Input cv2 image on which inference has been performed. \\
+\hline
+{\em detections} & list of Detection objects with data for all the detected blocks. ~\newline
+\\
+\hline
+\end{DoxyParams}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{nn = loadONNX()}
+\DoxyCodeLine{input\_image = cv2.imread(\textcolor{stringliteral}{"{}path/to/image.jpeg"{}})}
+\DoxyCodeLine{detections = inference(input\_image, nn)}
+\DoxyCodeLine{showBBox(input\_image, detections)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+pad\+And\+Resize 
+
+load\+ONNX 
+
+inference 
+\end{DoxySeeAlso}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{detection_8py_a4d6b9be010430a33f9a8f142df4af17b}\label{detection_8py_a4d6b9be010430a33f9a8f142df4af17b}} 
+\index{detection.py@{detection.py}!classNames@{classNames}}
+\index{classNames@{classNames}!detection.py@{detection.py}}
+\doxysubsubsection{\texorpdfstring{classNames}{classNames}}
+{\footnotesize\ttfamily list detection.\+class\+Names}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 =  [}
+\DoxyCodeLine{2     \textcolor{stringliteral}{"{}X1-\/Y1-\/Z2"{}},}
+\DoxyCodeLine{3     \textcolor{stringliteral}{"{}X1-\/Y2-\/Z1"{}},}
+\DoxyCodeLine{4     \textcolor{stringliteral}{"{}X1-\/Y2-\/Z2"{}},}
+\DoxyCodeLine{5     \textcolor{stringliteral}{"{}X1-\/Y2-\/Z2-\/CHAMFER"{}},}
+\DoxyCodeLine{6     \textcolor{stringliteral}{"{}X1-\/Y2-\/Z2-\/TWINFILLET"{}},}
+\DoxyCodeLine{7     \textcolor{stringliteral}{"{}X1-\/Y3-\/Z2"{}},}
+\DoxyCodeLine{8     \textcolor{stringliteral}{"{}X1-\/Y3-\/Z2-\/FILLET"{}},}
+\DoxyCodeLine{9     \textcolor{stringliteral}{"{}X1-\/Y4-\/Z1"{}},}
+\DoxyCodeLine{10     \textcolor{stringliteral}{"{}X1-\/Y4-\/Z2"{}},}
+\DoxyCodeLine{11     \textcolor{stringliteral}{"{}X2-\/Y2-\/Z2"{}},}
+\DoxyCodeLine{12     \textcolor{stringliteral}{"{}X2-\/Y2-\/Z2-\/FILLET"{}}}
+\DoxyCodeLine{13 ]}
+
+\end{DoxyCode}
+
+
+Classes of possibly detected objects. 
+
