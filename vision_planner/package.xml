@@ -51,6 +51,7 @@
   <buildtool_depend>catkin</buildtool_depend>
   <depend>rospy</depend>
   <depend>cv_bridge</depend>
+  <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>message_runtime</depend>
 
@@ -58,6 +59,5 @@
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->
-    <build_type>cmake</build_type>
   </export>
 </package>
