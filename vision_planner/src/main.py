@@ -78,6 +78,7 @@ class Vision:
         ros.loginfo('Blocks detected')
         #dc.showBBox(self.image, detections)
         
+        detections = sorted(detections, key = lambda x:x.confidence, reverse = True)
         for detection in detections:
             self.results.append(f'{detection.className}: {detection.bbox}')
         ros.loginfo('Block detections were saved')
@@ -110,7 +111,7 @@ class Vision:
         response.phiBlocks = phiBlocks
         response.nameBlocks = nameBlocks
         
-        ros.loginfo('Sending data')
+        ros.loginfo('Sending detection data to task planner')
         return response
 
 if __name__ == '__main__':
