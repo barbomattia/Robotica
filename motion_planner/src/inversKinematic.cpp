@@ -87,9 +87,7 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf, false, outputFile);
     ROS_INFO("DERIVED q");
     std::cout << "Dimensioni di Th: " << Th.rows() << " " << Th.cols() << std::endl  << std::endl;
-    outputFile << std::endl << "MATRICE di q" << std::endl << matrixToString(Th).c_str() << std::endl << std::endl;
-
-    
+       
     // flag per il controllo collisioni e singolarità
     bool check = false;
     check = checkCollisionSingularity(Th, scaleFactor, outputFile);
@@ -109,20 +107,22 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
         res.two_step = false;
 
     } else {
+
         std::cout << std::endl << "Presenza di collisioni o singolarità, 2 step strategi " << std::endl;
-        Eigen::MatrixXd alternative = alternativeTrajectory(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf, outputFile);
+        Eigen::MatrixXd Th = alternativeTrajectory(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf, outputFile);
     
         //copio la matrice th nella risposta
-        for (int i = 0; i < alternative.rows(); i++) { 
-            for (int j = 0; j < alternative.cols(); j++) {
-                    res.array_q.push_back(alternative(i, j));
+        for (int i = 0; i < Th.rows(); i++) { 
+            for (int j = 0; j < Th.cols(); j++) {
+                    res.array_q.push_back(Th(i, j));
             }
         }
 
         res.two_step = true;
     }
-    
 
+    outputFile << std::endl << "MATRICE di q" << std::endl << matrixToString(Th).c_str() << std::endl << std::endl;
+    
     /*
     for(int i=0; i < res.array_q.size(); i++){
         std::cout << res.array_q[i] << " ";

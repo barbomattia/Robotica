@@ -7,9 +7,9 @@ from vision_planner.srv import objectDetection,objectDetectionResponse
 def image_callback(req):
     rospy.loginfo("request received")
 
-    xBlocksProva = [0.59, 0.47, 1.1, 0.43, 0.55, 1.1, 0.54, 0.32, 1.1]
-    phiBlocksProva = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-    nameBlocksProva = ["X2-Y2-Z2", "X1-Y2-Z1", "X1-Y3-Z2"]
+    xBlocksProva = [0.59, 0.47, 1.1, 0.43, 0.55, 1.1, 0.54, 0.32, 1.1, 0.06, 0.68, 1.1, 0.18, 0.25, 1.1, 0.08, 0.46, 1.1 ]
+    phiBlocksProva = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    nameBlocksProva = ["X2-Y2-Z2", "X1-Y2-Z1", "X1-Y3-Z2", "X1-Y3-Z2-FILLET", "X1-Y2-Z2-TWINFILLET", "X1-Y1-Z1"]
 
     return objectDetectionResponse(xBlocks=xBlocksProva, phiBlocks=phiBlocksProva, nameBlocks=nameBlocksProva);
 

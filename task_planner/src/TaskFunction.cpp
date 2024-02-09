@@ -296,6 +296,8 @@ std::vector<double> define_end_position(std::string block){
     if(block == "X1-Y2-Z2")             return {0.9, 0.65, 1.1, 0.0, 0.0, 0.0};
     if(block == "X1-Y2-Z1")             return {0.85, 0.65, 1.1, 0.0, 0.0, 1.570795};
     if(block == "X1-Y2-Z2-CHAMFER")     return {0.8, 0.65, 1.1, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y1-Z1")             return {0.75, 0.65, 1.1, 0.0, 0.0, 1.570795};
+
 
     return {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     

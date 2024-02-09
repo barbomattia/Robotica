@@ -10,23 +10,35 @@ bool ordering_block(ros::NodeHandle& n, Block& blocco){
     std::cout << "\n\t -> ASK MOTION PLAN \n";
     Eigen::MatrixXd q = ask_inverse_kinematic(n, blocco.x, blocco.phi);
 
+    /*for(int i = 0; i < q.rows(); i++){
+            Eigen::MatrixXd qi = q.row(i);           
+        std::cout<< "["<< i << "]" << qi <<"\n";
+    }*/
+
+    if(q.rows() < 100){
+        std::cout << "\n\t -> BLOCK NON REACABLE \n";
+        return false;
+    }
 
     std::cout << "\n\t -> REACHING THE BLOCK \n";
     
-    /*for(int i = 0; i < q.rows(); i++){
-        Eigen::MatrixXd qi = q.row(i);           
-        std::cout<< "["<< i << "]" << qi <<"\n";
-    }*/
     
-    control_gazebo_arm_2(n,q,false);
+    if(q.rows()==200){
+        std::cout << "\n\t -> STEP 1 ";
+        control_gazebo_arm_2(n,q.topRows(100),false);
 
+        std::cout << "\n\t -> STEP 2  \n";
+        control_gazebo_arm_2(n,q.bottomRows(100),false);
+    }else{
+        control_gazebo_arm_2(n,q,false);
+    }
     
+    
+
     /* std::cout << "\n ----------------------------- GOING BACK HOME POSITION ----------------------------- \n";
     control_gazebo_arm_2(n,q,true); */
     
-
     std::cout << "\n\t -> GRASP THE BLOCK \n";
-
 
     std::cout << "\n\t -> PUT THE BLOCK IN ORDER  \n";
     std::vector<double> end_block_position = define_end_position(blocco.name);
