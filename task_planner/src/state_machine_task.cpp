@@ -29,6 +29,17 @@ bool ordering_block(ros::NodeHandle& n, Block& blocco){
 
         std::cout << "\n\t -> STEP 2  \n";
         control_gazebo_arm_2(n,q.bottomRows(100),false);
+
+    }else if(q.rows()==300){
+        std::cout << "\n\t\t STEP 1 ";
+        control_gazebo_arm_2(n,q.topRows(100),false);
+
+        std::cout << "\n\t\t STEP 2  \n";
+        control_gazebo_arm_2(n,q.block(100, 0, 100, 6),false);
+        
+        std::cout << "\n\t\t STEP 3  \n";
+        control_gazebo_arm_2(n,q.bottomRows(100),false);
+
     }else{
         control_gazebo_arm_2(n,q,false);
     }

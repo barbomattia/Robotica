@@ -975,7 +975,7 @@ bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scal
 
     double ZTetto = -0.2 * scaleFactor;
     double ZTavolo = (0.91-dist)  * scaleFactor ;
-    double ZGradino = 0.625 * scaleFactor;
+    double ZGradino = 0.725 * scaleFactor;
     double XCol1 = -0.4 * scaleFactor;
     double XCol2 = 0.4 * scaleFactor;
     double YGradino = 0.195 * scaleFactor;
@@ -1000,7 +1000,7 @@ bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scal
                         outputFile << "nel gradino" << std::endl;  
                         result = true;
                         break;
-                    } else if(i != 5){
+                    } /* else if(i != 5){
                         Point next = {Th(i+1,0), Th(i+1,1), Th(i+1,2)};
                         outputFile << "calcolo successivo" << std::endl;  
                         if ((ZGradino <= z && ZGradino >= next.z) || (ZGradino <= next.z && ZGradino >= z)){
@@ -1013,7 +1013,7 @@ bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scal
                                 break;
                             }
                         }
-                    }
+                    } */
                     outputFile << "punto successivo sopra gradino" << std::endl;
                 }  
             }
@@ -1160,9 +1160,10 @@ Eigen::MatrixXd alternativeTrajectory(
 
     int tent =0;
 
-    while(check && tent < 10){
+    while(check && tent < 11){
         // trovo una punto intermedio per cui passare e trovo le configurazioni del braccio per raggiungerlo
-         Eigen::VectorXd point_mid(3);
+        Eigen::VectorXd point_mid(3);
+
         if(tent == 0){
             point_mid << -1.0, -3.5, 6.0;
         }else{
@@ -1181,8 +1182,8 @@ Eigen::MatrixXd alternativeTrajectory(
         if(!checkTh1){
             
             std::cout << " TH1 VALIDO -> ";
+            outputFile << std::endl << "Th1 VALIDO " << std::endl;
               
-            outputFile << "TENTATIVO " << tentTH2 << " TH2" << std::endl;
             Eigen::VectorXd xe_mid = posizioneGiunti(Th1.row(99), scaleFactor).row(5);
             Th2 = invDiffKinematicControlSimCompleteQuaternion(Th1.row(99), Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe_mid, xef, q_mid, qf, false, outputFile);
 
@@ -1203,14 +1204,65 @@ Eigen::MatrixXd alternativeTrajectory(
             result.row(i) = Th1.row(i);
         }
         std::cout << "PRIMA PARTE INSERITA" << std::endl;
-            for(int i=0; i<100; i++){
-        result.row(i+100) = Th2.row(i);
+        for(int i=0; i<100; i++){
+            result.row(i+100) = Th2.row(i);
         }
+
     }else{
-        std::cout << std::endl << "NESSUN PUNTO INTEMEDIO TROVATO, PUNTO NON RAGGIUNGIBILE " << std::endl;
-        outputFile << std::endl << std::endl << "NESSUN PUNTO INTEMEDIO TROVATO, PUNTO NON RAGGIUNGIBILE " << std::endl;
-        result.resize(1, 1);
-        result << 0.0;
+        
+        // provo una mandare il braccio all'estremo destro del tavolo 
+        ROS_INFO("TRAIETTORIA a 3 STEP: ");
+        outputFile << std::endl << std::endl << "TRAIETTORIA ALTERNATIVA a 3 STEP" << std::endl;
+
+        bool check3Step = false;
+
+        Eigen::VectorXd point_mid_1(3);
+        point_mid_1 << -1.0, -3.5, 6.0;
+        Eigen::VectorXd point_mid_2(3);
+        point_mid_2 << -5.0, 0.0, 6.0;
+
+        Eigen::MatrixXd Th3;
+
+        Th1 = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, point_mid_1, q0, q_mid, false, outputFile);
+        
+        if(!checkCollisionSingularity(Th1, scaleFactor, outputFile)){
+
+            std::cout << "Th1 VALIDO; ";
+            outputFile << std::endl << "Th1 VALIDO " << std::endl;
+            Th2 = invDiffKinematicControlSimCompleteQuaternion(Th1.row(99), Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, point_mid_1, point_mid_2, q_mid, q_mid, false, outputFile);
+
+            if(!checkCollisionSingularity(Th2, scaleFactor, outputFile)){
+                
+                std::cout << "Th2 VALIDO; ";
+                outputFile << std::endl << "Th2 VALIDO " << std::endl;
+                Th3 = invDiffKinematicControlSimCompleteQuaternion(Th2.row(99), Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, point_mid_2, xef, q_mid, qf, false, outputFile);
+                if(!checkCollisionSingularity(Th3, scaleFactor, outputFile)){
+
+                    std::cout << "Th2 VALIDO; ";
+                    outputFile << std::endl << "Th2 VALIDO " << std::endl;
+                    check3Step = true;
+                }
+
+            }
+        }
+
+        if(check3Step){
+            std::cout << "GENERAZIONE MATRICE TRIPLA " << std::endl;
+            result.resize(300, 6);
+            for(int i=0; i<100; i++){
+                result.row(i) = Th1.row(i);
+                result.row(i+100) = Th2.row(i);
+                result.row(i+200) = Th3.row(i);
+            }
+
+        }else{
+            std::cout << std::endl << "NESSUN PUNTO INTEMEDIO TROVATO, PUNTO NON RAGGIUNGIBILE " << std::endl;
+            outputFile << std::endl << std::endl << "NESSUN PUNTO INTEMEDIO TROVATO, PUNTO NON RAGGIUNGIBILE " << std::endl;
+            result.resize(1, 1);
+            result << 0.0;
+        }
+        
+               
     }
 
     

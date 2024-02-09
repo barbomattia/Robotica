@@ -30,7 +30,7 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     ROS_INFO("REQUEST-----------------------------------------\n");
     ROS_INFO("REQUEST JOINT PARAMETERS \n");
     for (int i = 0; i < req.jointstate.size(); i++) {
-        std::cout << "joint " << i << ": " << req.jointstate[i] << std::endl;
+        std::cout << "joint " << i << ": " << req.jointstate[i] << " ";
     }
     
     // converto il vettore di double req.jointstate in un vettore eigen joinstate
