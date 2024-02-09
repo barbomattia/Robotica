@@ -2,7 +2,7 @@ import cv2 as cv
 import numpy as np
 
 ## Path to ONNX model
-ONNX        = './yolov8.onnx'
+ONNX        = './src/Robotica/vision_planner/yolov8.onnx'
 ## Size of network input
 SQUARE      = 640
 ## XY size of network input

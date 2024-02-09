@@ -1,5 +1,3 @@
-"""! @brief Everything regarding the Vision tasks and detection."""
-
 ##
 # @mainpage Vision task
 #
@@ -27,8 +25,8 @@
 
 import open3d as o3d
 import numpy as np
-import detection as dc
-import pose_detector as pd
+import vision_planner.detection as dc
+import vision_planner.pose_detector as pd
 import rospy as ros
 import cv2 as cv
 import sensor_msgs.point_cloud2 as pc2
@@ -87,7 +85,7 @@ class Vision:
         ros.loginfo('Point cloud was rotated')
         intrinsics = o3d.camera.PinholeCameraIntrinsic(width=1920, height=1080, fx=790.94585984335442, fy=790.94585984335442, cx=960, cy=540)
         depth_frame = pd.create_depth_image_from_point_cloud(self.pcd, intrinsics)
-        meshes = pd.load_meshes('./models/')
+        meshes = pd.load_meshes('./src/Robotica/vision_planner/models/')
         ros.loginfo('Meshes are loaded')
         
         blocks = pd.crop_depth_image(self.results, depth_frame, intrinsics)

@@ -1,9 +1,3 @@
-<<<<<<< HEAD
----
-float64[] xBlocks
-float64[] phiBlocks
-string[] nameBlocks
-=======
 # Request
 ---
 # Response
@@ -11,4 +5,3 @@ string[] nameBlocks
 float64[] xBlocks
 float64[] phiBlocks
 string[] nameBlocks
->>>>>>> vision
