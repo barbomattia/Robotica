@@ -3,6 +3,21 @@
 #include <iostream>
 
 
+
+/**
+ * @brief Orders the robot arm to manipulate a block.
+ * 
+ * This function orchestrates the motion planning and execution for manipulating a block. It first calculates the inverse kinematics 
+ * to reach the block's initial position. If the block is reachable, it proceeds to move the arm to reach the block, potentially 
+ * in multiple steps. Then, it grasps the block and puts it in the desired order.
+ * 
+ * @param n A reference to the ROS node handle.
+ * @param blocco The block object representing the block to be manipulated.
+ * 
+ * @return A boolean value indicating whether the operation was successful, if it's true, the block was successfully manipulated, else the 
+ * block was not reachable or other errors occurred.
+ * 
+ */
 bool ordering_block(ros::NodeHandle& n, Block& blocco){
 
     std::cout << "\n///////////////////////////////// BLOCK " << blocco.name << " //////////////////////////////////////////\n";

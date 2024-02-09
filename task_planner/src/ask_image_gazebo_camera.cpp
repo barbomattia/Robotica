@@ -2,15 +2,34 @@
 #include "sensor_msgs/PointCloud2.h"   // Include il messaggio per la PointCloud2
 #include "sensor_msgs/Image.h"         // Include il messaggio per le Immagini
 
+
+/**
+ * @brief Callback function for handling incoming point cloud messages.
+ * 
+ * This function is called every time a new message is received on the 'pointCloud2' topic.
+ * It logs information about the received point cloud, including the number of points it contains.
+ * 
+ * @param msg Pointer to the received point cloud message.
+ */
 void pointCloudCallback(const sensor_msgs::PointCloud2::ConstPtr& msg) {
     // Funzione di callback chiamata ogni volta che arriva un nuovo messaggio sulla point_cloud
     ROS_INFO("Nuova nuvola di punti ricevuta. Numero di punti: %d", msg->width * msg->height);
 }
 
+
+/**
+ * @brief Callback function for handling incoming image messages.
+ * 
+ * This function is called every time a new message is received on the 'Image' topic.
+ * It logs information about the received image, including its dimensions.
+ * 
+ * @param msg Pointer to the received image message.
+ */
 void imageCallback(const sensor_msgs::Image::ConstPtr& msg) {
     // Funzione di callback chiamata ogni volta che arriva un nuovo messaggio sulla point_cloud
     ROS_INFO("Nuova immagine ricevuta. Dimesnioni : %d, %d", msg->width , msg->height);
 }
+
 
 int main(int argc, char **argv) {
     ros::init(argc, argv, "camera_subscriber"); // Inizializza il nodo

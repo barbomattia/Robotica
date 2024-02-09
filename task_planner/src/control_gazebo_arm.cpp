@@ -15,6 +15,17 @@
 
 */
 
+
+/**
+ * @brief Converts a vector of double values to a formatted string stream.
+ * 
+ * This function takes a vector of double values and converts it into a formatted string stream. Each element of the vector is appended 
+ * to the string stream, separated by spaces and enclosed within square brackets.
+ * 
+ * @param vec The vector of double values to be converted.
+ * 
+ * @return A stringstream containing the formatted representation of the input vector.
+ */
 std::stringstream stampaVector(const std::vector<double>& vec){
     std::stringstream ret;
     ret << " [ ";
@@ -27,6 +38,16 @@ std::stringstream stampaVector(const std::vector<double>& vec){
     return ret;
 }
 
+
+/**
+ * @brief Callback function for handling incoming joint state messages.
+ * 
+ * This function is called every time a new message is received on the 'jointState' topic. It extracts the joint positions from the 
+ * received message and stores them in the provided vector.
+ * 
+ * @param msg Pointer to the received joint state message.
+ * @param received_positions Pointer to the vector where the received joint positions will be stored.
+ */
 void callback2(const sensor_msgs::JointState::ConstPtr& msg, std::vector<double>* received_positions) {
     
     *received_positions = msg->position;
@@ -34,6 +55,22 @@ void callback2(const sensor_msgs::JointState::ConstPtr& msg, std::vector<double>
 }
 
 
+/**
+ * @brief Compares two vectors of double values for equality within a defined threshold.
+ * 
+ * This function compares two vectors of double values for equality within a defined threshold. It reorders the elements of the first 
+ * vector 'received_positions' to match the correct orderof joint positions. Then, it checks if the two vectors have the same size. 
+ * If their sizes are different, it returns false. Otherwise, it iterates through the elements of the vectors and compares them. 
+ * If the absolute difference between corresponding elements exceeds the defined threshold, it returns false. Otherwise, it returns true, 
+ * indicating that the vectors are equal within the specified threshold.
+ * 
+ * @param received_positions The first vector of double values to be compared.
+ * @param vec2 The second vector of double values to be compared.
+ * 
+ * @return A boolean value indicating whether the two vectors are equal within the defined threshold.If it's true, the vectors are equal 
+ * within the threshold, else the vectors are not equal within the threshold.
+ * 
+ */
 bool areVectorsEqual(const std::vector<double>& received_positions, const std::vector<double>& vec2) {
     // riordino received_positions nell'ordine corretto dei joint
     std::vector<double> vec = {received_positions[4], received_positions[3], received_positions[0], received_positions[5], received_positions[6], received_positions[7] };

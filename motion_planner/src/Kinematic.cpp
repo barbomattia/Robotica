@@ -856,6 +856,20 @@ NaNColumn getFirstColumnWithoutNaN(Eigen::MatrixXd& inputMatrix) {
     return {firstColumnWithoutNaN, false};      
 }
 
+Eigen::Quaterniond quatconj(const Eigen::Quaterniond& q) {
+    return Eigen::Quaterniond(q.w(), -q.x(), -q.y(), -q.z());
+}
+
+    
+Eigen::Quaterniond quatmultiply(const Eigen::Quaterniond& q1, const Eigen::Quaterniond& q2) {
+    return q1 * q2;
+}
+
+    
+Eigen::Vector3d parts(const Eigen::Quaterniond& q) {
+    return q.vec();
+}
+
 
 
 std::string vectorToString(const Eigen::VectorXd& vec) {

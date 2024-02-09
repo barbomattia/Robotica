@@ -13,6 +13,17 @@
 /*-------------------------------------------------------  FUNZIONI SECONDARIE ------------------------------------------------------------*/
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+/**
+ * @brief Overloaded insertion operator for outputting Block information.
+ * 
+ * This overload allows the insertion operator '<<' to be used with a Block object for outputting its information to an output stream.
+ * 
+ * @param os The output stream to which the Block information will be written.
+ * @param block The Block object whose information will be outputted.
+ * 
+ * @return A reference to the output stream 'os'.
+ */
 // Sovraccaricamento dell'operatore <<
 std::ostream& operator<<(std::ostream& os, const Block& block) {
     os << "name " << block.name;
@@ -32,6 +43,18 @@ std::ostream& operator<<(std::ostream& os, const Block& block) {
 }
 
 
+/**
+ * @brief Orders the data of blocks into a vector of Block objects.
+ * 
+ * This function takes three vectors representing the x coordinates, phi angles, and names of blocks and organizes them into a vector of
+ * Block objects. Each Block object contains the x coordinates, phi angles, and name of a block.
+ * 
+ * @param xBlocks A vector containing the x coordinates of blocks.
+ * @param phiBlocks A vector containing the phi angles of blocks.
+ * @param nameBlocks A vector containing the names of blocks.
+ * 
+ * @return A vector of Block objects organized with the data of the input blocks.
+ */
 std::vector<Block> riordinaDatiBlocchi(const std::vector<double>& xBlocks, const std::vector<double>& phiBlocks, const std::vector<std::string>& nameBlocks) {
 
     std::vector<Block> ret;
@@ -53,6 +76,16 @@ std::vector<Block> riordinaDatiBlocchi(const std::vector<double>& xBlocks, const
 }
 
 
+/**
+ * @brief Converts a vector of double values to a formatted string stream.
+ * 
+ * This function takes a vector of double values and converts it into a formatted string stream. Each element of the vector is appended 
+ * to the string stream, separated by spaces and enclosed within square brackets.
+ * 
+ * @param vec The vector of double values to be converted.
+ * 
+ * @return A stringstream containing the formatted representation of the input vector.
+ */
 std::stringstream stampaVector(const std::vector<double>& vec){
     std::stringstream ret;
     ret << " [ ";
@@ -65,6 +98,23 @@ std::stringstream stampaVector(const std::vector<double>& vec){
     return ret;
 }
 
+
+/**
+ * @brief Compares two vectors of double values for equality within a defined threshold.
+ * 
+ * This function compares two vectors of double values for equality within a defined threshold. It reorders the elements of the first 
+ * vector 'received_positions' to match the correct orderof joint positions. Then, it checks if the two vectors have the same size. 
+ * If their sizes are different, it returns false. Otherwise, it iterates through the elements of the vectors and compares them. 
+ * If the absolute difference between corresponding elements exceeds the defined threshold, it returns false. Otherwise, it returns true, 
+ * indicating that the vectors are equal within the specified threshold.
+ * 
+ * @param received_positions The first vector of double values to be compared.
+ * @param vec2 The second vector of double values to be compared.
+ * 
+ * @return A boolean value indicating whether the two vectors are equal within the defined threshold.If it's true, the vectors are equal 
+ * within the threshold, else the vectors are not equal within the threshold.
+ * 
+ */
 bool areVectorsEqual(const std::vector<double>& received_positions, const std::vector<double>& vec2) {
     // riordino received_positions nell'ordine corretto dei joint
     std::vector<double> vec = {received_positions[4], received_positions[3], received_positions[0], received_positions[5], received_positions[6], received_positions[7] };
@@ -83,6 +133,16 @@ bool areVectorsEqual(const std::vector<double>& received_positions, const std::v
     return true; 
 }
 
+
+/**
+ * @brief Callback function for processing joint state messages.
+ * 
+ * This function is called whenever a new message of type sensor_msgs::JointState is received. It updates the received_positions 
+ * vector with the joint positions from the message. Additionally, it creates a stringstream object to construct a message for logging purposes.
+ * 
+ * @param msg The received JointState message containing joint positions.
+ * @param received_positions A pointer to the vector where the received joint positions will be stored.
+ */
 void callback(const sensor_msgs::JointState::ConstPtr& msg, std::vector<double>* received_positions) {
     
     *received_positions = msg->position;
@@ -93,12 +153,33 @@ void callback(const sensor_msgs::JointState::ConstPtr& msg, std::vector<double>*
     
 }
 
+
+/**
+ * @brief Callback function for handling incoming joint state messages.
+ * 
+ * This function is called every time a new message is received on the 'jointState' topic. It extracts the joint positions from the 
+ * received message and stores them in the provided vector.
+ * 
+ * @param msg Pointer to the received joint state message.
+ * @param received_positions Pointer to the vector where the received joint positions will be stored.
+ */
 void callback2(const sensor_msgs::JointState::ConstPtr& msg, std::vector<double>* received_positions) {
     
     *received_positions = msg->position;
     
 }
 
+
+/**
+ * @brief Checks if all elements of a vector are zero.
+ * 
+ * This function iterates through the elements of the input vector and checks if each element is equal to zero. If any element is non-zero, 
+ * the function returns false, indicating that the vector is not composed entirely of zeros. Otherwise, if all elements are zero, 
+ * the function returns true.
+ * 
+ * @param vettore The vector of double values to be checked.
+ * @return true if all elements of the vector are zero, false otherwise.
+ */
 bool isZero(const std::vector<double>& vettore) {
     for (double elemento : vettore) {
         if (elemento != 0.0) {
@@ -112,6 +193,16 @@ bool isZero(const std::vector<double>& vettore) {
 /*------------------------------------------------  FUNZIONI X MACCHINA A STATI  ----------------------------------------------------------*/
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+/**
+ * @brief Requests object detection service and retrieves detected blocks.
+ * 
+ * This function calls the 'object_detection' service to detect blocks in the environment. It organizes the detected block data into a 
+ * vector of Block objects and returns it.
+ * 
+ * @param n A reference to the ROS NodeHandle object for communication.
+ * @return A vector of Block objects representing the detected blocks.
+ */
 std::vector<Block> ask_object_detection(ros::NodeHandle& n){
     std::vector<Block> blocchi;
     ros::ServiceClient client = n.serviceClient<vision_planner::objectDetection>("object_detection");
@@ -139,7 +230,18 @@ std::vector<Block> ask_object_detection(ros::NodeHandle& n){
 
 
 
-
+/**
+ * @brief Requests inverse kinematics calculation service to compute joint configurations.
+ * 
+ * This function calls the 'calculate_inverse_kinematics' service provided by the motion_planner package to compute the joint configurations 
+ * required to reach a desired end effector position and orientation. It subscribes to the joint states topic to retrieve the current robot 
+ * joint positions.
+ * 
+ * @param n A reference to the ROS NodeHandle object for communication.
+ * @param xef An array containing the x, y, z coordinates of the desired end effector position.
+ * @param phief An array containing the roll, pitch, yaw angles (in radians) of the desired end effector orientation.
+ * @return A matrix containing the computed joint configurations. Each row represents a set of joint values corresponding to a valid configuration.
+ */
 Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double phief[3]){
 
     // client del service calculate_inverse_kinemaic gestito dal package motion_plan
@@ -208,6 +310,18 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
 }
 
 
+
+/**
+ * @brief Controls the UR5 robot arm in Gazebo simulation.
+ * 
+ * This function publishes joint positions to the UR5 robot arm's controller in Gazebo simulation. It initializes the message with 
+ * the desired joint positions and publishes it to the appropriate topic. It also subscribes to the joint states topic to receive the 
+ * current joint positions of the UR5 arm. The function continuously publishes the desired joint positions until the current joint positions 
+ * match the desired ones, indicating that the arm has reached the desired configuration.
+ * 
+ * @param n A reference to the ROS NodeHandle object for communication.
+ * @param q A vector containing the desired joint positions for the UR5 arm.
+ */
 void control_gazebo_arm(ros::NodeHandle& n, std::vector<double> q){
     
     ros::Publisher pub = n.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1);
@@ -248,6 +362,18 @@ void control_gazebo_arm(ros::NodeHandle& n, std::vector<double> q){
 }
 
 
+/**
+ * @brief Controls the UR5 robot arm in Gazebo simulation using a trajectory.
+ * 
+ * This function publishes joint positions to the UR5 robot arm's controller in Gazebo simulation to follow a trajectory specified by the 
+ * input matrix `q`. It initializes messages with the desired joint positions at each step of the trajectory and publishes them to the 
+ * appropriate topic. The function can control the arm to follow the trajectory in the forward direction or move back along the trajectory, 
+ * depending on the value of the `goingBack` parameter.
+ * 
+ * @param n A reference to the ROS NodeHandle object for communication.
+ * @param q The matrix representing the trajectory, where each row contains the desired joint positions for a specific step of the trajectory.
+ * @param goingBack A boolean flag indicating whether to move back along the trajectory (true) or follow it in the forward direction (false).
+ */
 void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q, bool goingBack){
 
     ros::Publisher pub = n.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1);
