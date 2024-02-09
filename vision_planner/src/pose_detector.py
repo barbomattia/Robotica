@@ -250,6 +250,33 @@ def crop_depth_image(yolo_detections, depth_image, intrinsics):
 
     #create a list of tuples to store the cropped depth images together with the block identifier
     blocks = []
+    
+    # Define the transformation matrix
+    rotation_matrixA = np.array([[1, 0, 0], [0, -1, 0], [0, 0, -1]])
+    rotation_matrixB = np.array([[-1, 0, 0], [0, 1, 0], [0, 0, 1]])
+    rotation = np.dot(rotation_matrixA, rotation_matrixB).T
+    
+    # Given orientation quaternion
+    x, y, z, w = 0.612267, -0.612267, 0.353737, -0.353737
+
+    # Calculate elements of the rotation matrix
+    r11 = 1 - 2 * y**2 - 2 * z**2
+    r12 = 2 * x * y - 2 * z * w
+    r13 = 2 * x * z + 2 * y * w
+    r21 = 2 * x * y + 2 * z * w
+    r22 = 1 - 2 * x**2 - 2 * z**2
+    r23 = 2 * y * z - 2 * x * w
+    r31 = 2 * x * z - 2 * y * w
+    r32 = 2 * y * z + 2 * x * w
+    r33 = 1 - 2 * x**2 - 2 * y**2
+    
+    # Create the rotation matrix
+    world_to_camera = np.array([
+        [r11, r12, r13],
+        [r21, r22, r23],
+        [r31, r32, r33]
+    ])
+    
     # Iterate over all blocks detected by YOLO
     for line in yolo_detections:
         # Remove the last char from the line
@@ -291,11 +318,18 @@ def crop_depth_image(yolo_detections, depth_image, intrinsics):
         pc_x =  (norm_X - cx) * pc_z / fx
         pc_y = -(norm_Y - cy) * pc_z / fy
 
-        print("Center:", pc_x, pc_y, pc_z-0.012)
-### center
+        print("Center:", pc_x, pc_y, pc_z-0.023)
 
+        pc = np.array([pc_x, -pc_y, pc_z - 0.023])
+        
+        pc = np.dot(rotation, pc)
+        
+        pc = np.dot(world_to_camera, pc)
+        pc = pc - np.array([0.4, -0.59, -1.4])
+        
+        print(pc)
         # Append the cropped depth image together with the block identifier to the list
-        blocks.append((block_identifier, [pc_x, pc_y, pc_z-0.012], cropped_depth_image, cropped_point_cloud))      
+        blocks.append((block_identifier, [pc[0], pc[1], pc[2]], cropped_depth_image, cropped_point_cloud))      
     
     return blocks
 
@@ -867,4 +901,10 @@ if __name__ == "__main__":
     # Perform ICP to get the pose of the block respectivelly to the mesh of the first block
     #compute_pose(meshes, blocks)
     
-    find_best(meshes, blocks)
+    results = find_best(meshes, blocks)
+    
+    i = 0
+    with open('centers.txt', 'w') as file:
+        for result in results:
+            file.write(f'{i}: {result[1]}\n')
+            i += 1

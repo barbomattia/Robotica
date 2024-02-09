@@ -185,7 +185,6 @@ def inference(frame: cv.Mat, net: cv.dnn.Net) -> list:
         _, _, _, maxScore = cv.minMaxLoc(classScores)
         classId = maxScore[1]
         if classScores[classId] > SCORETHRESH:
-            print(classScores[classId])
             centerX = data[0].item() * scale
             centerY = data[1].item() * scale
             
@@ -241,25 +240,28 @@ def showBBox(frame: cv.Mat, detections: list) -> None:
             thickness = 2
         )
         
-        string = f'{detection.className} {detection.confidence:.2f}'
-        textSize = cv.getTextSize(string, cv.FONT_HERSHEY_DUPLEX, 1, 2)[0]
-        textBox = (detection.bbox[0], detection.bbox[1] - 40, textSize[0] + 10, textSize[1] + 20)
+    for detection in detections:
         
-        """cv.rectangle(
+        string = f'{detection.className} {detection.confidence:.2f}'
+        textSize = cv.getTextSize(string, cv.FONT_HERSHEY_DUPLEX, 0.5, 1)[0]
+        textBox = (detection.bbox[0] - 1, detection.bbox[1], detection.bbox[0] + textSize[0] + 10, detection.bbox[1] - textSize[1] - 10)
+        
+        cv.rectangle(
             frame,
-            (textBox[0] + textBox[2], textBox[1] + textBox[3]),
+            (textBox[0], textBox[1]),
+            (textBox[2], textBox[3]),
             (0, 255, 0),
             cv.FILLED
-        )"""
+        )
         
         cv.putText(
             img = frame,
             text = string,
-            org = (detection.bbox[0] + 5, detection.bbox[1] - 10),
+            org = (detection.bbox[0] + 5, detection.bbox[1] - 5),
             fontFace = cv.FONT_HERSHEY_DUPLEX,
-            fontScale = 1,
+            fontScale = 0.5,
             color = (0, 0, 0),
-            thickness = 2,
+            thickness = 1,
             lineType = 0
         )
     
@@ -279,7 +281,11 @@ def showBBox(frame: cv.Mat, detections: list) -> None:
     cv.destroyAllWindows()
         
 if __name__ == '__main__':
-    frame = cv.imread('./photo.png')
     net = loadONNX()
+    frame = cv.imread(f'./photos/photo1.jpg')
     detections = inference(frame, net)
     showBBox(frame, detections)
+    """for i in range(13):
+        frame = cv.imread(f'./photos/photo{i}.jpg') 
+        detections = inference(frame, net)
+        showBBox(frame, detections)"""
