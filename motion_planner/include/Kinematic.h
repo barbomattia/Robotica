@@ -24,10 +24,6 @@
 #define ARM_Y 0.35
 #define ARM_Z 1.75
 
-#define END_EFFECTOR_WIDTH 0.05
-#define ONE_WIDTH_BLOCK 0.031
-#define TWO_WIDTH_BLOCK 0.063
-
 #define DER_H 0.04
 #define K0 0.01
 
@@ -196,7 +192,6 @@
      * @param Kp The linear error matrix.
      * @param Kq The quaternion error matrix.
      * @param scaleFactor The scaling factor applied to the UR5 parameters.
-     * @param exploitRedundancy Flag indicating whether to exploit redundancy (true) or not (false).
      * @param outputFile The output stream to write debug information.
      * @return The joint velocity vector dotQ.
      * 
@@ -220,7 +215,6 @@
         const Eigen::MatrixXd& Kp,          // matrice di errore lineare     
         const Eigen::MatrixXd& Kq,          // matrice di errore quaternione
         double scaleFactor,
-        double exploitRedundancy,
         std::ofstream& outputFile           // file di stampa 
     );
 
@@ -320,7 +314,7 @@
      * @param xef Final end-effector position.
      * @param q0 Initial end-effector quaternion.
      * @param qf Final end-effector quaternion.
-     * @param exploitRedundancy Flag indicating whether to exploit redundancy.
+     * @param grasp Flag indicating if it is a grasping action.
      * @param outputFile Output file stream to write the results.
      * @return Matrix containing joint configurations for each time step.
      * 
@@ -353,7 +347,7 @@
         Eigen::MatrixXd xef,            // posizione finale end-effector
         Eigen::Quaterniond q0,          // quaternione iniziale end-effector 
         Eigen::Quaterniond qf,          // quaternione finale end-effector
-        double exploitRedundancy,
+        bool grasp,
         std::ofstream& outputFile       // file di stampa 
     );
 
@@ -416,25 +410,8 @@
      * Or false: No collision or singularity detected.
      * 
     */
-    bool checkCollisionSingularity(Eigen::MatrixXd& Th, double scaleFactor, std::ofstream& outputFile);
+    bool checkCollisionSingularity(Eigen::MatrixXd& Th, double scaleFactor, bool grasp, std::ofstream& outputFile);
 
-
-    /**
-     * @brief Calculates the width adjustment for the gripper based on the provided block name.
-     * 
-     * This function determines the gripper width adjustment according to the specified block name. If the block name matches any in the 
-     * OneWidth vector, it computes half the difference between the end effector width and the width of a single-width block. If it matches any in 
-     * the TwoWidth vector, it computes half the difference between the end effector width and the width of a double-width block. 
-     * If the provided block name does not match any predefined block names, it prints a message indicating an unrecognized block name.
-     * 
-     * @param blockName The name of the block for which the gripper width adjustment is calculated.
-     * 
-     * @return The width adjustment for the gripper.
-     * If the block name is recognized: for single-width blocks: half the difference between the end effector width and the width of a 
-     * single-width block. For double-width blocks: half the difference between the end effector widt and the width of a double-width block.
-     * If the block name is unrecognized returns 0.
-     */
-    double Gripper(std::string blockName);
 
     /**
      * @brief Computes the partial derivative of the determinant of the Jacobian with respect to the i-th element of q.

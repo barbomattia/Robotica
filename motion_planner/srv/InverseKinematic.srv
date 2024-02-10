@@ -3,5 +3,6 @@ float64[3] xef
 float64[3] phief
 string title
 bool first
+bool grasp
 ---
 float64[] array_q

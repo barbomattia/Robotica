@@ -28,9 +28,9 @@ bool ordering_block(ros::NodeHandle& n, Block& blocco, int i){
     Eigen::MatrixXd q;
 
     if(i==0){
-        q = ask_inverse_kinematic(n, blocco.x, blocco.phi, title, true);
+        q = ask_inverse_kinematic(n, blocco.x, blocco.phi, title, true, false);
     }else{
-        q = ask_inverse_kinematic(n, blocco.x, blocco.phi, title, false);
+        q = ask_inverse_kinematic(n, blocco.x, blocco.phi, title, false, false);
     }
     
 
@@ -49,23 +49,23 @@ bool ordering_block(ros::NodeHandle& n, Block& blocco, int i){
     
     if(q.rows()==200){
         std::cout << "\n\t -> STEP 1 "; std::cout.flush();
-        control_gazebo_arm_2(n,q.topRows(100),false);
+        control_gazebo_arm_2(n, q.topRows(100), false, false);
 
         std::cout << "\n\t -> STEP 2  \n"; std::cout.flush();
-        control_gazebo_arm_2(n,q.bottomRows(100),false);
+        control_gazebo_arm_2(n,q.bottomRows(100),false, false);
 
     }else if(q.rows()==300){
         std::cout << "\n\t\t STEP 1 "; std::cout.flush();
-        control_gazebo_arm_2(n,q.topRows(100),false);
+        control_gazebo_arm_2(n,q.topRows(100),false, false);
 
         std::cout << "\n\t\t STEP 2  \n"; std::cout.flush();
-        control_gazebo_arm_2(n,q.block(100, 0, 100, 6),false);
+        control_gazebo_arm_2(n,q.block(100, 0, 100, 6),false, false);
         
         std::cout << "\n\t\t STEP 3  \n"; std::cout.flush();
-        control_gazebo_arm_2(n,q.bottomRows(100),false);
+        control_gazebo_arm_2(n,q.bottomRows(100),false, false);
 
     }else{
-        control_gazebo_arm_2(n,q,false);
+        control_gazebo_arm_2(n,q,false, false);
     }
     
     
@@ -74,6 +74,9 @@ bool ordering_block(ros::NodeHandle& n, Block& blocco, int i){
     control_gazebo_arm_2(n,q,true); */
     
     std::cout << "\n\t -> GRASP THE BLOCK \n";
+    title = "Grasp " + blocco.name;
+    grasp(n, blocco.x, blocco.phi, true, blocco.name, title);
+    std::cout << "\n\t     end grasping\n"; std::cout.flush();
 
     std::cout << "\n\t -> PUT THE BLOCK IN ORDER  \n";
     std::vector<double> end_block_position = define_end_position(blocco.name);
@@ -112,11 +115,11 @@ bool ordering_block(ros::NodeHandle& n, Block& blocco, int i){
     if(q.rows() > 100){
         std::cout << "\t    Going back to fiirst mid point"; std::cout.flush();
         if(q.rows()==200){
-            control_gazebo_arm_2(n,q.bottomRows(100),true);
+            control_gazebo_arm_2(n,q.bottomRows(100),true, true);
 
         }else{
-            control_gazebo_arm_2(n,q.bottomRows(100),true);
-            control_gazebo_arm_2(n,q.block(100, 0, 100, 6),true);
+            control_gazebo_arm_2(n,q.bottomRows(100),true, true);
+            control_gazebo_arm_2(n,q.block(100, 0, 100, 6),true, true);
                 
         }
 
@@ -124,8 +127,13 @@ bool ordering_block(ros::NodeHandle& n, Block& blocco, int i){
 
     title = "Ordering " + blocco.name;
     std::cout << std::endl << "\t    Reaching the order coordinate\n" <<std::endl; std::cout.flush();
-    Eigen::MatrixXd q_end = ask_inverse_kinematic(n, end_block_position_x, end_block_position_phi, title, false);
-    control_gazebo_arm_2(n,q_end,false);
+    Eigen::MatrixXd q_end = ask_inverse_kinematic(n, end_block_position_x, end_block_position_phi, title, false, false);
+    control_gazebo_arm_2(n,q_end,false, true);
+
+    std::cout << "\n\t -> POSE THE BLOCK: "; std::cout.flush();
+    title = "Pose " + blocco.name;
+    grasp(n, end_block_position_x, end_block_position_phi, false, blocco.name, title);
+    std::cout << "\n\t     end grasping\n"; std::cout.flush();
     
     
     return true;

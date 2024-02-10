@@ -8,6 +8,10 @@
 #include <iterator>
 #include <functional>
 
+#define END_EFFECTOR_WIDTH 0.5
+#define ONE_WIDTH_BLOCK 0.31
+#define TWO_WIDTH_BLOCK 0.63
+
 #ifndef __TASKFUNCTION_H__
 #define __TASKFUNCTION_H__
 
@@ -67,7 +71,7 @@
     /* RICHIESTA MOTION PLAN
     La funzione richiede al nodo motion di eseguire il motion plan per raggiungere la configurazione richiesta: [xef, phief]
     Essa ritorna le configurazione q */
-    Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double phief[3], std::string title, bool first);
+    Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double phief[3], std::string title, bool first, bool grasp);
 
 
     /* RICHIESTA MOVIMENTO BRACCIO
@@ -100,7 +104,7 @@
      * @param q The matrix representing the trajectory, where each row contains the desired joint positions for a specific step of the trajectory.
      * @param goingBack A boolean flag indicating whether to move back along the trajectory (true) or follow it in the forward direction (false).
      */
-    void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q, bool goingBack);
+    void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q, bool goingBack, bool grasp);
 
 
     /* DEFINIZIONE POSIZIONE ORDINATA BLOCCO
@@ -120,7 +124,27 @@
      */
     /* FUNZIONI SECONDARIE */
     bool isZero(const std::vector<double>& vettore);
+
     std::stringstream stampaVector(const std::vector<double>& vec);
+
+    /**
+     * @brief Calculates the width adjustment for the gripper based on the provided block name.
+     * 
+     * This function determines the gripper width adjustment according to the specified block name. If the block name matches any in the 
+     * OneWidth vector, it computes half the difference between the end effector width and the width of a single-width block. If it matches any in 
+     * the TwoWidth vector, it computes half the difference between the end effector width and the width of a double-width block. 
+     * If the provided block name does not match any predefined block names, it prints a message indicating an unrecognized block name.
+     * 
+     * @param blockName The name of the block for which the gripper width adjustment is calculated.
+     * 
+     * @return The width adjustment for the gripper.
+     * If the block name is recognized: for single-width blocks: half the difference between the end effector width and the width of a 
+     * single-width block. For double-width blocks: half the difference between the end effector widt and the width of a double-width block.
+     * If the block name is unrecognized returns 0.
+     */
+    double Gripper(std::string blockName);
+
+    void grasp(ros::NodeHandle& n, double xef[3], double phief[3], bool take, std::string blockName, std::string title);
 
 
 #endif

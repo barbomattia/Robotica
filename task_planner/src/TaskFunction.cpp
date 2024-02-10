@@ -122,6 +122,24 @@ bool areVectorsEqual(const std::vector<double>& received_positions, const std::v
     return true; 
 }
 
+bool areVectorsFullEqual(const std::vector<double>& received_positions, const std::vector<double>& vec2) {
+    // riordino received_positions nell'ordine corretto dei joint
+    std::vector<double> vec = {received_positions[4], received_positions[3], received_positions[0], received_positions[5], received_positions[6], received_positions[7], received_positions[1], received_positions[2] };
+    
+    if (vec.size() != vec2.size()) {
+        std::cout<<"DIMENSIONI DIFFERENTI" << std::endl;
+        return false;
+    }
+
+    for (size_t i = 0; i < vec.size(); ++i) {
+        if (std::abs(vec[i] - vec2[i]) > 0.01) {     // definisco treshold per non considerare altir errori
+            return false; 
+        }
+    }
+
+    return true; 
+}
+
 
 /**
  * @brief Callback function for processing joint state messages.
@@ -212,6 +230,8 @@ void go_to_start_position(ros::NodeHandle& n){
         ros::spinOnce(); 
         loop_rate.sleep();
     }
+
+    
     
 
     std::cout << " Raggiunta \n";
@@ -246,7 +266,7 @@ std::vector<Block> ask_object_detection(ros::NodeHandle& n){
 }
 
 
-Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double phief[3], std::string title, bool first){
+Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double phief[3], std::string title, bool first, bool grasp){
 
     // client del service calculate_inverse_kinemaic gestito dal package motion_plan
     ros::ServiceClient service_client = n.serviceClient<motion_planner::InverseKinematic>("calculate_inverse_kinematics");
@@ -281,11 +301,16 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
 
     //inizializzo nella richiesta i parametri finali della configurazione end effector 
     //per le coordinate conferto le coordinate originali nel world frame alla coordinate del UR5 fram 
-    srv.request.xef[0]=xef[0]-ARM_X;            srv.request.phief[0]=phief[0];
-    srv.request.xef[1]=ARM_Y - xef[1];          srv.request.phief[1]=phief[1];
-    srv.request.xef[2]= 0.6;                    srv.request.phief[2]= 0.0;
+    srv.request.xef[0]=xef[0]-ARM_X;            srv.request.phief[0]=0.0;
+    srv.request.xef[1]=ARM_Y - xef[1];          srv.request.phief[1]=0.0;
+    srv.request.xef[2]= 0.60;                   srv.request.phief[2]= 0.0;
+    
+    if(grasp){
+        srv.request.xef[2]= 0.72;
+        srv.request.phief[2]= phief[2];
+    }
 
-    srv.request.title = title;                  srv.request.first = first;
+    srv.request.title = title;         srv.request.first = first;        srv.request.grasp = grasp;
 
     // srv.request.xef[2]=ARM_Z - xef[2];  
     /* TEST PRINT OF REQUEST MESSAGE 
@@ -317,6 +342,8 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
         std::cout << "\n\t   Failed to call service 'calculate_inverse_kinematics' \n";
         std::cout.flush();
     }
+
+    sub1.shutdown();
 
     return ret;
   
@@ -359,14 +386,32 @@ void control_gazebo_arm(ros::NodeHandle& n, std::vector<double> q){
     
 
     std::cout << "\tConfigurazione Raggiunta \n";
+    pub.shutdown();
 
 }
 
 
-void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q, bool goingBack){
+void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q, bool goingBack, bool grasp){
 
     ros::Publisher pub = n.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1);
     std::vector<std_msgs::Float64MultiArray> jointPositions(q.rows());
+
+    double grasp1 = 0.0;
+    double grasp2 = 0.0;
+
+    if(grasp){   
+            // subscriber al topic che invia l'attuale configurazione dei joint dell'ur5
+            std::vector<double> received_positions;  
+            ros::Subscriber sub = n.subscribe<sensor_msgs::JointState>("/ur5/joint_states", 1, std::bind(callback2, std::placeholders::_1, &received_positions));
+
+            // Ciclo fino a quando non ricevi il messaggio della configurazione attuale dei joint dell'ur5
+            while (received_positions.empty()) {
+                ros::spinOnce(); 
+            }
+
+            grasp1 = received_positions[1];
+            grasp2 = received_positions[2];
+    }
 
     for(int i = 0; i < q.rows(); i++){
         Eigen::MatrixXd qi;
@@ -378,8 +423,9 @@ void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q, bool goingBack)
         
         std_msgs::Float64MultiArray jointPositionTemp;
         jointPositionTemp.data.insert(jointPositionTemp.data.end(), qi_vector.begin(), qi_vector.end()); 
-        jointPositionTemp.data.push_back(0.0);     //inserisco i valori per il rasp1
-        jointPositionTemp.data.push_back(0.0);     //inserisco i valori per il rasp2
+
+        jointPositionTemp.data.push_back(grasp1);     //inserisco i valori per il rasp1
+        jointPositionTemp.data.push_back(grasp2);     //inserisco i valori per il rasp2
 
         jointPositions[i] = jointPositionTemp;
 
@@ -395,26 +441,172 @@ void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q, bool goingBack)
         loop_rate.sleep();
     }
 
+    pub.shutdown();
+
 }
 
 
 
 std::vector<double> define_end_position(std::string block){
-    if(block == "X1-Y4-Z2")             return {0.9, 0.25, 1.1, 0.0, 0.0, 1.570795};
-    if(block == "X1-Y4-Z1")             return {0.9, 0.3, 1.1, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y4-Z2")             return {0.9, 0.25, 1.1, 0.0, 0.0, 3.14};
+    if(block == "X1-Y4-Z1")             return {0.9, 0.3, 1.1, 0.0, 0.0, 3.14};
     if(block == "X1-Y1-Z2")             return {0.8, 0.3, 1.1, 0.0, 0.0, 0.0};
     if(block == "X2-Y2-Z2")             return {0.92, 0.4, 1.1, 0.0, 0.0, 0.0};
     if(block == "X2-Y2-Z2-FILLET")      return {0.82, 0.4, 1.1, 0.0, 0.0, 0.0};
-    if(block == "X1-Y3-Z2")             return {0.92, 0.5, 1.1, 0.0, 0.0, 1.570795};
-    if(block == "X1-Y3-Z2-FILLET")      return {0.8, 0.5, 1.1, 0.0, 0.0, 1.570795};
-    if(block == "X1-Y2-Z2-TWINFILLET")  return {0.95, 0.65, 1.1, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y3-Z2")             return {0.92, 0.5, 1.1, 0.0, 0.0, 3.14};
+    if(block == "X1-Y3-Z2-FILLET")      return {0.8, 0.5, 1.1, 0.0, 0.0, 3.14};
+    if(block == "X1-Y2-Z2-TWINFILLET")  return {0.95, 0.65, 1.1, 0.0, 0.0, 3.14};
     if(block == "X1-Y2-Z2")             return {0.9, 0.65, 1.1, 0.0, 0.0, 0.0};
-    if(block == "X1-Y2-Z1")             return {0.85, 0.65, 1.1, 0.0, 0.0, 1.570795};
-    if(block == "X1-Y2-Z2-CHAMFER")     return {0.8, 0.65, 1.1, 0.0, 0.0, 1.570795};
-    if(block == "X1-Y1-Z1")             return {0.75, 0.65, 1.1, 0.0, 0.0, 1.570795};
+    if(block == "X1-Y2-Z1")             return {0.85, 0.65, 1.1, 0.0, 0.0, 3.14};
+    if(block == "X1-Y2-Z2-CHAMFER")     return {0.8, 0.65, 1.1, 0.0, 0.0, 3.14};
+    if(block == "X1-Y1-Z1")             return {0.75, 0.65, 1.1, 0.0, 0.0, 3.14};
 
 
     return {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
     
     
+}
+
+
+double Gripper(std::string blockName){
+    
+    double result = 0;
+
+    std::vector<std::string> OneWidth = {
+        "X1-Y2-Z1", "X1-Y3-Z2", "X1-Y2-Z2-TWINFILLET",
+        "X1-Y4-Z1", "X1-Y4-Z1", "X1-Y3-Z2-FILLET",
+        "X1-Y1-Z2", "X1-Y2-Z2", "X1-Y2-Z2-CHAMFER", "X1-Y4-Z2"
+    };
+
+    std::vector<std::string> TwoWidth = {
+        "X2-Y2-Z2", "X2-Y2-Z2-FILLET"
+    };
+
+    for (const std::string& s : OneWidth) {
+        if (blockName == s) {
+            result = (ONE_WIDTH_BLOCK - END_EFFECTOR_WIDTH)/2.0;
+            return result;
+        }
+    }
+
+    for (const std::string& s : TwoWidth) {
+        if (blockName == s) {
+            result =  (TWO_WIDTH_BLOCK -END_EFFECTOR_WIDTH)/2.0;
+            return result;
+        }
+    }
+
+    return result;
+}
+
+
+void openGrasp(ros::NodeHandle& n){
+
+    // inizializzo il messaggio per l'ur5 con la configurazione q dei joint che voglio raggiungere
+    ros::Publisher pub = n.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1);
+    std_msgs::Float64MultiArray jointPositions;
+
+    // subscriber al topic che invia l'attuale configurazione dei joint dell'ur5
+    std::vector<double> received_positions;  
+    ros::Subscriber sub = n.subscribe<sensor_msgs::JointState>("/ur5/joint_states", 1, std::bind(callback2, std::placeholders::_1, &received_positions));
+
+    // Ciclo fino a quando non ricevi il messaggio della configurazione attuale dei joint dell'ur5
+    while (received_positions.empty()) {
+        ros::spinOnce(); 
+    }
+
+   
+    jointPositions.data.push_back(received_positions[4]);     //inseirsco i valori  per il joint1
+    jointPositions.data.push_back(received_positions[3]);     //inseirsco i valori  per il joint2
+    jointPositions.data.push_back(received_positions[0]);     //inseirsco i valori  per il joint3
+    jointPositions.data.push_back(received_positions[5]);     //inseirsco i valori  per il joint4
+    jointPositions.data.push_back(received_positions[6]);     //inseirsco i valori  per il joint5
+    jointPositions.data.push_back(received_positions[7]);     //inseirsco i valori  per il joint6
+    jointPositions.data.push_back(0.3);     //inseirsco i valori  per il rasp1
+    jointPositions.data.push_back(0.3);     //inseirsco i valori  per il rasp2
+
+    
+    // std::cout << "received_positions: " << stampaVector(received_positions).str() << "\n";
+    // std::cout << "jointPositions.data: " << stampaVector(jointPositions.data).str() << "\n";
+
+    ros::Rate loop_rate(25); 
+
+    while(!areVectorsFullEqual(received_positions,jointPositions.data))
+    {
+        pub.publish(jointPositions);
+
+        ros::spinOnce(); 
+        loop_rate.sleep();
+    }
+    
+
+    std::cout << "\t Grasp Opened \n";
+    pub.shutdown();
+    sub.shutdown();
+}
+
+void closeGrasp(ros::NodeHandle& n, std::string blockName){
+
+     double closingFactor = Gripper(blockName);
+
+    // inizializzo il messaggio per l'ur5 con la configurazione q dei joint che voglio raggiungere
+    ros::Publisher pub = n.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1);
+    std_msgs::Float64MultiArray jointPositions;
+
+    // subscriber al topic che invia l'attuale configurazione dei joint dell'ur5
+    std::vector<double> received_positions;  
+    ros::Subscriber sub = n.subscribe<sensor_msgs::JointState>("/ur5/joint_states", 1, std::bind(callback2, std::placeholders::_1, &received_positions));
+
+    // Ciclo fino a quando non ricevi il messaggio della configurazione attuale dei joint dell'ur5
+    while (received_positions.empty()) {
+        ros::spinOnce(); 
+    }
+
+   
+    jointPositions.data.push_back(received_positions[4]);     //inseirsco i valori  per il joint1
+    jointPositions.data.push_back(received_positions[3]);     //inseirsco i valori  per il joint2
+    jointPositions.data.push_back(received_positions[0]);     //inseirsco i valori  per il joint3
+    jointPositions.data.push_back(received_positions[5]);     //inseirsco i valori  per il joint4
+    jointPositions.data.push_back(received_positions[6]);     //inseirsco i valori  per il joint5
+    jointPositions.data.push_back(received_positions[7]);     //inseirsco i valori  per il joint6
+    jointPositions.data.push_back(closingFactor);     //inseirsco i valori  per il rasp1
+    jointPositions.data.push_back(closingFactor);     //inseirsco i valori  per il rasp2
+
+    
+    // std::cout << "received_positions: " << stampaVector(received_positions).str() << "\n";
+    // std::cout << "jointPositions.data: " << stampaVector(jointPositions.data).str() << "\n";
+
+    ros::Rate loop_rate(25); 
+
+    while(!areVectorsFullEqual(received_positions,jointPositions.data))
+    {
+        pub.publish(jointPositions);
+
+        ros::spinOnce(); 
+        loop_rate.sleep();
+    }
+    
+
+    std::cout << "\t Grasp closed \n";
+    pub.shutdown();
+    sub.shutdown();
+}
+
+
+void grasp(ros::NodeHandle& n, double xef[3], double phief[3], bool taken, std::string blockName, std::string title){
+
+    if(taken){ openGrasp(n); }
+
+    Eigen::MatrixXd graspTrajectory = ask_inverse_kinematic(n, xef, phief, title , false, true);
+    control_gazebo_arm_2(n, graspTrajectory, false, true);
+    if(taken){
+        std::cout << "\n\t\t     Taken"; std::cout.flush();
+        closeGrasp(n,blockName); 
+    }else{
+        std::cout << "\n\t\t     Posed"; std::cout.flush(); 
+        openGrasp(n);      
+    }
+    control_gazebo_arm_2(n, graspTrajectory, true, true);
+
+
 }

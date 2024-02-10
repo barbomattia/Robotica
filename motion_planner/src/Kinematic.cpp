@@ -529,7 +529,6 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     const Eigen::MatrixXd& Kp,          // matrice di errore lineare     
     const Eigen::MatrixXd& Kq,          // matrice di errore quaternione
     double scaleFactor,
-    double exploitRedundancy,
     std::ofstream& outputFile  
 ) {
 
@@ -559,31 +558,7 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     double detJ = std::abs(J.determinant()); 
     // outputFile << "det = " << detJ << std::endl;
 
-
-    if(exploitRedundancy){
-
-        std::cout << "EXPLOITING REDUNDANCY" << std::endl;
-        Eigen::MatrixXd InversJ = pseudoInverse(J.topRows(3));
-
-        if (detJ < 0.9) {                 // controllo che il determinate della jacobiano sia uguale a zero, in questo caso abbiamo a che fare con singolarità
-            outputFile << "vicino ad una singolarità," << std::endl;
-            outputFile << std::endl << std::endl;
-
-            //uso una damped psudo inverse per calcolare dotq
-            outputFile << "Pseudo Inverse: " << std::endl << InversJ << std::endl;
-            InversJ = dampedPseudoInverse(J.topRows(3));
-            outputFile << "Pseudo Inverse Damped: " << std::endl << InversJ << std::endl;
-        }
-
-        // Per esplicitare la ridondanza non considero l'orinetazione
-        Eigen::VectorXd dotQ_base =  InversJ * (Eigen::VectorXd(3) << (vd + Kp * (xd - xe))).finished();
-        Eigen::VectorXd correction = K0 * wDerived(q, scaleFactor);
-
-        dotQ = dotQ_base + correction;
-        std::cout <<"dotQ_base: " << dotQ_base.transpose() << std::endl << "correction: " << correction.transpose();
-        std::cout << std::endl << "dotQ " << dotQ.transpose() << std::endl;
-
-    }else if (detJ < 0.9) {    // controllo che il determinate della jacobiano sia uguale a zero, in questo caso abbiamo a che fare con singolarità
+    if(detJ < 0.9) {    // controllo che il determinate della jacobiano sia uguale a zero, in questo caso abbiamo a che fare con singolarità
         
         // outputFile << "vicino ad una singolarità," << std::endl;
         // outputFile << std::endl << std::endl;
@@ -739,7 +714,7 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
     Eigen::MatrixXd xef,            // posizione finale end-effector
     Eigen::Quaterniond q0,          // quaternione iniziale end-effector 
     Eigen::Quaterniond qf,          // quaternione finale end-effector
-    double exploitRedundancy,
+    bool grasp,
     std::ofstream& outputFile       // file text in cui scrivere gli output
 ) {
     // Dichiaro la matrice q dove ogni riga corrisponde ad uno step temporale ed contiene le configurazioni dei joint in quel preciso step temporale
@@ -796,7 +771,7 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
 
         // calcolo la derivata del quaternione 
         Eigen::VectorXd dotqk = invDiffKinematiControlCompleteQuaternion(
-            qk, xe, pd(T[i],Tf, xe0, xef), vd, omegad, qe, qd(T[i],Tf, q0, qf), Kp, Kq, scaleFactor, exploitRedundancy, outputFile
+            qk, xe, pd(T[i],Tf, xe0, xef), vd, omegad, qe, qd(T[i],Tf, q0, qf), Kp, Kq, scaleFactor, outputFile
         );
 
         // controllo che non ci siano singolarità, se ci sono ritorno una matrice 1x1
@@ -1018,6 +993,9 @@ bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scal
                                 outputFile << "GIUNTO: " << i ;
                                 outputFile << "X: " << x << ", Y: " << y << ", Z: " << z << " -> ";
                                 outputFile << "colpisce il gradino" << std::endl;  
+                                outputFile << "GIUNTO: " << i+1 ;
+                                outputFile << "X: " << next.x << ", Y: " << next.y << ", Z: " << next.z << " -> ";
+                                outputFile << "colpisce il gradino" << std::endl;  
                                 result = true;
                                 break;
                             }
@@ -1043,46 +1021,6 @@ bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scal
 }
 
 
-double Gripper(std::string blockName){
-    
-    double result = 0;
-
-    std::vector<std::string> OneWidth = {
-        "X1-Y2-Z1",
-        "X1-Y3-Z2",
-        "X1-Y2-Z2-TWINFILLET",
-        "X1-Y4-Z1",
-        "X1-Y4-Z1",
-        "X1-Y3-Z2-FILLET",
-        "X1-Y1-Z2",
-        "X1-Y2-Z2",
-        "X1-Y2-Z2-CHAMFER",
-        "X1-Y4-Z2"
-    };
-
-    std::vector<std::string> TwoWidth = {
-        "X2-Y2-Z2",
-        "X2-Y2-Z2-FILLET"
-    };
-
-    for (const std::string& s : OneWidth) {
-        if (blockName == s) {
-            result = (END_EFFECTOR_WIDTH - ONE_WIDTH_BLOCK)/2.0;
-        }
-    }
-
-    for (const std::string& s : TwoWidth) {
-        if (blockName == s) {
-            result =  (END_EFFECTOR_WIDTH - TWO_WIDTH_BLOCK)/2.0;
-        }
-    }
-
-    if(result == 0){
-        std::cout << "nome del blocco non riconosciuto" << std::endl;
-    }
-    return result;
-}
-
 Eigen::VectorXd randomPoint(double scaleFactor){
     Eigen::VectorXd result(3);
 
@@ -1103,7 +1041,10 @@ Eigen::VectorXd randomPoint(double scaleFactor){
 
 
 
-bool checkCollisionSingularity(Eigen::MatrixXd& Th, double scaleFactor, std::ofstream& outputFile){
+bool checkCollisionSingularity(Eigen::MatrixXd& Th, double scaleFactor, bool grasp, std::ofstream& outputFile){
+
+    double dist = 0.24;
+    if(grasp) dist = 0.0000;
 
     // controllo prima se ci sono singolarità, dopo in caso le collisioni
     if(Th.rows() == 1){
@@ -1111,13 +1052,13 @@ bool checkCollisionSingularity(Eigen::MatrixXd& Th, double scaleFactor, std::ofs
         outputFile << " SINGOLARITA' -> ";
         return true;
     }else{
-        //per tutte le 100 configurazioni trovate della traiettoria, ricavo le posizioni dei giunti e controllo che non ci siano collisioni
+        //per tutte le altr configurazioni trovate della traiettoria, ricavo le posizioni dei giunti e controllo che non ci siano collisioni
         int i = 0;
         while (i < Th.rows()) {
             Eigen::MatrixXd giunti = posizioneGiunti(Th.row(i), scaleFactor);
     
             // outputFile << "CHECK COLLISIONI STEP " << i << std::endl;
-            if (checkCollisioni(giunti, 0.025, 0.24, scaleFactor, outputFile)) {
+            if (checkCollisioni(giunti, 0.025, dist, scaleFactor, outputFile)) {
                 outputFile << "COLLISIONI -> ";
                 std::cout << "COLLISIONI" << std::endl;
                 return true;
@@ -1183,7 +1124,7 @@ Eigen::MatrixXd alternativeTrajectory(
 
         // flag per il controllo collisioni e singolarità
         bool checkTh1 = false;
-        checkTh1 = checkCollisionSingularity(Th1, scaleFactor, outputFile);
+        checkTh1 = checkCollisionSingularity(Th1, scaleFactor, false, outputFile);
 
         if(!checkTh1){
             
@@ -1194,7 +1135,7 @@ Eigen::MatrixXd alternativeTrajectory(
             Th2 = invDiffKinematicControlSimCompleteQuaternion(Th1.row(99), Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe_mid, xef, q_mid, qf, false, outputFile);
 
             bool checkTh2 = false;
-            checkTh2 = checkCollisionSingularity(Th2, scaleFactor, outputFile);
+            checkTh2 = checkCollisionSingularity(Th2, scaleFactor, false, outputFile);
             std::cout << "\t TH2 -> ";
 
             if(!checkTh2){
@@ -1235,7 +1176,7 @@ Eigen::MatrixXd alternativeTrajectory(
         Th1 = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, point_mid_1, q0, q_mid, false, outputFile);
         outputFile << "Th1 -> ";
 
-        if(!checkCollisionSingularity(Th1, scaleFactor, outputFile)){
+        if(!checkCollisionSingularity(Th1, scaleFactor, false, outputFile)){
 
             std::cout << " VALIDO; ";
             outputFile << " VALIDO " ;
@@ -1243,14 +1184,14 @@ Eigen::MatrixXd alternativeTrajectory(
             Th2 = invDiffKinematicControlSimCompleteQuaternion(Th1.row(99), Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, point_mid_1, point_mid_2, q_mid, q_mid, false, outputFile);
             outputFile << std::endl << "Th2 -> ";
 
-            if(!checkCollisionSingularity(Th2, scaleFactor, outputFile)){
+            if(!checkCollisionSingularity(Th2, scaleFactor, false, outputFile)){
                 
                 std::cout << " VALIDO; ";
                 outputFile << " VALIDO "; 
 
                 Th3 = invDiffKinematicControlSimCompleteQuaternion(Th2.row(99), Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, point_mid_2, xef, q_mid, qf, false, outputFile);
                 outputFile << std::endl << "Th3 -> ";
-                if(!checkCollisionSingularity(Th3, scaleFactor, outputFile)){
+                if(!checkCollisionSingularity(Th3, scaleFactor, false, outputFile)){
 
                     std::cout << "VALIDO; ";
                     outputFile << "VALIDO " << std::endl;
@@ -1311,6 +1252,7 @@ void deleteTxtFiles(const std::string& folderPath) {
         std::cerr << "Impossibile aprire la directory: " << folderPath << std::endl;
     }
 }
+
 
 
 

@@ -12,6 +12,9 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     double scaleFactor = 10.0;
     double Tf = 4.0; 
     double DeltaT = 0.04;
+    Eigen::Matrix3d Kp = 3 * Eigen::Matrix3d::Identity();
+    Eigen::Matrix3d Kq = -3 * Eigen::Matrix3d::Identity();
+
     Eigen::VectorXd T;
     T = Eigen::VectorXd::LinSpaced(static_cast<int>((Tf / DeltaT) + 1), 0, Tf);
 
@@ -28,8 +31,10 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     }
 
     ROS_INFO("\n");
-    ROS_INFO("REQUEST-----------------------------------------\n");
-    ROS_INFO("REQUEST JOINT PARAMETERS \n");
+    if(req.grasp){ ROS_INFO("REQUEST GRASP ----------------------------------------\n"); }
+    else{          ROS_INFO("REQUEST ----------------------------------------------\n"); }
+   
+    ROS_INFO("REQUEST JOINT PARAMETERS ");
     for (int i = 0; i < req.jointstate.size(); i++) {
         std::cout << "joint " << i << ": " << req.jointstate[i] << " ";
     }
@@ -45,13 +50,13 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
 
     // Stampa del vettore xe e della matrice Re
     std::cout << std::endl;
-    ROS_INFO("DERIVE INITIAL INFORMATION xe, Re, RPY, q0 of END EFFECTOR\n");
+    ROS_INFO("\nDERIVE INITIAL INFORMATION xe, Re, RPY, q0 of END EFFECTOR\n");
     std::cout << "Vector xe: " << vectorToString(xe).c_str() << std::endl;
     std::cout << "Matrix Re: " << matrix3dToString(Re).c_str() << std::endl;
     std::cout << "Vector RPY: " << vectorToString(Re.eulerAngles(0, 1, 2)).c_str() << std::endl;
     std::cout << "Quaternion q0: " << quaternioToString(q0).c_str() << std::endl << std::endl; 
 
-    ROS_INFO("REQUEST DESIRED END EFFECTOR\n");
+    ROS_INFO("REQUEST DESIRED END EFFECTOR");
     for(int i=0; i<3; i++){
         req.xef[i] = req.xef[i] * scaleFactor;
     }
@@ -82,16 +87,13 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     ROS_INFO("%s", vectorToString(M).c_str());
     */
 
-    Eigen::Matrix3d Kp = 3 * Eigen::Matrix3d::Identity();
-    Eigen::Matrix3d Kq = -3 * Eigen::Matrix3d::Identity();
-
     Eigen::MatrixXd Th = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf, false, outputFile);
     ROS_INFO("DERIVED q");
     std::cout << "Dimensioni di Th: " << Th.rows() << " " << Th.cols() << std::endl  << std::endl;
        
     // flag per il controllo collisioni e singolarità
     bool check = false;
-    check = checkCollisionSingularity(Th, scaleFactor, outputFile);
+    check = checkCollisionSingularity(Th, scaleFactor, req.grasp , outputFile);
 
     //se non ci sono collisioni ritorno la matrice Th altrimenti calcolo una traiettoria alternativa
     if(!check){
@@ -105,7 +107,7 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
             }
         }
 
-    } else {
+    } else if(!req.grasp) {
 
         std::cout << std::endl << "Presenza di collisioni o singolarità, 2 step strategi " << std::endl;
         Th = alternativeTrajectory(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf, outputFile);
@@ -117,6 +119,11 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
             }
         }
 
+    } else {
+
+        std::cout << std::endl << "Presenza di collisioni o singolarità, impossibile il grasping " << std::endl;
+        Th.resize(1, 1);
+        Th << 0.0;
     }
 
     outputFile << std::endl << "MATRICE di q" << std::endl << Th << std::endl << std::endl;
@@ -133,6 +140,7 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     
     return true;
 }
+
 
 int main(int argc, char **argv){
 
