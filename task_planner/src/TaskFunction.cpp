@@ -172,6 +172,51 @@ bool isZero(const std::vector<double>& vettore) {
 /*------------------------------------------------  FUNZIONI X MACCHINA A STATI  ----------------------------------------------------------*/
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+void go_to_start_position(ros::NodeHandle& n){
+
+    ros::Publisher pub = n.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1);
+    
+    // inizializzo il messaggio per l'ur5 con la configurazione q dei joint che voglio raggiungere 
+    std_msgs::Float64MultiArray jointPositions;
+    std::vector<double> jointPositionsData;
+    jointPositions.data = {0, 0, -2.560807, -1.630513, -1.570495, 3.491099, 0,0};
+    jointPositionsData = {0, 0, -2.560807, -1.630513, -1.570495, 3.491099};
+
+    // subscriber al topic che invia l'attuale configurazione dei joint dell'ur5
+    std::vector<double> received_positions;  
+    ros::Subscriber sub = n.subscribe<sensor_msgs::JointState>("/ur5/joint_states", 1, std::bind(callback2, std::placeholders::_1, &received_positions));
+
+    // Ciclo fino a quando non ricevi il messaggio della configurazione attuale dei joint dell'ur5
+    while (received_positions.empty()) {
+        ros::spinOnce(); 
+    }
+
+    std::cout << "Braccio in Movimento verso START POSITION: ->";
+    ros::Rate loop_rate(20); 
+
+    while(!areVectorsEqual(received_positions, jointPositionsData))
+    {
+        pub.publish(jointPositions);
+
+        ros::spinOnce(); 
+        loop_rate.sleep();
+    }
+
+    jointPositions.data = {-0.320096, -0.780249, -2.560807, -1.630513, -1.570495, 3.491099, 0,0};
+    jointPositionsData = {-0.320096, -0.780249, -2.560807, -1.630513, -1.570495, 3.491099};
+
+    while(!areVectorsEqual(received_positions, jointPositionsData))
+    {
+        pub.publish(jointPositions);
+
+        ros::spinOnce(); 
+        loop_rate.sleep();
+    }
+    
+
+    std::cout << " Raggiunta \n";
+
+}
 
 std::vector<Block> ask_object_detection(ros::NodeHandle& n){
     std::vector<Block> blocchi;
@@ -192,6 +237,8 @@ std::vector<Block> ask_object_detection(ros::NodeHandle& n){
     }else{
         // Se la chiamata non ha successo stmapo un errore
         std::cout << "Failed to call service 'object detection' \n";
+        std::cout.flush();
+
     }
 
     return blocchi;
@@ -199,7 +246,7 @@ std::vector<Block> ask_object_detection(ros::NodeHandle& n){
 }
 
 
-Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double phief[3]){
+Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double phief[3], std::string title, bool first){
 
     // client del service calculate_inverse_kinemaic gestito dal package motion_plan
     ros::ServiceClient service_client = n.serviceClient<motion_planner::InverseKinematic>("calculate_inverse_kinematics");
@@ -213,7 +260,12 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
     }
 
     // Definisco la richiesta da inviare al motion planner
-    motion_planner::InverseKinematic srv;  
+    motion_planner::InverseKinematic srv;
+
+    // arrotondo i valori ottenuti a 6 cifre
+    for (int i = 0; i < received_positions.size(); ++i) {
+        received_positions[i] = std::round(received_positions[i] * 1e6) / 1e6; 
+    }  
 
     /* l'ordine degli 8 joint sono: 
     0 - elbow_joint, 1 - hand_1_joint, 2 - hand_2_joint, 3 - shoulder_lift_joint, 
@@ -230,10 +282,12 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
     //inizializzo nella richiesta i parametri finali della configurazione end effector 
     //per le coordinate conferto le coordinate originali nel world frame alla coordinate del UR5 fram 
     srv.request.xef[0]=xef[0]-ARM_X;            srv.request.phief[0]=phief[0];
-    srv.request.xef[1]=ARM_Y - xef[1];            srv.request.phief[1]=phief[1];
-    srv.request.xef[2]=ARM_Z - xef[2];          srv.request.phief[2]=phief[2];
+    srv.request.xef[1]=ARM_Y - xef[1];          srv.request.phief[1]=phief[1];
+    srv.request.xef[2]= 0.6;                    srv.request.phief[2]= 0.0;
 
-    
+    srv.request.title = title;                  srv.request.first = first;
+
+    // srv.request.xef[2]=ARM_Z - xef[2];  
     /* TEST PRINT OF REQUEST MESSAGE 
     for (size_t i = 0; i < srv.request.jointstate.size(); ++i) {
         ROS_INFO("srv.request.jointstate[%zu]: %f", i, srv.request.jointstate[i]);
@@ -246,7 +300,7 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
 
         // Se la chiamata ha successo 
         std::cout << "\n\t    CONFIGURAZIONI di q CALCOLATE: ";
-        if(srv.response.two_step) std::cout << "SOLUZIONE a 2 Step";
+        if(srv.response.array_q.size()/6 > 100) std::cout << "SOLUZIONE a più Step";
         std::cout << std::endl;
 
         ret.resize(srv.response.array_q.size() / 6, 6);     
@@ -255,11 +309,13 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
                 ret(i,j) = srv.response.array_q[(i*6)+j];
             }  
         }
+        std::cout.flush();
         
         
     } else {
         // Se la chiamata non ha successo stmapo un errore
         std::cout << "\n\t   Failed to call service 'calculate_inverse_kinematics' \n";
+        std::cout.flush();
     }
 
     return ret;

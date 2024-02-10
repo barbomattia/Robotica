@@ -6,7 +6,7 @@
 #include <iostream>
 #include <fstream>
 
-int motion_request = 0;
+
 
 bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::InverseKinematic::Response &res){
     double scaleFactor = 10.0;
@@ -15,10 +15,11 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     Eigen::VectorXd T;
     T = Eigen::VectorXd::LinSpaced(static_cast<int>((Tf / DeltaT) + 1), 0, Tf);
 
-    
-    std::string nomeFile = "motion_request_" + std::to_string(motion_request) + ".txt";          motion_request++;
-    std::string outputPath = "ros_ws/src/Robotica/motion_planner/output_log/" + nomeFile;
-    std::ofstream outputFile(outputPath);                             // Apertura del file in modalità scrittura
+    std::string outputPath = "ros_ws/src/Robotica/motion_planner/output_log/";
+    if(req.first) deleteTxtFiles(outputPath);
+
+    std::string nomeFile = req.title + ".txt";          
+    std::ofstream outputFile((outputPath + nomeFile));       // Apertura del file in modalità scrittura
 
     // Controllo se il file è stato aperto correttamente
     if (!outputFile.is_open()) {
@@ -104,8 +105,6 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
             }
         }
 
-        res.two_step = false;
-
     } else {
 
         std::cout << std::endl << "Presenza di collisioni o singolarità, 2 step strategi " << std::endl;
@@ -118,7 +117,6 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
             }
         }
 
-        res.two_step = true;
     }
 
     outputFile << std::endl << "MATRICE di q" << std::endl << Th << std::endl << std::endl;

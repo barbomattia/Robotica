@@ -18,12 +18,21 @@
  * block was not reachable or other errors occurred.
  * 
  */
-bool ordering_block(ros::NodeHandle& n, Block& blocco){
+bool ordering_block(ros::NodeHandle& n, Block& blocco, int i){
 
     std::cout << "\n///////////////////////////////// BLOCK " << blocco.name << " //////////////////////////////////////////\n";
 
     std::cout << "\n\t -> ASK MOTION PLAN \n";
-    Eigen::MatrixXd q = ask_inverse_kinematic(n, blocco.x, blocco.phi);
+    std::string title = "Reach " + blocco.name;
+
+    Eigen::MatrixXd q;
+
+    if(i==0){
+        q = ask_inverse_kinematic(n, blocco.x, blocco.phi, title, true);
+    }else{
+        q = ask_inverse_kinematic(n, blocco.x, blocco.phi, title, false);
+    }
+    
 
     /*for(int i = 0; i < q.rows(); i++){
             Eigen::MatrixXd qi = q.row(i);           
@@ -113,8 +122,9 @@ bool ordering_block(ros::NodeHandle& n, Block& blocco){
 
     }
 
+    title = "Ordering " + blocco.name;
     std::cout << std::endl << "\t    Reaching the order coordinate\n" <<std::endl; std::cout.flush();
-    Eigen::MatrixXd q_end = ask_inverse_kinematic(n, end_block_position_x, end_block_position_phi);
+    Eigen::MatrixXd q_end = ask_inverse_kinematic(n, end_block_position_x, end_block_position_phi, title, false);
     control_gazebo_arm_2(n,q_end,false);
     
     
@@ -129,15 +139,18 @@ int main(int argc, char **argv){
 
     std::cout << "\n\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&& START &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n\n";
 
-    std::cout << "----------------------------- OBJECT DETECTION ---------------------------------\n";
+    std::cout << "----------------------------- GO TO START POSITION ---------------------------------\n";
+    go_to_start_position(n);
+
+    std::cout << "\n----------------------------- OBJECT DETECTION ---------------------------------\n";
     std::vector<Block> blocchi = ask_object_detection(n);           // ottengo tutti i blocchi trovati
     /* Block blocco;                                                   // dichiaro il blocco che voglio ordinare    
     blocco.x[0] = 0.24; blocco.x[1] = 0.69; blocco.x[2] = 1.1;
     blocco.phi[0] = 0; blocco.phi[1] = 0; blocco.phi[2] = 0;
     blocco.name = "X2-Y2-Z2"; */
                                 
-    for(Block& blocco : blocchi){
-        ordering_block(n, blocco);
+    for (int i = 0; i < blocchi.size(); ++i) {
+        ordering_block(n, blocchi[i], i);
     }
               
 

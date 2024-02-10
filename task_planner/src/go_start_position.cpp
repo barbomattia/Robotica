@@ -139,7 +139,7 @@ int main(int argc, char **argv){
     }
     
 
-    std::cout << "Configurazione Raggiunta \n";
+    std::cout << " Raggiunta \n";
 
     return 0;
 }

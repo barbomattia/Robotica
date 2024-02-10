@@ -1,6 +1,7 @@
 float64[] jointstate
 float64[3] xef
 float64[3] phief
+string title
+bool first
 ---
 float64[] array_q
-bool two_step

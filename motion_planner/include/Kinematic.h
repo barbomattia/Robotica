@@ -15,6 +15,7 @@
 #include <vector>
 #include <functional>
 
+
 /**
  * @brief 
  * 
@@ -585,6 +586,12 @@
      * @note The scaling factor is applied to the UR5 parameters before computing the Jacobian.
      */
     Eigen::VectorXd wDerived(const Eigen::VectorXd& q, double scaleFactor);
+
+
+    // Funzione per eliminare i file con estensione .txt dalla cartella specificata
+    void deleteTxtFiles(const std::string& folderPath);
+    
+
 
     
 

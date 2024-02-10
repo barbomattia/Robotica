@@ -35,6 +35,9 @@
     std::ostream& operator<<(std::ostream& os, const Block& block);
 
 
+    void go_to_start_position(ros::NodeHandle& n);
+
+
     /**
      * @brief Requests object detection service and retrieves detected blocks.
      * 
@@ -64,7 +67,7 @@
     /* RICHIESTA MOTION PLAN
     La funzione richiede al nodo motion di eseguire il motion plan per raggiungere la configurazione richiesta: [xef, phief]
     Essa ritorna le configurazione q */
-    Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double phief[3]);
+    Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double phief[3], std::string title, bool first);
 
 
     /* RICHIESTA MOVIMENTO BRACCIO

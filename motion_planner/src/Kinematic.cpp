@@ -3,6 +3,7 @@
 #include <cmath>
 #include <iostream>
 #include <fstream>
+#include <dirent.h> 
 
 int random(int min, int max){
     return rand()%(max-min+1)+min;
@@ -1288,6 +1289,29 @@ Eigen::MatrixXd alternativeTrajectory(
     
     return result;
 }
+
+
+// Funzione per eliminare i file con estensione .txt dalla cartella specificata
+void deleteTxtFiles(const std::string& folderPath) {
+    DIR* dir;
+    struct dirent* entry;
+
+    dir = opendir(folderPath.c_str());
+    if (dir != NULL) {
+        while ((entry = readdir(dir)) != NULL) {
+            std::string fileName = entry->d_name;
+            if (fileName.length() >= 4 && fileName.substr(fileName.length() - 4) == ".txt") {
+                std::string filePath = folderPath + fileName;
+                remove(filePath.c_str());
+                //std::cout << "File eliminato: " << filePath << std::endl;
+            }
+        }
+        closedir(dir);
+    } else {
+        std::cerr << "Impossibile aprire la directory: " << folderPath << std::endl;
+    }
+}
+
 
 
 
