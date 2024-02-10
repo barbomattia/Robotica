@@ -109,7 +109,7 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     } else {
 
         std::cout << std::endl << "Presenza di collisioni o singolarità, 2 step strategi " << std::endl;
-        Eigen::MatrixXd Th = alternativeTrajectory(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf, outputFile);
+        Th = alternativeTrajectory(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe, xef, q0, qf, outputFile);
     
         //copio la matrice th nella risposta
         for (int i = 0; i < Th.rows(); i++) { 
@@ -121,7 +121,7 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
         res.two_step = true;
     }
 
-    outputFile << std::endl << "MATRICE di q" << std::endl << matrixToString(Th).c_str() << std::endl << std::endl;
+    outputFile << std::endl << "MATRICE di q" << std::endl << Th << std::endl << std::endl;
     
     /*
     for(int i=0; i < res.array_q.size(); i++){

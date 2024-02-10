@@ -39,20 +39,20 @@ bool ordering_block(ros::NodeHandle& n, Block& blocco){
     
     
     if(q.rows()==200){
-        std::cout << "\n\t -> STEP 1 ";
+        std::cout << "\n\t -> STEP 1 "; std::cout.flush();
         control_gazebo_arm_2(n,q.topRows(100),false);
 
-        std::cout << "\n\t -> STEP 2  \n";
+        std::cout << "\n\t -> STEP 2  \n"; std::cout.flush();
         control_gazebo_arm_2(n,q.bottomRows(100),false);
 
     }else if(q.rows()==300){
-        std::cout << "\n\t\t STEP 1 ";
+        std::cout << "\n\t\t STEP 1 "; std::cout.flush();
         control_gazebo_arm_2(n,q.topRows(100),false);
 
-        std::cout << "\n\t\t STEP 2  \n";
+        std::cout << "\n\t\t STEP 2  \n"; std::cout.flush();
         control_gazebo_arm_2(n,q.block(100, 0, 100, 6),false);
         
-        std::cout << "\n\t\t STEP 3  \n";
+        std::cout << "\n\t\t STEP 3  \n"; std::cout.flush();
         control_gazebo_arm_2(n,q.bottomRows(100),false);
 
     }else{
@@ -98,10 +98,26 @@ bool ordering_block(ros::NodeHandle& n, Block& blocco){
     }
     std::cout << std::endl;
 
-    Eigen::MatrixXd q_end = ask_inverse_kinematic(n, end_block_position_x, end_block_position_phi);
-    std::cout << std::endl << "\t    Reaching the order coordinate\n" <<std::endl;
-    control_gazebo_arm_2(n,q_end,false);
+    /* Se il braccio ha raggiunto il blocco in più step segue a ritroso la traiettoria fino al primo 
+    punto intermedio e poi da li calcola la traiettoria al punto ordinato. Altrimenti calcola direttamente la traiettoria */
+    if(q.rows() > 100){
+        std::cout << "\t    Going back to fiirst mid point"; std::cout.flush();
+        if(q.rows()==200){
+            control_gazebo_arm_2(n,q.bottomRows(100),true);
 
+        }else{
+            control_gazebo_arm_2(n,q.bottomRows(100),true);
+            control_gazebo_arm_2(n,q.block(100, 0, 100, 6),true);
+                
+        }
+
+    }
+
+    std::cout << std::endl << "\t    Reaching the order coordinate\n" <<std::endl; std::cout.flush();
+    Eigen::MatrixXd q_end = ask_inverse_kinematic(n, end_block_position_x, end_block_position_phi);
+    control_gazebo_arm_2(n,q_end,false);
+    
+    
     return true;
 }
 

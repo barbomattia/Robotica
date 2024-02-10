@@ -543,11 +543,11 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
 
     Eigen::VectorXd dotQ;
 
-    /* STAMPE DEBUG
-     outputFile << "Configurazione attuale: " << q.transpose() <<std::endl; 
-     std::cout << "Valore di Re: \n" << CinematicaDiretta(q,scaleFactor).Re << "\n"; */
+    /* STAMPE x TEST
+    outputFile << "Configurazione attuale: " << q.transpose() <<std::endl; 
+    std::cout << "Valore di Re: \n" << CinematicaDiretta(q,scaleFactor).Re << "\n"; 
     outputFile << "Posizione end effector iniziale: " << xe.transpose() <<std::endl;
-    /* outputFile << "Posizione end effector desiderata: " << xd.transpose() <<std::endl;
+    outputFile << "Posizione end effector desiderata: " << xd.transpose() <<std::endl;
     outputFile << "Jacobiana: " << std::endl << J << std::endl; */
 
     /* std::cout << std::endl << "Quaternione Corrente: " << qe << std::endl;
@@ -556,7 +556,7 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     std::cout << "Errore Rotazione: " << qp << std::endl; 
     std::cout <<"Errore Rotazione parte Vettoriale: " << eo.transpose() << std::endl; */
     double detJ = std::abs(J.determinant()); 
-    outputFile << "det = " << detJ << std::endl;
+    // outputFile << "det = " << detJ << std::endl;
 
 
     if(exploitRedundancy){
@@ -584,8 +584,8 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
 
     }else if (detJ < 0.9) {    // controllo che il determinate della jacobiano sia uguale a zero, in questo caso abbiamo a che fare con singolarità
         
-        outputFile << "vicino ad una singolarità," << std::endl;
-        outputFile << std::endl << std::endl;
+        // outputFile << "vicino ad una singolarità," << std::endl;
+        // outputFile << std::endl << std::endl;
    
         // ritorno un dotQ con solo uno zero per indicare che abbiamo una singolarità
         dotQ.resize(1); // Assicurati che dotQ abbia dimensione 1
@@ -594,14 +594,15 @@ Eigen::VectorXd invDiffKinematiControlCompleteQuaternion(
     }else{
         
         Eigen::MatrixXd InversJ = J.inverse();
-        outputFile << std::endl  << "J inversa" <<  std::endl << InversJ <<  std::endl;
-
+        
         //Calcolo la derivata di q: dotQ usando la formula
         Eigen::VectorXd dotQ_base = InversJ * (Eigen::VectorXd(6) << (vd + Kp * (xd - xe)), (omegad + Kq * eo)).finished();
 
         //Eigen::VectorXd second_task = wDerived(q,  scaleFactor);
         dotQ = dotQ_base; 
-        /* stampe di debug
+
+        /* STAMPE x TEST
+        outputFile << std::endl  << "J inversa" <<  std::endl << InversJ <<  std::endl;
         std::cout << "\n\nCALCOLO DOT q \nInput\n J inverse:\n" << J.inverse() << "\n vd:" << vd.transpose();
         std::cout << "\n Kp: \n" << Kp << "\n Kq:\n" << Kq << "\n xd: " << xd.transpose() << "\n xe:" << xe.transpose();
         std::cout << "\n omegad: " << omegad.transpose() << "\n eo: " << eo.transpose();
@@ -751,7 +752,7 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
     // Per ogni step calcolo la configurazione dei joint 
     for (int i = 1; i < L - 1; ++i) {   
 
-        outputFile << "STEP " << i << std::endl;
+        // outputFile << "STEP " << i << std::endl;
         // tramite la cinematica diretta trovo la configurazione dell'end effector all'inizio dello step
         auto result = CinematicaDiretta(qk, scaleFactor);   
         Eigen::VectorXd xe = result.pe;     // posizione end effector 
@@ -804,6 +805,11 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
             return resultWithSingularity;
         }
 
+        // calcolo con una funzione lineare le configurazioni dei joint a fine step e li inserisco nella matrice configurazioni q
+        qk = qk + dotqk * Dt;
+        q.push_back(qk);
+
+        /* STAMPE X TEST
         outputFile << "dot q: [";
         for (int i = 0; i < dotqk.size(); ++i) {
             outputFile << dotqk(i);
@@ -811,14 +817,11 @@ Eigen::MatrixXd invDiffKinematicControlSimCompleteQuaternion(
                 outputFile << ", ";
             }
         }
-        outputFile << "]" << std::endl;
-
-        // calcolo con una funzione lineare le configurazioni dei joint a fine step e li inserisco nella matrice configurazioni q
-        qk = qk + dotqk * Dt;
-        // outputFile << "Configurazione fine step: " << qk.transpose() <<std::endl <<std::endl;
-        // outputFile << "Posizione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).pe.transpose() << std::endl;
-        // std::cout << "Rotazione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).Re << std::endl << std::endl;
-        q.push_back(qk);
+        outputFile << "]" << std::endl; 
+        outputFile << "Configurazione fine step: " << qk.transpose() <<std::endl <<std::endl;
+        outputFile << "Posizione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).pe.transpose() << std::endl;
+        std::cout << "Rotazione end effector raggiunta: " << CinematicaDiretta(qk, scaleFactor).Re << std::endl << std::endl; */
+        
     }
 
     outputFile << std::endl << "Posizione end effector raggiunta: " << CinematicaDiretta(q[q.size()-1], scaleFactor).pe.transpose() << std::endl;
@@ -996,27 +999,30 @@ bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scal
             if(y+offset > 0 && y+offset < YGradino){
                 //outputFile << "sul gradino" << std::endl;  
                 if(x-offset > XCol1 && x+offset < XCol2){
-                    outputFile << "GIUNTO: " << i ;
-                    outputFile << "X: " << x << ", Y: " << y << ", Z: " << z << " -> ";      
+                         
                     if(z+offset > ZGradino){
+                        outputFile << "GIUNTO: " << i ;
+                        outputFile << "X: " << x << ", Y: " << y << ", Z: " << z << " -> "; 
                         outputFile << "nel gradino" << std::endl;  
                         result = true;
                         break;
-                    } /* else if(i != 5){
+                    }else if(i != 5){
                         Point next = {Th(i+1,0), Th(i+1,1), Th(i+1,2)};
-                        outputFile << "calcolo successivo" << std::endl;  
+                        // outputFile << "calcolo successivo" << std::endl;  
                         if ((ZGradino <= z && ZGradino >= next.z) || (ZGradino <= next.z && ZGradino >= z)){
                             outputFile << "la z è compresa" << std::endl;  
                             double check = y + (ZGradino - z) * (next.y - y) / (next.z - z);
                             outputFile << "check = " << check << std::endl;  
                             if((check <= y && check >= next.y) || (check <= next.y && check >= y)){
+                                outputFile << "GIUNTO: " << i ;
+                                outputFile << "X: " << x << ", Y: " << y << ", Z: " << z << " -> ";
                                 outputFile << "colpisce il gradino" << std::endl;  
                                 result = true;
                                 break;
                             }
                         }
-                    } */
-                    outputFile << "punto successivo sopra gradino" << std::endl;
+                    } 
+                    // outputFile << "punto successivo sopra gradino" << std::endl;
                 }  
             }
         } else {
@@ -1028,8 +1034,8 @@ bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scal
         }
     }     
 
-    if(result){outputFile  << "COLLISIONI" << std::endl<< std::endl;}
-    if(!result){outputFile << "NO COLLISIONI" << std::endl<< std::endl;}
+    // if(result){outputFile  << "COLLISIONI" << std::endl<< std::endl;}
+    // if(!result){outputFile << "NO COLLISIONI" << std::endl<< std::endl;}
     
 
     return result; 
@@ -1101,6 +1107,7 @@ bool checkCollisionSingularity(Eigen::MatrixXd& Th, double scaleFactor, std::ofs
     // controllo prima se ci sono singolarità, dopo in caso le collisioni
     if(Th.rows() == 1){
         std::cout << "SINGOLARITA'" << std::endl;
+        outputFile << " SINGOLARITA' -> ";
         return true;
     }else{
         //per tutte le 100 configurazioni trovate della traiettoria, ricavo le posizioni dei giunti e controllo che non ci siano collisioni
@@ -1108,9 +1115,9 @@ bool checkCollisionSingularity(Eigen::MatrixXd& Th, double scaleFactor, std::ofs
         while (i < Th.rows()) {
             Eigen::MatrixXd giunti = posizioneGiunti(Th.row(i), scaleFactor);
     
-            outputFile << "CHECK COLLISIONI STEP " << i << std::endl;
+            // outputFile << "CHECK COLLISIONI STEP " << i << std::endl;
             if (checkCollisioni(giunti, 0.025, 0.24, scaleFactor, outputFile)) {
-                outputFile << "configurazione con collisione" << std::endl;
+                outputFile << "COLLISIONI -> ";
                 std::cout << "COLLISIONI" << std::endl;
                 return true;
             }
@@ -1170,7 +1177,7 @@ Eigen::MatrixXd alternativeTrajectory(
          
         std::cout << "Punto Intermedio:" << point_mid.transpose() << " -> ";
         tent++;
-        outputFile << "TENTATIVO " << tent << " TH1, punto medio: " << point_mid.transpose() << std::endl;
+        outputFile << "TENTATIVO " << tent << " TH1, punto medio: " << point_mid.transpose() << " -> ";
         Th1 = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, point_mid, q0, q_mid, false, outputFile);
 
         // flag per il controllo collisioni e singolarità
@@ -1180,28 +1187,31 @@ Eigen::MatrixXd alternativeTrajectory(
         if(!checkTh1){
             
             std::cout << " TH1 VALIDO -> ";
-            outputFile << std::endl << "Th1 VALIDO " << std::endl;
+            outputFile << " VALIDO " << std::endl;
               
             Eigen::VectorXd xe_mid = posizioneGiunti(Th1.row(99), scaleFactor).row(5);
             Th2 = invDiffKinematicControlSimCompleteQuaternion(Th1.row(99), Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe_mid, xef, q_mid, qf, false, outputFile);
 
             bool checkTh2 = false;
             checkTh2 = checkCollisionSingularity(Th2, scaleFactor, outputFile);
+            std::cout << "\t TH2 -> ";
 
             if(!checkTh2){
-                std::cout << "TH2 VALIDO" << std::endl;
+                std::cout << " VALIDO " << std::endl;
                 check = false;
+            }else{
+                outputFile << " NON VALIDO " << std::endl;
             }
             
+        }else{
+            outputFile << " NON VALIDO " << std::endl;
         }
     }
 
     if(Th1.rows()==100 && Th2.rows()==100){
-        std::cout << "GENERAZIONE MATRICE DOPPIA " << std::endl;
         for(int i=0; i<100; i++){
             result.row(i) = Th1.row(i);
         }
-        std::cout << "PRIMA PARTE INSERITA" << std::endl;
         for(int i=0; i<100; i++){
             result.row(i+100) = Th2.row(i);
         }
@@ -1222,26 +1232,38 @@ Eigen::MatrixXd alternativeTrajectory(
         Eigen::MatrixXd Th3;
 
         Th1 = invDiffKinematicControlSimCompleteQuaternion(jointstate, Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, xe0, point_mid_1, q0, q_mid, false, outputFile);
-        
+        outputFile << "Th1 -> ";
+
         if(!checkCollisionSingularity(Th1, scaleFactor, outputFile)){
 
-            std::cout << "Th1 VALIDO; ";
-            outputFile << std::endl << "Th1 VALIDO " << std::endl;
+            std::cout << " VALIDO; ";
+            outputFile << " VALIDO " ;
+            
             Th2 = invDiffKinematicControlSimCompleteQuaternion(Th1.row(99), Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, point_mid_1, point_mid_2, q_mid, q_mid, false, outputFile);
+            outputFile << std::endl << "Th2 -> ";
 
             if(!checkCollisionSingularity(Th2, scaleFactor, outputFile)){
                 
-                std::cout << "Th2 VALIDO; ";
-                outputFile << std::endl << "Th2 VALIDO " << std::endl;
+                std::cout << " VALIDO; ";
+                outputFile << " VALIDO "; 
+
                 Th3 = invDiffKinematicControlSimCompleteQuaternion(Th2.row(99), Kp, Kq, T, 0.0, Tf, DeltaT, scaleFactor, Tf, point_mid_2, xef, q_mid, qf, false, outputFile);
+                outputFile << std::endl << "Th3 -> ";
                 if(!checkCollisionSingularity(Th3, scaleFactor, outputFile)){
 
-                    std::cout << "Th2 VALIDO; ";
-                    outputFile << std::endl << "Th2 VALIDO " << std::endl;
+                    std::cout << "VALIDO; ";
+                    outputFile << "VALIDO " << std::endl;
                     check3Step = true;
+
+                }else{
+                    outputFile << " NON VALIDO " << std::endl;
                 }
 
+            }else{
+                outputFile << " NON VALIDO " << std::endl;
             }
+        }else{
+            outputFile << " NON VALIDO " << std::endl;
         }
 
         if(check3Step){

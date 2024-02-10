@@ -329,7 +329,7 @@ void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q, bool goingBack)
 
     }
 
-    ros::Rate loop_rate(50); 
+    ros::Rate loop_rate(100); 
     int count = 0;
    
     while (count != q.rows()) {

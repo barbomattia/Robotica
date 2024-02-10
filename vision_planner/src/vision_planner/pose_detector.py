@@ -3,11 +3,25 @@ import open3d as o3d
 import cv2
 import numpy as np
 import os
-import detection as dc
+# import detection as dc
 from sklearn.cluster import DBSCAN
 from sklearn.linear_model import RANSACRegressor
 from scipy.spatial.transform import Rotation as R
-    
+
+classNames = [
+    "X1-Y1-Z2",
+    "X1-Y2-Z1",
+    "X1-Y2-Z2",
+    "X1-Y2-Z2-CHAMFER",
+    "X1-Y2-Z2-TWINFILLET",
+    "X1-Y3-Z2",
+    "X1-Y3-Z2-FILLET",
+    "X1-Y4-Z1",
+    "X1-Y4-Z2",
+    "X2-Y2-Z2",
+    "X2-Y2-Z2-FILLET"
+]
+
 ##
 #  @brief Load the meshes of the blocks as pointclouds.
 #  
@@ -572,7 +586,7 @@ def is_plane(point_cloud):
 
 
 def find_best(meshes, blocks):
-    classNames = dc.classNames
+    # classNames = dc.classNames
     detected = []
     criticals = []
     final = []
