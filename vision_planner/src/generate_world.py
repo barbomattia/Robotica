@@ -26,9 +26,12 @@ def save_sdf_to_file(tree, filename):
     with open(os.path.abspath(filename), "w") as file:
         file.write(minidom.parseString(ET.tostring(root)).toprettyxml(indent="  "))
 
-def generate_random_pose(x_range, y_range, z_value):
+def generate_random_pose(x_range, y_range, z_value, xmin, ymin, xmax, ymax):
     x = random.uniform(x_range[0], x_range[1])
     y = random.uniform(y_range[0], y_range[1])
+    while xmin < x < xmax and ymin < y < ymax:
+        x = random.uniform(x_range[0], x_range[1])
+        y = random.uniform(y_range[0], y_range[1])
     z = z_value
     # Random rotation about the Z-axis
     yaw = random.uniform(0, 2 * 3.14159)
@@ -96,12 +99,18 @@ def generate_world_sdf():
 
         # Generate a random pose with rotation about Z-axis for each block, ensuring they don't overlap
         overlap = True
+        # Singularity avoidance
+        xmin = 0.3
+        ymin = 0.3
+        xmax = 0.5
+        ymax = 0.5
         while overlap:
-            block_pose.text = generate_random_pose(x_range, y_range, z_value)
+            block_pose.text = generate_random_pose(x_range, y_range, z_value, xmin, ymin, xmax, ymax)
             overlap = any(
                 (
-                    abs(float(other_block_pose.split()[0]) - float(block_pose.text.split()[0])) < 0.14
-                    and abs(float(other_block_pose.split()[1]) - float(block_pose.text.split()[1])) < 0.14
+                    abs(float(other_block_pose.split()[0]) - float(block_pose.text.split()[0])) < 0.125
+                    and abs(float(other_block_pose.split()[1]) - float(block_pose.text.split()[1])) < 0.125
+
                 )
                 for other_block_pose in [tavolo_pose.text] + [include.find("pose").text if include.find("pose") is not None else "" for include in world.findall("include") if include != block_include and include.find("pose") is not None]
             )
