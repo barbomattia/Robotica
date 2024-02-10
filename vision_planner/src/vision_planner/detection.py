@@ -1,8 +1,10 @@
 import cv2 as cv
 import numpy as np
+import os
+import rospkg
 
 ## Path to ONNX model
-ONNX        = './src/Robotica/vision_planner/yolov8.onnx'
+ONNX        = 'yolov8.onnx'
 ## Size of network input
 SQUARE      = 640
 ## XY size of network input
@@ -77,7 +79,8 @@ class Image:
 #  @see cv2.dnn.readNetFromONNX
 #  @see cv2.cuda.getCudaEnabledDeviceCount
 def loadONNX() -> cv.dnn.Net:
-    net = cv.dnn.readNetFromONNX(ONNX)
+    vision_path = rospkg.RosPack().get_path('vision_planner')
+    net = cv.dnn.readNetFromONNX(os.path.join(vision_path, ONNX))
     
     if cv.cuda.getCudaEnabledDeviceCount() > 0:
         net.setPreferableBackend(cv.dnn.DNN_BACKEND_CUDA)
