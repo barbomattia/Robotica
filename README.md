@@ -1,5 +1,5 @@
-<h1><center> Fundamentals of Robotics Project </center></h1>
-<h4><center> Matteo Grisenti - Angelo Nutu - Mattia Barborini - Filippo Adami </center></h3>
+<h1 align="center"> Fundamentals of Robotics Project</h1>
+<h4 align="center"> Matteo Grisenti - Angelo Nutu - Mattia Barborini - Filippo Adami </h3>
 
 ## Requirements
 
@@ -51,4 +51,4 @@ rosrun task_planner state_machine_task_node
 python3 -i ~/ros_ws/src/locosim/robot_controller/base_controllers/ur5_generic.py
 ~~~
 
-<h5><center> <a href="https://github.com/barbomattia/Robotica/blob/main/Report.pdf"> Read the full report </a> - <a href="https://drive.google.com/file/d/1hGNZJnl_iq87XpLlgdKWfP9evemomHeB/view?usp=drivesdk">Watch the demo</a> </center></h5>
+<h5 align="center"> <a href="https://github.com/barbomattia/Robotica/blob/main/Report.pdf"> Read the full report </a> - <a href="https://drive.google.com/file/d/1hGNZJnl_iq87XpLlgdKWfP9evemomHeB/view?usp=drivesdk">Watch the demo</a></h5>

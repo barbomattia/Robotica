@@ -1,3 +1,57 @@
-\label{index_md__home_mattia_trento_lab_home_ros_ws_src_Robotica_README}%
-\Hypertarget{index_md__home_mattia_trento_lab_home_ros_ws_src_Robotica_README}%
-progetto robotica 
+\doxysection*{\begin{center} Fundamentals of Robotics Project \end{center} }
+
+\doxyparagraph*{\begin{center} Matteo Grisenti -\/ Angelo Nutu -\/ Mattia Barborini -\/ Filippo Adami \end{center} }\hypertarget{index_autotoc_md0}{}\doxysubsection{Requirements}\label{index_autotoc_md0}
+In order to be able to run the project, it\textquotesingle{}s required to follow the \href{https://github.com/mfocchi/locosim}{\texttt{ locosim procedure}} up until the locosim repository and catkin setup\hypertarget{index_autotoc_md1}{}\doxysubsection{How to run}\label{index_autotoc_md1}
+After setting up locosim move into the workspace folder and clone the repo\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd \string~/ros\_ws/src}
+\DoxyCodeLine{git clone git@github.com:barbomattia/Robotica.git}
+\end{DoxyCode}
+
+
+Following this step, we should generate a new simulation world, following these steps very closely (the paths are important!)\+:
+
+0. open the docker or VM
+\begin{DoxyEnumerate}
+\item move to the appropriate path 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd \string~/ros\_ws/src }
+\end{DoxyCode}
+
+\item run 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{python3 Robotica/vision\_planner/src/generate\_world.py}
+\end{DoxyCode}
+
+\item open {\ttfamily locosim/ros\+\_\+impendance\+\_\+controller\+\_\+ur5.\+launch} and modify line 12 to {\ttfamily $<$arg name=\char`\"{}world\+\_\+name default=\char`\"{}bricks.\+world"/$>$}
+\item in {\ttfamily locosim/robot\+\_\+controller/base\+\_\+controllers/ur5\+\_\+generic.\+py} comment lines 71-\/72-\/73 relating the world name and add 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{self.world\_name = 'bricks.world'}
+\end{DoxyCode}
+
+\item modify {\ttfamily $\sim$/.bashrc} by adding at the eof {\ttfamily export G\+A\+Z\+E\+B\+O\+\_\+\+M\+O\+D\+E\+L\+\_\+\+P\+A\+TH=/home/\{U\+S\+ER\}/ros\+\_\+ws/src/\+Robotica/vision\+\_\+planner/worlds/models\+:\$\+G\+A\+Z\+E\+B\+O\+\_\+\+M\+O\+D\+E\+L\+\_\+\+P\+A\+TH}
+\item run 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{source \string~/.bashrc}
+\DoxyCodeLine{rm \string~/ros\_ws/install}
+\DoxyCodeLine{cd \string~/ros\_ws}
+\DoxyCodeLine{catkin\_make install}
+\end{DoxyCode}
+
+\end{DoxyEnumerate}
+
+And you should be able to find a new world with randomly placed blocks
+
+Finally, open 3 other terminals and run\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{rosrun motion\_planner inverse\_kinematic\_node }
+\DoxyCodeLine{}
+\DoxyCodeLine{rosrun vision\_planner main.py}
+\DoxyCodeLine{}
+\DoxyCodeLine{rosrun task\_planner state\_machine\_task\_node }
+\DoxyCodeLine{}
+\DoxyCodeLine{python3 -\/i \string~/ros\_ws/src/locosim/robot\_controller/base\_controllers/ur5\_generic.py}
+\end{DoxyCode}
+
+
+\doxysubparagraph*{\begin{center} \href{https://github.com/barbomattia/Robotica/blob/main/Report.pdf}{\texttt{ Read the full report }} -\/ \href{https://drive.google.com/file/d/1hGNZJnl_iq87XpLlgdKWfP9evemomHeB/view?usp=drivesdk}{\texttt{ Watch the demo}} \end{center} }

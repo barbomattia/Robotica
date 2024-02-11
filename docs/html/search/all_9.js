@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['loadonnx_21',['loadONNX',['../detection_8py.html#a6c630bf8bf8e85ddcd4af137aae8fec0',1,'detection']]]
+  ['loadonnx_20',['loadONNX',['../detection_8py.html#ac996652bfe7aa7af9b5d6a679aaaaaa7',1,'vision_planner::detection']]]
 ];

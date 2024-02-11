@@ -1,19 +1,11 @@
 ##
 # @mainpage Vision task
 #
-# @section description_main Description
-# Explain the whole detection process: TODO
-#
-# @section notes_main Notes
-# - Still a work in progress.
 #
 ##
 # @file detection.py
 #
 # @brief Performs block detection based on pre-trained ONNX model and OpenCV's Deep Neural Network submodule.
-#
-# @section description_doxygen_example Description
-# Give overview: TODO.
 #
 # @section libraries_main Libraries/Modules
 # - OpenCV (https://pypi.org/project/opencv-python/)
@@ -22,7 +14,19 @@
 #   - Get outputs of neural network.
 # - Numpy (https://numpy.org/)
 #   - Manage network output to extrapolate useful data.
-
+##
+# @file pose_detector.py
+#
+# @brief Perform ICP for pose estimation after point cloud pre-processing and cropping.
+#
+# @section libraries_main Libraries/Modules
+# - OpenCV (https://pypi.org/project/opencv-python/)
+# - Numpy (https://numpy.org/)
+#   - Manage point cloud data.
+#   - Perform transformations.
+# - Open3D
+#   - Extrapolate data from point clouds.
+#   - Perform ICP and get meaningful statistics.
 import open3d as o3d
 import numpy as np
 import vision_planner.detection as dc
@@ -30,7 +34,6 @@ import vision_planner.pose_detector as pd
 import rospy as ros
 import rospkg
 import os
-import cv2 as cv
 import sensor_msgs.point_cloud2 as pc2
 from cv_bridge import CvBridge, CvBridgeError
 from sensor_msgs.msg import Image, PointCloud2

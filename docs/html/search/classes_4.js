@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nancolumn_51',['NaNColumn',['../structNaNColumn.html',1,'']]]
+  ['nancolumn_48',['NaNColumn',['../structNaNColumn.html',1,'']]]
 ];

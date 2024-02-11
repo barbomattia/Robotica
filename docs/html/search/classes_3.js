@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['image_50',['Image',['../classdetection_1_1Image.html',1,'detection']]]
+  ['image_47',['Image',['../classvision__planner_1_1detection_1_1Image.html',1,'vision_planner::detection']]]
 ];
