@@ -64,9 +64,10 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     std::cout << "Vector Location xef: " << req.xef[0] << ", " << req.xef[1] << ", " << req.xef[2] << std::endl;
     std::cout << "Vector Euler phief: " << req.phief[0] << ", " << req.phief[1] << ", " << req.phief[2] << std::endl;
 
-   
+    
     // converto il vettore di double req.phief ed xef in vettori eigen phief e xef
     Eigen::VectorXd phief = Eigen::Map<Eigen::VectorXd>(req.phief.data(), req.phief.size());
+    phief[2] = phief[2] - phie[2];
     Eigen::VectorXd xef = Eigen::Map<Eigen::VectorXd>(req.xef.data(), req.xef.size());
 
     // derivo la matrice di rotazione desiderata dell'end effector da phief

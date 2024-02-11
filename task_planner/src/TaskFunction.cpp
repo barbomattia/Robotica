@@ -601,7 +601,7 @@ void grasp(ros::NodeHandle& n, double xef[3], double phief[3], bool taken, std::
     control_gazebo_arm_2(n, graspTrajectory, false, true);
     if(taken){
         std::cout << "\n\t\t     Taken"; std::cout.flush();
-        // closeGrasp(n,blockName); 
+        closeGrasp(n,blockName); 
     }else{
         std::cout << "\n\t\t     Posed"; std::cout.flush(); 
         openGrasp(n);      

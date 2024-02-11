@@ -293,6 +293,7 @@ def crop_depth_image(yolo_detections, depth_image, intrinsics):
     
     # Iterate over all blocks detected by YOLO
     for line in yolo_detections:
+        
         # Remove the last char from the line
         line = line[:-1]
         # Divide split the line at ":", take the first element as "identifier" and the second element as "bbox"
@@ -388,10 +389,7 @@ def depth_image_to_point_cloud(depth_frame):
     pointcloud = point_cloud
 
     xyz = np.asarray(pointcloud.points)
-    if len(points) < 50:
-        best_error = float('inf')
-        best_transformation = np.identity(4)
-        return best_error, best_transformation
+    
     # DBSCAN Clustering
     clustering = DBSCAN(eps=10.0, min_samples=8)
     labels = clustering.fit_predict(xyz)

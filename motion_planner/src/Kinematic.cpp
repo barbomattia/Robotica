@@ -954,7 +954,7 @@ Eigen::MatrixXd posizioneGiunti(Eigen::VectorXd Th, double scaleFactor){
 
 bool checkCollisioni(Eigen::MatrixXd Th, double offset, double dist, double scaleFactor, std::ofstream& outputFile){
 
-    double ZTetto = -0.2 * scaleFactor;
+    double ZTetto = 0.0 * scaleFactor;
     double ZTavolo = (0.91-dist)  * scaleFactor ;
     double ZGradino = 0.725 * scaleFactor;
     double XCol1 = -0.4 * scaleFactor;

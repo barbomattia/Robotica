@@ -84,8 +84,8 @@ def generate_world_sdf():
         "X2-Y2-Z2-FILLET",
     ]
 
-    x_range = [0.05, 0.60]
-    y_range = [0.30, 0.75]
+    x_range = [0.05, 0.65]
+    y_range = [0.25, 0.75]
     z_value = 0.865  # Assuming a common z value for all blocks
 
     # Generate random poses for 11 blocks with random rotation about Z-axis
@@ -100,7 +100,7 @@ def generate_world_sdf():
         # Generate a random pose with rotation about Z-axis for each block, ensuring they don't overlap
         overlap = True
         # Singularity avoidance
-        xmin = 0.40
+        xmin = 0.30
         ymin = 0.30
         xmax = 0.55
         ymax = 0.55
