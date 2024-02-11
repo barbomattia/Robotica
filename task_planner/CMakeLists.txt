@@ -137,9 +137,6 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/task_planner_node.cpp)
-add_executable(control_gazebo_arm_node src/control_gazebo_arm.cpp)
-add_executable(go_start_position_node src/go_start_position.cpp)
-add_executable(ask_image_gazebo_camera_node src/ask_image_gazebo_camera.cpp)
 add_executable(state_machine_task_node src/state_machine_task.cpp src/TaskFunction.cpp)
 
 
@@ -148,9 +145,6 @@ add_executable(state_machine_task_node src/state_machine_task.cpp src/TaskFuncti
 ## target back to the shorter version for ease of user use
 ## e.g. "rosrun someones_pkg node" instead of "rosrun someones_pkg someones_pkg_node"
 # set_target_properties(${PROJECT_NAME}_node PROPERTIES OUTPUT_NAME node PREFIX "")
-target_link_libraries(control_gazebo_arm_node ${catkin_LIBRARIES})
-target_link_libraries(go_start_position_node ${catkin_LIBRARIES})
-target_link_libraries(ask_image_gazebo_camera_node ${catkin_LIBRARIES})
 target_link_libraries(state_machine_task_node ${catkin_LIBRARIES})
 
 
