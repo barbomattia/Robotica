@@ -388,7 +388,10 @@ def depth_image_to_point_cloud(depth_frame):
     pointcloud = point_cloud
 
     xyz = np.asarray(pointcloud.points)
-
+    if len(points) < 50:
+        best_error = float('inf')
+        best_transformation = np.identity(4)
+        return best_error, best_transformation
     # DBSCAN Clustering
     clustering = DBSCAN(eps=10.0, min_samples=8)
     labels = clustering.fit_predict(xyz)
@@ -687,6 +690,10 @@ def compute_pose(block_mesh, cropped_point_cloud):
     cropped_point_cloud.points = o3d.utility.Vector3dVector(cropped_points)
     
     points = np.asarray(cropped_point_cloud.points)
+    if len(points) < 50:
+        best_error = float('inf')
+        best_transformation = np.identity(4)
+        return best_error, best_transformation
     # DBSCAN Clustering
     clustering = DBSCAN(eps=10.0, min_samples=8)
     labels = clustering.fit_predict(points)
