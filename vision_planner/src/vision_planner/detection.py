@@ -122,7 +122,7 @@ def padAndResize(frame: cv.Mat) -> Image:
         )
         resize[0:height, 0:width, :] = frame
         
-    resize[:220, :] = [0, 0, 0]
+    resize[:460, :] = [0, 0, 0]
     resize = cv.resize(resize, SIZE)
     resize = cv.cvtColor(resize, cv.COLOR_BGR2GRAY)
     resize = cv.cvtColor(resize, cv.COLOR_GRAY2BGR)

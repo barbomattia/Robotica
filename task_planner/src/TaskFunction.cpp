@@ -303,10 +303,10 @@ Eigen::MatrixXd ask_inverse_kinematic(ros::NodeHandle& n, double xef[3], double 
     //per le coordinate conferto le coordinate originali nel world frame alla coordinate del UR5 fram 
     srv.request.xef[0]=xef[0]-ARM_X;            srv.request.phief[0]=0.0;
     srv.request.xef[1]=ARM_Y - xef[1];          srv.request.phief[1]=0.0;
-    srv.request.xef[2]= 0.60;                   srv.request.phief[2]= 0.0;
+    srv.request.xef[2]= 0.55;                   srv.request.phief[2]= 0.0;
     
     if(grasp){
-        srv.request.xef[2]= 0.72;
+        srv.request.xef[2]= 0.715;
         srv.request.phief[2]= phief[2];
     }
 
@@ -448,18 +448,18 @@ void control_gazebo_arm_2(ros::NodeHandle& n, Eigen::MatrixXd q, bool goingBack,
 
 
 std::vector<double> define_end_position(std::string block){
-    if(block == "X1-Y4-Z2")             return {0.9, 0.25, 1.1, 0.0, 0.0, 3.14};
-    if(block == "X1-Y4-Z1")             return {0.9, 0.3, 1.1, 0.0, 0.0, 3.14};
+    if(block == "X1-Y4-Z2")             return {0.9, 0.25, 1.1, 0.0, 0.0, 1.57};
+    if(block == "X1-Y4-Z1")             return {0.9, 0.3, 1.1, 0.0, 0.0, 1.57};
     if(block == "X1-Y1-Z2")             return {0.8, 0.3, 1.1, 0.0, 0.0, 0.0};
     if(block == "X2-Y2-Z2")             return {0.92, 0.4, 1.1, 0.0, 0.0, 0.0};
     if(block == "X2-Y2-Z2-FILLET")      return {0.82, 0.4, 1.1, 0.0, 0.0, 0.0};
-    if(block == "X1-Y3-Z2")             return {0.92, 0.5, 1.1, 0.0, 0.0, 3.14};
-    if(block == "X1-Y3-Z2-FILLET")      return {0.8, 0.5, 1.1, 0.0, 0.0, 3.14};
-    if(block == "X1-Y2-Z2-TWINFILLET")  return {0.95, 0.65, 1.1, 0.0, 0.0, 3.14};
+    if(block == "X1-Y3-Z2")             return {0.92, 0.5, 1.1, 0.0, 0.0, 1.57};
+    if(block == "X1-Y3-Z2-FILLET")      return {0.8, 0.5, 1.1, 0.0, 0.0, 1.57};
+    if(block == "X1-Y2-Z2-TWINFILLET")  return {0.95, 0.65, 1.1, 0.0, 0.0, 1.57};
     if(block == "X1-Y2-Z2")             return {0.9, 0.65, 1.1, 0.0, 0.0, 0.0};
-    if(block == "X1-Y2-Z1")             return {0.85, 0.65, 1.1, 0.0, 0.0, 3.14};
-    if(block == "X1-Y2-Z2-CHAMFER")     return {0.8, 0.65, 1.1, 0.0, 0.0, 3.14};
-    if(block == "X1-Y1-Z1")             return {0.75, 0.65, 1.1, 0.0, 0.0, 3.14};
+    if(block == "X1-Y2-Z1")             return {0.85, 0.65, 1.1, 0.0, 0.0, 1.57};
+    if(block == "X1-Y2-Z2-CHAMFER")     return {0.8, 0.65, 1.1, 0.0, 0.0, 1.57};
+    if(block == "X1-Y1-Z1")             return {0.75, 0.65, 1.1, 0.0, 0.0, 1.57};
 
 
     return {0.0, 0.0, 0.0, 0.0, 0.0, 0.0};
@@ -522,8 +522,8 @@ void openGrasp(ros::NodeHandle& n){
     jointPositions.data.push_back(received_positions[5]);     //inseirsco i valori  per il joint4
     jointPositions.data.push_back(received_positions[6]);     //inseirsco i valori  per il joint5
     jointPositions.data.push_back(received_positions[7]);     //inseirsco i valori  per il joint6
-    jointPositions.data.push_back(0.3);     //inseirsco i valori  per il rasp1
-    jointPositions.data.push_back(0.3);     //inseirsco i valori  per il rasp2
+    jointPositions.data.push_back(0.5);     //inseirsco i valori  per il rasp1
+    jointPositions.data.push_back(0.5);     //inseirsco i valori  per il rasp2
 
     
     // std::cout << "received_positions: " << stampaVector(received_positions).str() << "\n";
@@ -547,7 +547,7 @@ void openGrasp(ros::NodeHandle& n){
 
 void closeGrasp(ros::NodeHandle& n, std::string blockName){
 
-     double closingFactor = Gripper(blockName);
+     double closingFactor = Gripper(blockName) + 0.05;
 
     // inizializzo il messaggio per l'ur5 con la configurazione q dei joint che voglio raggiungere
     ros::Publisher pub = n.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1);
@@ -601,12 +601,11 @@ void grasp(ros::NodeHandle& n, double xef[3], double phief[3], bool taken, std::
     control_gazebo_arm_2(n, graspTrajectory, false, true);
     if(taken){
         std::cout << "\n\t\t     Taken"; std::cout.flush();
-        closeGrasp(n,blockName); 
+        // closeGrasp(n,blockName); 
     }else{
         std::cout << "\n\t\t     Posed"; std::cout.flush(); 
         openGrasp(n);      
     }
     control_gazebo_arm_2(n, graspTrajectory, true, true);
-
 
 }

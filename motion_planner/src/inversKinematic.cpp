@@ -46,6 +46,7 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     auto result = CinematicaDiretta(jointstate, scaleFactor);   
     Eigen::VectorXd xe = result.pe;     // posizione end effector 
     Eigen::Matrix3d Re = result.Re;     // rotazione end effector 
+    Eigen::VectorXd phie = Re.eulerAngles(0, 1, 2);
     Eigen::Quaterniond q0(Re);          // quaternione configurazione iniziale 
 
     // Stampa del vettore xe e della matrice Re
@@ -53,7 +54,7 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     ROS_INFO("\nDERIVE INITIAL INFORMATION xe, Re, RPY, q0 of END EFFECTOR\n");
     std::cout << "Vector xe: " << vectorToString(xe).c_str() << std::endl;
     std::cout << "Matrix Re: " << matrix3dToString(Re).c_str() << std::endl;
-    std::cout << "Vector RPY: " << vectorToString(Re.eulerAngles(0, 1, 2)).c_str() << std::endl;
+    std::cout << "Vector phie: " << vectorToString(phie).c_str() << std::endl;
     std::cout << "Quaternion q0: " << quaternioToString(q0).c_str() << std::endl << std::endl; 
 
     ROS_INFO("REQUEST DESIRED END EFFECTOR");

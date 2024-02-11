@@ -76,7 +76,7 @@ class Vision:
         
         detections = dc.inference(self.image, self.nn)
         ros.loginfo('Blocks detected')
-        #dc.showBBox(self.image, detections)
+        dc.showBBox(self.image, detections)
         
         detections = sorted(detections, key = lambda x:x.confidence, reverse = True)
         for detection in detections:

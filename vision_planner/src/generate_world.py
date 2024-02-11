@@ -100,10 +100,10 @@ def generate_world_sdf():
         # Generate a random pose with rotation about Z-axis for each block, ensuring they don't overlap
         overlap = True
         # Singularity avoidance
-        xmin = 0.3
-        ymin = 0.3
-        xmax = 0.5
-        ymax = 0.5
+        xmin = 0.40
+        ymin = 0.30
+        xmax = 0.55
+        ymax = 0.55
         while overlap:
             block_pose.text = generate_random_pose(x_range, y_range, z_value, xmin, ymin, xmax, ymax)
             overlap = any(
