@@ -1,3 +1,9 @@
+/**
+ * @file state_machine_task.cpp
+ * @brief C++ file that implement the motion planner core.
+ * 
+ */
+
 #include <eigen3/Eigen/Core>
 #include <eigen3/Eigen/Dense> 
 #include <ros/ros.h>
@@ -7,7 +13,16 @@
 #include <fstream>
 
 
-
+/**
+ * @brief Menage the request of inverse kinematic.
+ * 
+ * This function calculates the inverse kinematics to reach a reqested point. 
+ * 
+ * @param req A reference to a InverseKinematic.srv request.
+ * @param res A reference to a InverseKinematic.srv response.
+ * 
+ * @return A boolean value indicating whether the operation was successful
+ */
 bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::InverseKinematic::Response &res){
     double scaleFactor = 10.0;
     double Tf = 4.0; 
@@ -143,7 +158,10 @@ bool inverse(motion_planner::InverseKinematic::Request &req, motion_planner::Inv
     return true;
 }
 
-
+/**
+ * @brief Define the behavior of the motion planner node.
+ * 
+ */
 int main(int argc, char **argv){
 
     ros::init(argc, argv, "inverse_kinemtic_node");

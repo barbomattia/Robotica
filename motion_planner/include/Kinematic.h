@@ -404,6 +404,7 @@
      * 
      * @param Th The trajectory represented as a matrix where each row represents a configuration.
      * @param scaleFactor The scaling factor applied to the trajectory and joint positions.
+     * @param grasp Flag indicating if it is a grasping action.
      * @param outputFile Reference to the output file stream to log collision or singularity information.
      * 
      * @return A boolean value indicating whether a collision or singularity was detected. I could be true: Collision or singularity detected.
@@ -529,7 +530,7 @@
      * 
      * This function converts an Eigen::MatrixXd to a string, with each element separated by a space and each row separated by a newline character.
      * 
-     * @param mat The Eigen::MatrixXd to convert
+     * @param matrice The Eigen::MatrixXd to convert
      * @return A string representation of the Eigen::MatrixXd
      */
     std::string matrixToString(const Eigen::MatrixXd& matrice);

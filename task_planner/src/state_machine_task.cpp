@@ -1,3 +1,10 @@
+/**
+ * @file state_machine_task.cpp
+ * @brief C++ file that implement the task planner core
+ * 
+ */
+
+
 #include "ros/ros.h"
 #include "TaskFunction.h"
 #include <iostream>
@@ -13,6 +20,7 @@
  * 
  * @param n A reference to the ROS node handle.
  * @param blocco The block object representing the block to be manipulated.
+ * @param i Integer that indicate the iteration of the loop that call this function.
  * 
  * @return A boolean value indicating whether the operation was successful, if it's true, the block was successfully manipulated, else the 
  * block was not reachable or other errors occurred.
@@ -139,6 +147,10 @@ bool ordering_block(ros::NodeHandle& n, Block& blocco, int i){
     return true;
 }
 
+/**
+ * @brief Define the behavior of the task planner node.
+ * 
+ */
 int main(int argc, char **argv){
     ros::init(argc, argv, "state_machine_task");
     ros::NodeHandle n;

@@ -1,3 +1,10 @@
+/**
+ * @file TaskFunction.h
+ * @brief Header file containing the declarations of the functions necessary for the task planner
+ * 
+ */
+
+
 #pragma once
 #include <iostream>
 #include <ros/ros.h>
@@ -16,12 +23,16 @@
 #define __TASKFUNCTION_H__
 
 
-
+    /**
+     * @brief Struttura che rappresenta un blocco di dati.
+     * 
+     * Questa struttura definisce un tipo di dato `Block` che contiene le sue coordinate (`x`), l'orientamento  (`phi`) ed il nome del blocco.
+     */
     // definisco un tipo BLock per facilitare e rendere la gesstione dei dati più facile ed intuibile
     typedef struct {
-        double x[3];
-        double phi[3];
-        std::string name;
+        double x[3];        /**< Array delle coordinate x. */
+        double phi[3];      /**< Array degli angoli phi. */
+        std::string name;   /**< Nome del blocco. */
     } Block;
 
 
@@ -38,7 +49,13 @@
     // Dichiarazione dell'operatore <<
     std::ostream& operator<<(std::ostream& os, const Block& block);
 
-
+    /**
+     * @brief Controls the UR5 robot arm in Gazebo to reach the start position.
+     * 
+     * This function publishes joint positions to the UR5 robot arm's controller in Gazebo simulation to reach the start position
+     * 
+     * @param n A reference to the ROS NodeHandle object for communication.
+     */
     void go_to_start_position(ros::NodeHandle& n);
 
 
@@ -66,6 +83,9 @@
      * @param n A reference to the ROS NodeHandle object for communication.
      * @param xef An array containing the x, y, z coordinates of the desired end effector position.
      * @param phief An array containing the roll, pitch, yaw angles (in radians) of the desired end effector orientation.
+     * @param title The name of the output file in wich the motion part will save the debug print.
+     * @param first A boolean flag that indicate if it is the first ask for inverse kinematic.
+     * @param grasp A boolean flag that indicate if the arm is grasping a block.
      * @return A matrix containing the computed joint configurations. Each row represents a set of joint values corresponding to a valid configuration.
      */
     /* RICHIESTA MOTION PLAN
@@ -125,8 +145,6 @@
     /* FUNZIONI SECONDARIE */
     bool isZero(const std::vector<double>& vettore);
 
-    std::stringstream stampaVector(const std::vector<double>& vec);
-
     /**
      * @brief Calculates the width adjustment for the gripper based on the provided block name.
      * 
@@ -144,7 +162,24 @@
      */
     double Gripper(std::string blockName);
 
+
+    /**
+     * @brief Menage the action of graping.
+     * 
+     * This function menage the action of grasping, in both taken and release event. It open or close the gripper in case of taken or release action 
+     * and request to the motion part the trajectory to reach the block.
+     * 
+     * @param n A reference to the ROS NodeHandle object for communication.
+     * @param xef An array containing the x, y, z coordinates of the desired end effector position.
+     * @param phief An array containing the roll, pitch, yaw angles (in radians) of the desired end effector orientation.
+     * @param take A boolean flag that indicate if it is a teken or release action.
+     * @param blockName The name of the block for which the gripper width adjustment is calculated.
+     * @param title The name of the output file in wich the motion part will save the debug print.
+     * 
+     */
     void grasp(ros::NodeHandle& n, double xef[3], double phief[3], bool take, std::string blockName, std::string title);
+
+    std::stringstream stampaVector(const std::vector<double>& vec);
 
 
 #endif
