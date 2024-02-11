@@ -242,8 +242,9 @@ def create_depth_image_from_point_cloud(point_cloud, intrinsics):
 ##
 #  @brief Crop the depth image to the bounding box of each block.
 #
-#  This function crops the depth image to the bounding box of each block detected by YOLO.
-#  It also prints the center of each block in the pointcloud coordinates.
+#  This function crops the depth image to the bounding box of each block detected by YOLO, while
+#  also determening the center of each block in the pointcloud coordinates and projecting it to world frame coordinates
+#  converting the quaternion transformation parameters to rotation matrix.
 #  It also converts the cropped depth image to a point cloud by calling the depth_image_to_point_cloud function.
 #
 #  @param yolo_detections The YOLO detections
@@ -585,7 +586,25 @@ def is_plane(point_cloud):
     else:
         return False
 
-
+##
+#  @brief Find the best pose for each block detected using YOLO.
+#
+#  This function iterates over each block detected using YOLO and attempts to find the best pose for each block
+#  by comparing its features with pre-defined meshes. It computes the pose based on the features of the block
+#  and its corresponding cropped point cloud with ICP. If the block is successfully identified, its pose is determined
+#  and added to the final list after thorough comparison with blocks of the same type. 
+#  If not, the block is considered critical and its pose is computed based on the missing unidentified blocks
+#  still performing ICP.
+#
+#  @param meshes A dictionary containing pre-defined meshes for different block types
+#  @param blocks A list containing information about each detected block, including its identifier, center, cropped depth image, and cropped point cloud
+#
+#  @return A list containing the identified block, its pose (position and orientation), and its center coordinates
+#
+#  Example usage:
+#  @code
+#  final_results = find_best(meshes_dict, detected_blocks)
+#  @endcode
 def find_best(meshes, blocks):
     # classNames = dc.classNames
     detected = []
@@ -644,15 +663,15 @@ def find_best(meshes, blocks):
 ##
 #  @brief Compute the pose of the blocks.
 #
-#  This function computes the pose of the blocks by performing a three step iterative ICP between the point cloud of the block and the mesh of the block, where each iteration is performed with a different pre-rotation around the z-axis.
+#  This function computes the pose of the input block by performing a three step iterative ICP between the point cloud of the block and the mesh of the block, where each iteration is performed with a different pre-rotation around the z-axis.
 #  It also performs some pre-processing steps such as scaling and filtering the point cloud.
 #
 #  @param meshes A dictionary containing the point clouds of the meshes
-#  @param blocks A list of tuples containing the block identifier, the cropped depth image, and the cropped point cloud
+#  @param cropped_point_cloud The cropped point cloud extracted from the YOLO detection
 #
 #  Example usage:
 #  @code
-#  compute_pose(meshes, blocks)
+#  compute_pose(meshes, cropped_point_cloud)
 #  @endcode
 #
 #  @see open3d.geometry.PointCloud

@@ -57,5 +57,19 @@
         "streambuf": "cpp",
         "thread": "cpp",
         "typeinfo": "cpp"
-    }
+    },
+    "python.autoComplete.extraPaths": [
+        "/home/angelonutu/ros_ws/devel/lib/python3/dist-packages",
+        "/home/angelonutu/ros_ws/install/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages",
+        "/opt/openrobots/lib/python3.8/site-packages",
+        "/home/angelonutu/ros_ws/src/locosim/robot_control"
+    ],
+    "python.analysis.extraPaths": [
+        "/home/angelonutu/ros_ws/devel/lib/python3/dist-packages",
+        "/home/angelonutu/ros_ws/install/lib/python3/dist-packages",
+        "/opt/ros/noetic/lib/python3/dist-packages",
+        "/opt/openrobots/lib/python3.8/site-packages",
+        "/home/angelonutu/ros_ws/src/locosim/robot_control"
+    ]
 }
