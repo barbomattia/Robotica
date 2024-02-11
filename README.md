@@ -41,8 +41,8 @@ catkin_make install
 And you should be able to find a new world with randomly placed blocks.
 
 Then, since our code provides a default homing procedure that moves each joint singularly to make sure no collision with the table occurs, you should comment line 271 in ~/ros_ws/src/locosim/robot_control/base_controllers/ur5_generic.py:
-~~~ bash
-~ python #p.homing_procedure(conf.robot_params[p.robot_name]['dt'], v_des, conf.robot_params[p.robot_name]['q_0'], rate)
+~~~ python
+#p.homing_procedure(conf.robot_params[p.robot_name]['dt'], v_des, conf.robot_params[p.robot_name]['q_0'], rate)
 ~~~
 
 Finally, open 3 other terminals and run:
