@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['getfirstcolumnwithoutnan_63',['getFirstColumnWithoutNaN',['../Kinematic_8h.html#a675d15dd58442ece131b3bc1f85b383a',1,'Kinematic.cpp']]]
+  ['find_5fbest_110',['find_best',['../pose__detector_8py.html#a947d3b52d5cef9cdafb0142aa8d3fb34',1,'vision_planner::pose_detector']]]
 ];

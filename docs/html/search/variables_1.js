@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['nmsthresh_83',['NMSTHRESH',['../detection_8py.html#a9f4a477441c3ec6383be994ed9d2507f',1,'vision_planner::detection']]]
+  ['fx_149',['fx',['../pose__detector_8py.html#ab67decd0df09f3392702654084715c79',1,'vision_planner::pose_detector']]]
 ];

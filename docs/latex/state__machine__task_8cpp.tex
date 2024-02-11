@@ -1,0 +1,52 @@
+\hypertarget{state__machine__task_8cpp}{}\doxysection{/home/mattia/trento\+\_\+lab\+\_\+home/ros\+\_\+ws/src/\+Robotica/task\+\_\+planner/src/state\+\_\+machine\+\_\+task.cpp File Reference}
+\label{state__machine__task_8cpp}\index{/home/mattia/trento\_lab\_home/ros\_ws/src/Robotica/task\_planner/src/state\_machine\_task.cpp@{/home/mattia/trento\_lab\_home/ros\_ws/src/Robotica/task\_planner/src/state\_machine\_task.cpp}}
+
+
+C++ file that implement the motion planner core.  
+
+
+{\ttfamily \#include \char`\"{}ros/ros.\+h\char`\"{}}\newline
+{\ttfamily \#include \char`\"{}Task\+Function.\+h\char`\"{}}\newline
+{\ttfamily \#include $<$iostream$>$}\newline
+Include dependency graph for state\+\_\+machine\+\_\+task.\+cpp\+:
+% FIG 0
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \mbox{\hyperlink{state__machine__task_8cpp_af7d3f54f0d015ca6e1fa56269b6d6d37}{ordering\+\_\+block}} (ros\+::\+Node\+Handle \&n, \mbox{\hyperlink{structBlock}{Block}} \&blocco, int i)
+\begin{DoxyCompactList}\small\item\em Orders the robot arm to manipulate a block. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{state__machine__task_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}\label{state__machine__task_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}} 
+int \mbox{\hyperlink{state__machine__task_8cpp_a3c04138a5bfe5d72780bb7e82a18e627}{main}} (int argc, char $\ast$$\ast$argv)
+\begin{DoxyCompactList}\small\item\em Define the behavior of the task planner node. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+C++ file that implement the motion planner core. 
+
+C++ file that implement the task planner core.
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{state__machine__task_8cpp_af7d3f54f0d015ca6e1fa56269b6d6d37}\label{state__machine__task_8cpp_af7d3f54f0d015ca6e1fa56269b6d6d37}} 
+\index{state\_machine\_task.cpp@{state\_machine\_task.cpp}!ordering\_block@{ordering\_block}}
+\index{ordering\_block@{ordering\_block}!state\_machine\_task.cpp@{state\_machine\_task.cpp}}
+\doxysubsubsection{\texorpdfstring{ordering\_block()}{ordering\_block()}}
+{\footnotesize\ttfamily bool ordering\+\_\+block (\begin{DoxyParamCaption}\item[{ros\+::\+Node\+Handle \&}]{n,  }\item[{\mbox{\hyperlink{structBlock}{Block}} \&}]{blocco,  }\item[{int}]{i }\end{DoxyParamCaption})}
+
+
+
+Orders the robot arm to manipulate a block. 
+
+This function orchestrates the motion planning and execution for manipulating a block. It first calculates the inverse kinematics to reach the block\textquotesingle{}s initial position. If the block is reachable, it proceeds to move the arm to reach the block, potentially in multiple steps. Then, it grasps the block and puts it in the desired order.
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & A reference to the ROS node handle. \\
+\hline
+{\em blocco} & The block object representing the block to be manipulated. \\
+\hline
+{\em i} & Integer that indicate the iteration of the loop that call this function.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A boolean value indicating whether the operation was successful, if it\textquotesingle{}s true, the block was successfully manipulated, else the block was not reachable or other errors occurred. 
+\end{DoxyReturn}

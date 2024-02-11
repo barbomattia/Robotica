@@ -1,8 +1,6 @@
 /**
  * @file Kinematic.h
- * @author Mattia Barborini, Matteo Grisenti
  * @brief Header file containing the declarations of the functions necessary for the arm movement
- * @date 2024-02-07
  * 
  */
 

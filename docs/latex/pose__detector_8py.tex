@@ -1,0 +1,764 @@
+\hypertarget{pose__detector_8py}{}\doxysection{/home/mattia/trento\+\_\+lab\+\_\+home/ros\+\_\+ws/src/\+Robotica/vision\+\_\+planner/src/vision\+\_\+planner/pose\+\_\+detector.py File Reference}
+\label{pose__detector_8py}\index{/home/mattia/trento\_lab\_home/ros\_ws/src/Robotica/vision\_planner/src/vision\_planner/pose\_detector.py@{/home/mattia/trento\_lab\_home/ros\_ws/src/Robotica/vision\_planner/src/vision\_planner/pose\_detector.py}}
+
+
+Perform ICP for pose estimation after point cloud pre-\/processing and cropping.  
+
+
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+def \mbox{\hyperlink{pose__detector_8py_abdafd081ebe906acafddef3a8d34149d}{vision\+\_\+planner.\+pose\+\_\+detector.\+load\+\_\+meshes}} (mesh\+\_\+folder)
+\begin{DoxyCompactList}\small\item\em Load the meshes of the blocks as pointclouds. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_a0a92ba8103e4c2d2d67dc2978baafb80}{vision\+\_\+planner.\+pose\+\_\+detector.\+read\+\_\+yolo\+\_\+detections}} (file\+\_\+path)
+\begin{DoxyCompactList}\small\item\em Read the YOLO detections from a file. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_a663dfddb905613148c0af5c5d5b54cb8}{vision\+\_\+planner.\+pose\+\_\+detector.\+scale\+\_\+point\+\_\+cloud}} (point\+\_\+cloud, scale\+\_\+factor)
+\begin{DoxyCompactList}\small\item\em Scale a point cloud by a given factor. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_abefad35c5b6ff1239505d287cdf60106}{vision\+\_\+planner.\+pose\+\_\+detector.\+rotate\+\_\+point\+\_\+cloud}} (point\+\_\+cloud)
+\begin{DoxyCompactList}\small\item\em Rotate a point cloud by 180 degrees around the x-\/axis and flip it horizontally. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_a9a84778f53ed1167a559796f7f311d1a}{vision\+\_\+planner.\+pose\+\_\+detector.\+create\+\_\+depth\+\_\+image\+\_\+from\+\_\+point\+\_\+cloud}} (point\+\_\+cloud, intrinsics)
+\begin{DoxyCompactList}\small\item\em Create a depth image from a point cloud. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_a507ec17c4e093ea11e068dea8e86da14}{vision\+\_\+planner.\+pose\+\_\+detector.\+crop\+\_\+depth\+\_\+image}} (yolo\+\_\+detections, depth\+\_\+image, intrinsics)
+\begin{DoxyCompactList}\small\item\em Crop the depth image to the bounding box of each block. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_af074dc36570e9d781e96c06a944e5f10}{vision\+\_\+planner.\+pose\+\_\+detector.\+depth\+\_\+image\+\_\+to\+\_\+point\+\_\+cloud}} (depth\+\_\+frame)
+\begin{DoxyCompactList}\small\item\em Convert a depth image to a point cloud. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_a3ab0dcdf984c13a15059545d715df8e9}{vision\+\_\+planner.\+pose\+\_\+detector.\+remove\+\_\+blue\+\_\+points\+\_\+from\+\_\+point\+\_\+cloud}} (point\+\_\+cloud)
+\begin{DoxyCompactList}\small\item\em Remove points from a point cloud based on a custom criterion. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_acb65e05fc50fec2cecf7cf5d0af67023}{vision\+\_\+planner.\+pose\+\_\+detector.\+visualize\+\_\+depth\+\_\+frame}} (depth\+\_\+image)
+\begin{DoxyCompactList}\small\item\em Visualize a depth image. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_a61a4ae205676a651ade020525961f5da}{vision\+\_\+planner.\+pose\+\_\+detector.\+visualize}} (element)
+\begin{DoxyCompactList}\small\item\em Visualize a point cloud. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_aa56b13ac88c93972fe065156fed268b4}{vision\+\_\+planner.\+pose\+\_\+detector.\+min\+\_\+distance\+\_\+between\+\_\+points}} (point\+\_\+cloud)
+\begin{DoxyCompactList}\small\item\em Computes minimum distance between points in a point cloud. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_a3ba19d515ca865147ea70ba7b2649440}{vision\+\_\+planner.\+pose\+\_\+detector.\+is\+\_\+plane}} (point\+\_\+cloud)
+\begin{DoxyCompactList}\small\item\em Check if a point cloud is a plane. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_a947d3b52d5cef9cdafb0142aa8d3fb34}{vision\+\_\+planner.\+pose\+\_\+detector.\+find\+\_\+best}} (meshes, blocks)
+\begin{DoxyCompactList}\small\item\em Find the best pose for each block detected using YOLO. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_aaba5f9bb7a9e7fc9a00946e189787fd5}{vision\+\_\+planner.\+pose\+\_\+detector.\+compute\+\_\+pose}} (block\+\_\+mesh, cropped\+\_\+point\+\_\+cloud)
+\begin{DoxyCompactList}\small\item\em Compute the pose of the blocks. \end{DoxyCompactList}\item 
+def \mbox{\hyperlink{pose__detector_8py_ad512b4c73c8c823420f0092d92cfaf0b}{vision\+\_\+planner.\+pose\+\_\+detector.\+multi\+\_\+start\+\_\+pose\+\_\+detection}} (mesh, point\+\_\+cloud, rotations=3)
+\begin{DoxyCompactList}\small\item\em Perform multi-\/start pose detection using ICP. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Variables}
+\begin{DoxyCompactItemize}
+\item 
+list {\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+class\+Names}
+\item 
+\mbox{\Hypertarget{pose__detector_8py_ab67decd0df09f3392702654084715c79}\label{pose__detector_8py_ab67decd0df09f3392702654084715c79}} 
+\mbox{\hyperlink{pose__detector_8py_ab67decd0df09f3392702654084715c79}{vision\+\_\+planner.\+pose\+\_\+detector.\+fx}} = intrinsics.\+intrinsic\+\_\+matrix\mbox{[}0, 0\mbox{]}
+\begin{DoxyCompactList}\small\item\em center \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pose__detector_8py_a3854f07b998aa5c04511d7c2bb50e772}\label{pose__detector_8py_a3854f07b998aa5c04511d7c2bb50e772}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+fy} = intrinsics.\+intrinsic\+\_\+matrix\mbox{[}1, 1\mbox{]}
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a5bb620871c4c9cb9b5541fa53ba3b0b7}\label{pose__detector_8py_a5bb620871c4c9cb9b5541fa53ba3b0b7}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+cx} = intrinsics.\+intrinsic\+\_\+matrix\mbox{[}0, 2\mbox{]}
+\item 
+\mbox{\Hypertarget{pose__detector_8py_aa8c1c6d64e64d557b51194487380500a}\label{pose__detector_8py_aa8c1c6d64e64d557b51194487380500a}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+cy} = intrinsics.\+intrinsic\+\_\+matrix\mbox{[}1, 2\mbox{]}
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a59c40c3a85f2724e4ef18f44f72367d4}\label{pose__detector_8py_a59c40c3a85f2724e4ef18f44f72367d4}} 
+tuple {\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+norm\+\_\+X} = (int(xmin) + int(xmax)) / 2
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a08921314daeb163fc96e9a14969765a5}\label{pose__detector_8py_a08921314daeb163fc96e9a14969765a5}} 
+tuple {\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+norm\+\_\+Y} = (int(ymin) + int(ymax)) / 2
+\item 
+\mbox{\Hypertarget{pose__detector_8py_afc2630d08f49af78f2be4f69c06bc6fc}\label{pose__detector_8py_afc2630d08f49af78f2be4f69c06bc6fc}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+depth\+\_\+value} = depth\+\_\+image\mbox{[}int(norm\+\_\+Y), int(norm\+\_\+X)\mbox{]}
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a6e4a7d139ec656bee9f85f629fdd8911}\label{pose__detector_8py_a6e4a7d139ec656bee9f85f629fdd8911}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+pc\+\_\+z} = depth\+\_\+value
+\item 
+\mbox{\Hypertarget{pose__detector_8py_afcc62d6afcc5b0fe250d38a213a45a9d}\label{pose__detector_8py_afcc62d6afcc5b0fe250d38a213a45a9d}} 
+tuple {\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+pc\+\_\+x} = (norm\+\_\+X -\/ cx) $\ast$ pc\+\_\+z / fx
+\item 
+\mbox{\Hypertarget{pose__detector_8py_af03313849e8f72c1d8e7b0b47d01d45f}\label{pose__detector_8py_af03313849e8f72c1d8e7b0b47d01d45f}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+pc\+\_\+y} = -\/(norm\+\_\+Y -\/ cy) $\ast$ pc\+\_\+z / fy
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a8786b6bfbd19604c16d6c7d1588033a7}\label{pose__detector_8py_a8786b6bfbd19604c16d6c7d1588033a7}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+pc} = np.\+array(\mbox{[}pc\+\_\+x, -\/pc\+\_\+y, pc\+\_\+z -\/ 0.\+023\mbox{]})
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a1a11f100467381bf5418142d92474127}\label{pose__detector_8py_a1a11f100467381bf5418142d92474127}} 
+\mbox{\hyperlink{pose__detector_8py_a1a11f100467381bf5418142d92474127}{vision\+\_\+planner.\+pose\+\_\+detector.\+pc\+\_\+min\+\_\+z}} = np.\+min(np.\+asarray(cropped\+\_\+point\+\_\+cloud.\+points)\mbox{[}\+:, 2\mbox{]})
+\begin{DoxyCompactList}\small\item\em rescaling Move the block mesh and the point cloud to the origin \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pose__detector_8py_a3cf9ffba249f74a870a082b18f9941d9}\label{pose__detector_8py_a3cf9ffba249f74a870a082b18f9941d9}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+m\+\_\+min\+\_\+z} = np.\+min(np.\+asarray(block\+\_\+mesh.\+points)\mbox{[}\+:, 2\mbox{]})
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a6e63773355e42f1f003a8d6be72da30f}\label{pose__detector_8py_a6e63773355e42f1f003a8d6be72da30f}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+pc\+\_\+max\+\_\+z} = np.\+max(np.\+asarray(cropped\+\_\+point\+\_\+cloud.\+points)\mbox{[}\+:, 2\mbox{]})
+\item 
+\mbox{\Hypertarget{pose__detector_8py_ae5d7819c6a739c603e5370c9d4333d13}\label{pose__detector_8py_ae5d7819c6a739c603e5370c9d4333d13}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+mesh\+\_\+max\+\_\+z} = np.\+max(np.\+asarray(block\+\_\+mesh.\+points)\mbox{[}\+:, 2\mbox{]})
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a2ef18e5f4ecf9456664eef8b093f98ee}\label{pose__detector_8py_a2ef18e5f4ecf9456664eef8b093f98ee}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+mesh\+\_\+min\+\_\+z} = np.\+min(np.\+asarray(block\+\_\+mesh.\+points)\mbox{[}\+:, 2\mbox{]})
+\item 
+\mbox{\Hypertarget{pose__detector_8py_aaef551f7432e6c03f983d201d3661b42}\label{pose__detector_8py_aaef551f7432e6c03f983d201d3661b42}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+pc\+\_\+dimension} = pc\+\_\+max\+\_\+z -\/ pc\+\_\+min\+\_\+z
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a73c07af632fed06c618a0cf0bf9f9916}\label{pose__detector_8py_a73c07af632fed06c618a0cf0bf9f9916}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+mesh\+\_\+dimension} = mesh\+\_\+max\+\_\+z -\/ mesh\+\_\+min\+\_\+z
+\item 
+\mbox{\Hypertarget{pose__detector_8py_aba1d48009ee615bb57653e24104ebee5}\label{pose__detector_8py_aba1d48009ee615bb57653e24104ebee5}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+scale\+\_\+factor} = pc\+\_\+dimension / mesh\+\_\+dimension
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a0c48f1b6ef3f366ae3ee147710a98133}\label{pose__detector_8py_a0c48f1b6ef3f366ae3ee147710a98133}} 
+def \mbox{\hyperlink{pose__detector_8py_a0c48f1b6ef3f366ae3ee147710a98133}{vision\+\_\+planner.\+pose\+\_\+detector.\+scaled\+\_\+block\+\_\+mesh}} = scale\+\_\+point\+\_\+cloud(block\+\_\+mesh, scale\+\_\+factor)
+\begin{DoxyCompactList}\small\item\em rescaling \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{pose__detector_8py_a05a95d9a7b2961fde16e505e0b42fcb3}\label{pose__detector_8py_a05a95d9a7b2961fde16e505e0b42fcb3}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+min\+\_\+z} = np.\+min(np.\+asarray(cropped\+\_\+point\+\_\+cloud.\+points)\mbox{[}\+:, 2\mbox{]})
+\item 
+\mbox{\Hypertarget{pose__detector_8py_aa54fa88eed74fe20bef43b0b8958b70c}\label{pose__detector_8py_aa54fa88eed74fe20bef43b0b8958b70c}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+max\+\_\+z} = np.\+max(np.\+asarray(cropped\+\_\+point\+\_\+cloud.\+points)\mbox{[}\+:, 2\mbox{]})
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a273d81fcb2ba1a30b41132ce46ad44cb}\label{pose__detector_8py_a273d81fcb2ba1a30b41132ce46ad44cb}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+m\+\_\+max\+\_\+z} = np.\+max(np.\+asarray(scaled\+\_\+block\+\_\+mesh.\+points)\mbox{[}\+:, 2\mbox{]})
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a41617a3506a893120d8f428117496bfd}\label{pose__detector_8py_a41617a3506a893120d8f428117496bfd}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+cropped\+\_\+point\+\_\+cloud}
+\item 
+\mbox{\Hypertarget{pose__detector_8py_ad9aa6edebc2973fa6c6c5f6fa52f050b}\label{pose__detector_8py_ad9aa6edebc2973fa6c6c5f6fa52f050b}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+rotations}
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a30ff86ee6833becf0eb673b6d723dbbb}\label{pose__detector_8py_a30ff86ee6833becf0eb673b6d723dbbb}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+intrinsics} = o3d.\+camera.\+Pinhole\+Camera\+Intrinsic(width=1920, height=1080, fx=fx, fy=fy, cx=cx, cy=cy)
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a2ef71a5d4e36319588df9ee871d1dbf4}\label{pose__detector_8py_a2ef71a5d4e36319588df9ee871d1dbf4}} 
+{\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+point\+\_\+cloud} = o3d.\+io.\+read\+\_\+point\+\_\+cloud(\char`\"{}./mostro.\+ply\char`\"{})
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a83edc564c0167fb0dec94f8162eb84f9}\label{pose__detector_8py_a83edc564c0167fb0dec94f8162eb84f9}} 
+string {\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+detections\+\_\+file\+\_\+path} = \char`\"{}./detections.\+txt\char`\"{}
+\item 
+\mbox{\Hypertarget{pose__detector_8py_adc0edd704b4a396595c47cabf98e78b1}\label{pose__detector_8py_adc0edd704b4a396595c47cabf98e78b1}} 
+string {\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+mesh\+\_\+folder} = \char`\"{}./models/\char`\"{}
+\item 
+\mbox{\Hypertarget{pose__detector_8py_acb60f7cc80438d81bfc5c4de507c0b2f}\label{pose__detector_8py_acb60f7cc80438d81bfc5c4de507c0b2f}} 
+def {\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+depth\+\_\+image} = create\+\_\+depth\+\_\+image\+\_\+from\+\_\+point\+\_\+cloud(point\+\_\+cloud, intrinsics)
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a5256fa79584322c1d63ab83785cb359f}\label{pose__detector_8py_a5256fa79584322c1d63ab83785cb359f}} 
+def {\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+meshes} = load\+\_\+meshes(mesh\+\_\+folder)
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a52aff66926a7d1b9b355bd3cfcb78f31}\label{pose__detector_8py_a52aff66926a7d1b9b355bd3cfcb78f31}} 
+def {\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+yolo\+\_\+detections} = read\+\_\+yolo\+\_\+detections(detections\+\_\+file\+\_\+path)
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a9a7503345902c40b17766bf196823281}\label{pose__detector_8py_a9a7503345902c40b17766bf196823281}} 
+def {\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+blocks} = crop\+\_\+depth\+\_\+image(yolo\+\_\+detections, depth\+\_\+image, intrinsics)
+\item 
+\mbox{\Hypertarget{pose__detector_8py_aaade1304984d7c302a6105159cb8f440}\label{pose__detector_8py_aaade1304984d7c302a6105159cb8f440}} 
+def {\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+results} = find\+\_\+best(meshes, blocks)
+\item 
+\mbox{\Hypertarget{pose__detector_8py_a0302043d5cab00bddf7a8fe08b27bec5}\label{pose__detector_8py_a0302043d5cab00bddf7a8fe08b27bec5}} 
+int {\bfseries vision\+\_\+planner.\+pose\+\_\+detector.\+i} = 0
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Perform ICP for pose estimation after point cloud pre-\/processing and cropping. 
+
+\hypertarget{pose__detector_8py_libraries_main}{}\doxysubsection{Libraries/\+Modules}\label{pose__detector_8py_libraries_main}
+
+\begin{DoxyItemize}
+\item Open\+CV (\href{https://pypi.org/project/opencv-python/}{\texttt{ https\+://pypi.\+org/project/opencv-\/python/}})
+\item Numpy (\href{https://numpy.org/}{\texttt{ https\+://numpy.\+org/}})
+\begin{DoxyItemize}
+\item Manage point cloud data.
+\item Perform transformations.
+\end{DoxyItemize}
+\item Open3D
+\begin{DoxyItemize}
+\item Extrapolate data from point clouds.
+\item Perform ICP and get meaningful statistics. 
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{pose__detector_8py_aaba5f9bb7a9e7fc9a00946e189787fd5}\label{pose__detector_8py_aaba5f9bb7a9e7fc9a00946e189787fd5}} 
+\index{pose\_detector.py@{pose\_detector.py}!compute\_pose@{compute\_pose}}
+\index{compute\_pose@{compute\_pose}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{compute\_pose()}{compute\_pose()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+compute\+\_\+pose (\begin{DoxyParamCaption}\item[{}]{block\+\_\+mesh,  }\item[{}]{cropped\+\_\+point\+\_\+cloud }\end{DoxyParamCaption})}
+
+
+
+Compute the pose of the blocks. 
+
+This function computes the pose of the input block by performing a three step iterative ICP between the point cloud of the block and the mesh of the block, where each iteration is performed with a different pre-\/rotation around the z-\/axis. It also performs some pre-\/processing steps such as scaling and filtering the point cloud.
+
+
+\begin{DoxyParams}{Parameters}
+{\em meshes} & A dictionary containing the point clouds of the meshes \\
+\hline
+{\em cropped\+\_\+point\+\_\+cloud} & The cropped point cloud extracted from the YOLO detection\\
+\hline
+\end{DoxyParams}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{compute\_pose(meshes, cropped\_point\_cloud)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+open3d.\+geometry.\+Point\+Cloud 
+
+open3d.\+geometry.\+Point\+Cloud.\+rotate 
+
+open3d.\+geometry.\+Point\+Cloud.\+translate 
+
+open3d.\+geometry.\+Point\+Cloud.\+get\+\_\+center 
+
+open3d.\+geometry.\+Point\+Cloud.\+points 
+
+open3d.\+utility.\+Vector3d\+Vector 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{pose__detector_8py_a9a84778f53ed1167a559796f7f311d1a}\label{pose__detector_8py_a9a84778f53ed1167a559796f7f311d1a}} 
+\index{pose\_detector.py@{pose\_detector.py}!create\_depth\_image\_from\_point\_cloud@{create\_depth\_image\_from\_point\_cloud}}
+\index{create\_depth\_image\_from\_point\_cloud@{create\_depth\_image\_from\_point\_cloud}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{create\_depth\_image\_from\_point\_cloud()}{create\_depth\_image\_from\_point\_cloud()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+create\+\_\+depth\+\_\+image\+\_\+from\+\_\+point\+\_\+cloud (\begin{DoxyParamCaption}\item[{}]{point\+\_\+cloud,  }\item[{}]{intrinsics }\end{DoxyParamCaption})}
+
+
+
+Create a depth image from a point cloud. 
+
+This function projects a point cloud onto a depth image using the camera intrinsics.
+
+
+\begin{DoxyParams}{Parameters}
+{\em point\+\_\+cloud} & The point cloud to be projected \\
+\hline
+{\em intrinsics} & The camera intrinsics\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The depth image
+\end{DoxyReturn}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{depth\_image = create\_depth\_image\_from\_point\_cloud(point\_cloud, intrinsics)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+open3d.\+camera.\+Pinhole\+Camera\+Intrinsic 
+
+open3d.\+geometry.\+Point\+Cloud 
+
+open3d.\+utility.\+Vector3d\+Vector 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{pose__detector_8py_a507ec17c4e093ea11e068dea8e86da14}\label{pose__detector_8py_a507ec17c4e093ea11e068dea8e86da14}} 
+\index{pose\_detector.py@{pose\_detector.py}!crop\_depth\_image@{crop\_depth\_image}}
+\index{crop\_depth\_image@{crop\_depth\_image}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{crop\_depth\_image()}{crop\_depth\_image()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+crop\+\_\+depth\+\_\+image (\begin{DoxyParamCaption}\item[{}]{yolo\+\_\+detections,  }\item[{}]{depth\+\_\+image,  }\item[{}]{intrinsics }\end{DoxyParamCaption})}
+
+
+
+Crop the depth image to the bounding box of each block. 
+
+This function crops the depth image to the bounding box of each block detected by YOLO, while also determening the center of each block in the pointcloud coordinates and projecting it to world frame coordinates converting the quaternion transformation parameters to rotation matrix. It also converts the cropped depth image to a point cloud by calling the depth\+\_\+image\+\_\+to\+\_\+point\+\_\+cloud function.
+
+
+\begin{DoxyParams}{Parameters}
+{\em yolo\+\_\+detections} & The YOLO detections \\
+\hline
+{\em depth\+\_\+image} & The depth image \\
+\hline
+{\em intrinsics} & The camera intrinsics\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A list of tuples containing the block identifier, the cropped depth image, and the cropped point cloud
+\end{DoxyReturn}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{blocks = crop\_depth\_image(yolo\_detections, depth\_image, intrinsics)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+open3d.\+camera.\+Pinhole\+Camera\+Intrinsic 
+
+open3d.\+geometry.\+Point\+Cloud 
+
+open3d.\+utility.\+Vector3d\+Vector 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{pose__detector_8py_af074dc36570e9d781e96c06a944e5f10}\label{pose__detector_8py_af074dc36570e9d781e96c06a944e5f10}} 
+\index{pose\_detector.py@{pose\_detector.py}!depth\_image\_to\_point\_cloud@{depth\_image\_to\_point\_cloud}}
+\index{depth\_image\_to\_point\_cloud@{depth\_image\_to\_point\_cloud}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{depth\_image\_to\_point\_cloud()}{depth\_image\_to\_point\_cloud()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+depth\+\_\+image\+\_\+to\+\_\+point\+\_\+cloud (\begin{DoxyParamCaption}\item[{}]{depth\+\_\+frame }\end{DoxyParamCaption})}
+
+
+
+Convert a depth image to a point cloud. 
+
+This function converts a depth image to a point cloud by projecting its depth value into a new space. This is achieved by multiplying the depth value by a constant factor, so that the pixels with depth value close to 0 will remain o a plane, while the other will \char`\"{}emerge\char`\"{}.
+
+
+\begin{DoxyParams}{Parameters}
+{\em depth\+\_\+frame} & The depth image\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The point cloud
+\end{DoxyReturn}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{point\_cloud = depth\_image\_to\_point\_cloud(depth\_frame)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+open3d.\+geometry.\+Point\+Cloud 
+
+open3d.\+utility.\+Vector3d\+Vector 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{pose__detector_8py_a947d3b52d5cef9cdafb0142aa8d3fb34}\label{pose__detector_8py_a947d3b52d5cef9cdafb0142aa8d3fb34}} 
+\index{pose\_detector.py@{pose\_detector.py}!find\_best@{find\_best}}
+\index{find\_best@{find\_best}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{find\_best()}{find\_best()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+find\+\_\+best (\begin{DoxyParamCaption}\item[{}]{meshes,  }\item[{}]{blocks }\end{DoxyParamCaption})}
+
+
+
+Find the best pose for each block detected using YOLO. 
+
+This function iterates over each block detected using YOLO and attempts to find the best pose for each block by comparing its features with pre-\/defined meshes. It computes the pose based on the features of the block and its corresponding cropped point cloud with ICP. If the block is successfully identified, its pose is determined and added to the final list after thorough comparison with blocks of the same type. If not, the block is considered critical and its pose is computed based on the missing unidentified blocks still performing ICP.
+
+
+\begin{DoxyParams}{Parameters}
+{\em meshes} & A dictionary containing pre-\/defined meshes for different block types \\
+\hline
+{\em blocks} & A list containing information about each detected block, including its identifier, center, cropped depth image, and cropped point cloud\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A list containing the identified block, its pose (position and orientation), and its center coordinates
+\end{DoxyReturn}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{final\_results = find\_best(meshes\_dict, detected\_blocks)}
+
+\end{DoxyCode}
+ \mbox{\Hypertarget{pose__detector_8py_a3ba19d515ca865147ea70ba7b2649440}\label{pose__detector_8py_a3ba19d515ca865147ea70ba7b2649440}} 
+\index{pose\_detector.py@{pose\_detector.py}!is\_plane@{is\_plane}}
+\index{is\_plane@{is\_plane}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{is\_plane()}{is\_plane()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+is\+\_\+plane (\begin{DoxyParamCaption}\item[{}]{point\+\_\+cloud }\end{DoxyParamCaption})}
+
+
+
+Check if a point cloud is a plane. 
+
+This function checks if a point cloud is a plane by fitting a plane to the point cloud using RANSAC. It is used to filter out some possible false positives.
+
+
+\begin{DoxyParams}{Parameters}
+{\em point\+\_\+cloud} & The point cloud\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+True if the point cloud is a plane, False otherwise
+\end{DoxyReturn}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{is\_plane = is\_plane(point\_cloud)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+numpy.\+asarray 
+
+sklearn.\+linear\+\_\+model.\+RANSACRegressor 
+
+numpy.\+sum 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{pose__detector_8py_abdafd081ebe906acafddef3a8d34149d}\label{pose__detector_8py_abdafd081ebe906acafddef3a8d34149d}} 
+\index{pose\_detector.py@{pose\_detector.py}!load\_meshes@{load\_meshes}}
+\index{load\_meshes@{load\_meshes}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{load\_meshes()}{load\_meshes()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+load\+\_\+meshes (\begin{DoxyParamCaption}\item[{}]{mesh\+\_\+folder }\end{DoxyParamCaption})}
+
+
+
+Load the meshes of the blocks as pointclouds. 
+
+This function loads the meshes of the blocks from the predefined folder and converts them to point clouds.
+
+\begin{DoxyReturn}{Returns}
+A dictionary containing the point clouds of the meshes
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+This is a hard-\/coded setup, hence the function will only work if the folder structure is as follows\+:
+\begin{DoxyItemize}
+\item models
+\begin{DoxyItemize}
+\item block\+\_\+1
+\begin{DoxyItemize}
+\item model.\+config
+\item model.\+sdf
+\item mesh
+\begin{DoxyItemize}
+\item block\+\_\+1.\+stl
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item block\+\_\+2
+\begin{DoxyItemize}
+\item model.\+config
+\item model.\+sdf
+\item mesh
+\begin{DoxyItemize}
+\item block\+\_\+2.\+stl
+\end{DoxyItemize}
+\end{DoxyItemize}
+\item ...
+\end{DoxyItemize}
+\end{DoxyItemize}
+\end{DoxyNote}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{mesh\_folder = \textcolor{stringliteral}{"{}./models/"{}}}
+\DoxyCodeLine{meshes = load\_meshes(mesh\_folder)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+open3d.\+geometry.\+Point\+Cloud 
+
+open3d.\+io.\+read\+\_\+triangle\+\_\+mesh 
+
+open3d.\+geometry.\+Point\+Cloud.\+sample\+\_\+points\+\_\+uniformly 
+
+open3d.\+geometry.\+Point\+Cloud.\+rotate 
+
+open3d.\+geometry.\+Point\+Cloud.\+translate 
+
+open3d.\+geometry.\+Point\+Cloud.\+get\+\_\+center 
+
+open3d.\+geometry.\+Point\+Cloud.\+points 
+
+open3d.\+utility.\+Vector3d\+Vector 
+
+os.\+listdir 
+
+os.\+path 
+
+os.\+path.\+isdir 
+
+os.\+path.\+exists 
+
+os.\+path.\+join 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{pose__detector_8py_aa56b13ac88c93972fe065156fed268b4}\label{pose__detector_8py_aa56b13ac88c93972fe065156fed268b4}} 
+\index{pose\_detector.py@{pose\_detector.py}!min\_distance\_between\_points@{min\_distance\_between\_points}}
+\index{min\_distance\_between\_points@{min\_distance\_between\_points}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{min\_distance\_between\_points()}{min\_distance\_between\_points()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+min\+\_\+distance\+\_\+between\+\_\+points (\begin{DoxyParamCaption}\item[{}]{point\+\_\+cloud }\end{DoxyParamCaption})}
+
+
+
+Computes minimum distance between points in a point cloud. 
+
+This function computes the minimum distance between points in a point cloud.
+
+
+\begin{DoxyParams}{Parameters}
+{\em point\+\_\+cloud} & The point cloud\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The minimum distance between points
+\end{DoxyReturn}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{min\_distance = min\_distance\_between\_points(point\_cloud)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+numpy.\+linalg.\+norm 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{pose__detector_8py_ad512b4c73c8c823420f0092d92cfaf0b}\label{pose__detector_8py_ad512b4c73c8c823420f0092d92cfaf0b}} 
+\index{pose\_detector.py@{pose\_detector.py}!multi\_start\_pose\_detection@{multi\_start\_pose\_detection}}
+\index{multi\_start\_pose\_detection@{multi\_start\_pose\_detection}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{multi\_start\_pose\_detection()}{multi\_start\_pose\_detection()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+multi\+\_\+start\+\_\+pose\+\_\+detection (\begin{DoxyParamCaption}\item[{}]{mesh,  }\item[{}]{point\+\_\+cloud,  }\item[{}]{rotations = {\ttfamily 3} }\end{DoxyParamCaption})}
+
+
+
+Perform multi-\/start pose detection using ICP. 
+
+This function performs multi-\/start pose detection using ICP to align a mesh with a point cloud. It rotates the mesh around the z-\/axis and performs ICP for each rotation. It prints the best transformation and the corresponding error.
+
+
+\begin{DoxyParams}{Parameters}
+{\em mesh} & The mesh \\
+\hline
+{\em point\+\_\+cloud} & The point cloud \\
+\hline
+{\em rotations} & The number of rotations to perform\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The best transformation
+\end{DoxyReturn}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{transformation = multi\_start\_pose\_detection(mesh, point\_cloud, rotations=3)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+open3d.\+geometry.\+Point\+Cloud 
+
+open3d.\+geometry.\+Point\+Cloud.\+get\+\_\+rotation\+\_\+matrix\+\_\+from\+\_\+xyz 
+
+open3d.\+geometry.\+Point\+Cloud.\+estimate\+\_\+normals 
+
+open3d.\+geometry.\+Point\+Cloud.\+rotate 
+
+open3d.\+geometry.\+Point\+Cloud.\+transform 
+
+open3d.\+pipelines.\+registration.\+registration\+\_\+icp 
+
+open3d.\+pipelines.\+registration.\+Transformation\+Estimation\+Point\+To\+Plane 
+
+open3d.\+pipelines.\+registration.\+ICPConvergence\+Criteria 
+
+numpy.\+eye 
+
+numpy.\+dot 
+
+numpy.\+linalg.\+inv 
+
+time.\+sleep 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{pose__detector_8py_a0a92ba8103e4c2d2d67dc2978baafb80}\label{pose__detector_8py_a0a92ba8103e4c2d2d67dc2978baafb80}} 
+\index{pose\_detector.py@{pose\_detector.py}!read\_yolo\_detections@{read\_yolo\_detections}}
+\index{read\_yolo\_detections@{read\_yolo\_detections}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{read\_yolo\_detections()}{read\_yolo\_detections()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+read\+\_\+yolo\+\_\+detections (\begin{DoxyParamCaption}\item[{}]{file\+\_\+path }\end{DoxyParamCaption})}
+
+
+
+Read the YOLO detections from a file. 
+
+This function reads the YOLO detections from a file and returns them as a list of strings.
+
+
+\begin{DoxyParams}{Parameters}
+{\em file\+\_\+path} & The path to the file containing the YOLO detections\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A list of strings containing the YOLO detections
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The file should contain the YOLO detections in the following format\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{block\_1: (x, y, w, h)}
+\DoxyCodeLine{block\_2: (x, y, w, h)}
+\DoxyCodeLine{...}
+
+\end{DoxyCode}
+
+\end{DoxyNote}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{detections\_file\_path = \textcolor{stringliteral}{"{}./detections.txt"{}}}
+\DoxyCodeLine{yolo\_detections = read\_yolo\_detections(detections\_file\_path)}
+
+\end{DoxyCode}
+ \mbox{\Hypertarget{pose__detector_8py_a3ab0dcdf984c13a15059545d715df8e9}\label{pose__detector_8py_a3ab0dcdf984c13a15059545d715df8e9}} 
+\index{pose\_detector.py@{pose\_detector.py}!remove\_blue\_points\_from\_point\_cloud@{remove\_blue\_points\_from\_point\_cloud}}
+\index{remove\_blue\_points\_from\_point\_cloud@{remove\_blue\_points\_from\_point\_cloud}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{remove\_blue\_points\_from\_point\_cloud()}{remove\_blue\_points\_from\_point\_cloud()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+remove\+\_\+blue\+\_\+points\+\_\+from\+\_\+point\+\_\+cloud (\begin{DoxyParamCaption}\item[{}]{point\+\_\+cloud }\end{DoxyParamCaption})}
+
+
+
+Remove points from a point cloud based on a custom criterion. 
+
+This function removes points from a point cloud based on a custom criterion. In this example, we remove points with a normalized depth value less than 155.
+
+
+\begin{DoxyParams}{Parameters}
+{\em point\+\_\+cloud} & The point cloud\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The cropped point cloud
+\end{DoxyReturn}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cropped\_point\_cloud = remove\_blue\_points\_from\_point\_cloud(point\_cloud)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+open3d.\+geometry.\+Point\+Cloud 
+
+open3d.\+utility.\+Vector3d\+Vector 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{pose__detector_8py_abefad35c5b6ff1239505d287cdf60106}\label{pose__detector_8py_abefad35c5b6ff1239505d287cdf60106}} 
+\index{pose\_detector.py@{pose\_detector.py}!rotate\_point\_cloud@{rotate\_point\_cloud}}
+\index{rotate\_point\_cloud@{rotate\_point\_cloud}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{rotate\_point\_cloud()}{rotate\_point\_cloud()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+rotate\+\_\+point\+\_\+cloud (\begin{DoxyParamCaption}\item[{}]{point\+\_\+cloud }\end{DoxyParamCaption})}
+
+
+
+Rotate a point cloud by 180 degrees around the x-\/axis and flip it horizontally. 
+
+This function rotates a point cloud by 180 degrees around the x-\/axis and flips it horizontally.
+
+
+\begin{DoxyParams}{Parameters}
+{\em point\+\_\+cloud} & The point cloud to be rotated\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The rotated point cloud
+\end{DoxyReturn}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{rotated\_point\_cloud = rotate\_point\_cloud(point\_cloud)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+open3d.\+geometry.\+Point\+Cloud 
+
+open3d.\+utility.\+Vector3d\+Vector 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{pose__detector_8py_a663dfddb905613148c0af5c5d5b54cb8}\label{pose__detector_8py_a663dfddb905613148c0af5c5d5b54cb8}} 
+\index{pose\_detector.py@{pose\_detector.py}!scale\_point\_cloud@{scale\_point\_cloud}}
+\index{scale\_point\_cloud@{scale\_point\_cloud}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{scale\_point\_cloud()}{scale\_point\_cloud()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+scale\+\_\+point\+\_\+cloud (\begin{DoxyParamCaption}\item[{}]{point\+\_\+cloud,  }\item[{}]{scale\+\_\+factor }\end{DoxyParamCaption})}
+
+
+
+Scale a point cloud by a given factor. 
+
+This function scales a point cloud by a given factor and returns the scaled point cloud.
+
+
+\begin{DoxyParams}{Parameters}
+{\em point\+\_\+cloud} & The point cloud to be scaled \\
+\hline
+{\em scale\+\_\+factor} & The factor by which the point cloud should be scaled\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The scaled point cloud
+\end{DoxyReturn}
+\begin{DoxyNote}{Note}
+The scaling factor should be a positive float value.
+\end{DoxyNote}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{scaled\_point\_cloud = scale\_point\_cloud(point\_cloud, 0.5)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+open3d.\+geometry.\+Point\+Cloud 
+
+open3d.\+utility.\+Vector3d\+Vector 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{pose__detector_8py_a61a4ae205676a651ade020525961f5da}\label{pose__detector_8py_a61a4ae205676a651ade020525961f5da}} 
+\index{pose\_detector.py@{pose\_detector.py}!visualize@{visualize}}
+\index{visualize@{visualize}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{visualize()}{visualize()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+visualize (\begin{DoxyParamCaption}\item[{}]{element }\end{DoxyParamCaption})}
+
+
+
+Visualize a point cloud. 
+
+This function visualizes a point cloud with the coordinate frame. It is used mainly for debugging purposes.
+
+
+\begin{DoxyParams}{Parameters}
+{\em point\+\_\+cloud} & The point cloud\\
+\hline
+\end{DoxyParams}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{visualize(point\_cloud)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+open3d.\+visualization.\+draw\+\_\+geometries 
+
+open3d.\+geometry.\+Triangle\+Mesh.\+create\+\_\+coordinate\+\_\+frame 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{pose__detector_8py_acb65e05fc50fec2cecf7cf5d0af67023}\label{pose__detector_8py_acb65e05fc50fec2cecf7cf5d0af67023}} 
+\index{pose\_detector.py@{pose\_detector.py}!visualize\_depth\_frame@{visualize\_depth\_frame}}
+\index{visualize\_depth\_frame@{visualize\_depth\_frame}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{visualize\_depth\_frame()}{visualize\_depth\_frame()}}
+{\footnotesize\ttfamily def vision\+\_\+planner.\+pose\+\_\+detector.\+visualize\+\_\+depth\+\_\+frame (\begin{DoxyParamCaption}\item[{}]{depth\+\_\+image }\end{DoxyParamCaption})}
+
+
+
+Visualize a depth image. 
+
+This function visualizes a depth image using a color map. It is used mainly for debugging purposes.
+
+
+\begin{DoxyParams}{Parameters}
+{\em depth\+\_\+image} & The depth image\\
+\hline
+\end{DoxyParams}
+Example usage\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{visualize\_depth\_frame(depth\_image)}
+
+\end{DoxyCode}
+
+
+\begin{DoxySeeAlso}{See also}
+cv2.\+normalize 
+
+cv2.\+apply\+Color\+Map 
+
+cv2.\+imshow 
+\end{DoxySeeAlso}
+
+
+\doxysubsection{Variable Documentation}
+\mbox{\Hypertarget{pose__detector_8py_a97fc30c8150c4ea8f5ecee14c290f7b3}\label{pose__detector_8py_a97fc30c8150c4ea8f5ecee14c290f7b3}} 
+\index{pose\_detector.py@{pose\_detector.py}!classNames@{classNames}}
+\index{classNames@{classNames}!pose\_detector.py@{pose\_detector.py}}
+\doxysubsubsection{\texorpdfstring{classNames}{classNames}}
+{\footnotesize\ttfamily list vision\+\_\+planner.\+pose\+\_\+detector.\+class\+Names}
+
+{\bfseries Initial value\+:}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{1 =  [}
+\DoxyCodeLine{2     \textcolor{stringliteral}{"{}X1-\/Y1-\/Z2"{}},}
+\DoxyCodeLine{3     \textcolor{stringliteral}{"{}X1-\/Y2-\/Z1"{}},}
+\DoxyCodeLine{4     \textcolor{stringliteral}{"{}X1-\/Y2-\/Z2"{}},}
+\DoxyCodeLine{5     \textcolor{stringliteral}{"{}X1-\/Y2-\/Z2-\/CHAMFER"{}},}
+\DoxyCodeLine{6     \textcolor{stringliteral}{"{}X1-\/Y2-\/Z2-\/TWINFILLET"{}},}
+\DoxyCodeLine{7     \textcolor{stringliteral}{"{}X1-\/Y3-\/Z2"{}},}
+\DoxyCodeLine{8     \textcolor{stringliteral}{"{}X1-\/Y3-\/Z2-\/FILLET"{}},}
+\DoxyCodeLine{9     \textcolor{stringliteral}{"{}X1-\/Y4-\/Z1"{}},}
+\DoxyCodeLine{10     \textcolor{stringliteral}{"{}X1-\/Y4-\/Z2"{}},}
+\DoxyCodeLine{11     \textcolor{stringliteral}{"{}X2-\/Y2-\/Z2"{}},}
+\DoxyCodeLine{12     \textcolor{stringliteral}{"{}X2-\/Y2-\/Z2-\/FILLET"{}}}
+\DoxyCodeLine{13 ]}
+
+\end{DoxyCode}

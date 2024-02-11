@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['random_33',['random',['../Kinematic_8h.html#ad5755de87d8b9181d2d4f9915dd918b4',1,'Kinematic.cpp']]],
-  ['randompoint_34',['randomPoint',['../Kinematic_8h.html#aef41f528669e7a45ddc9e6a6407d4f78',1,'Kinematic.cpp']]]
+  ['qd_56',['qd',['../Kinematic_8h.html#ac7f4de83c93ccc4ffa187ac5282990b5',1,'Kinematic.cpp']]],
+  ['quaterniotostring_57',['quaternioToString',['../Kinematic_8h.html#a11ca42345e139af29a5e9f9595eeb990',1,'Kinematic.cpp']]]
 ];

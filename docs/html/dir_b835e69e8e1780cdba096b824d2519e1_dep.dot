@@ -1,0 +1,11 @@
+digraph "/home/mattia/trento_lab_home/ros_ws/src/Robotica/task_planner/src" {
+  compound=true
+  node [ fontsize="10", fontname="Helvetica"];
+  edge [ labelfontsize="10", labelfontname="Helvetica"];
+  subgraph clusterdir_d1c65e8bcaac6dfd1371e34aa09fc306 {
+    graph [ bgcolor="#ddddee", pencolor="black", label="task_planner" fontname="Helvetica", fontsize="10", URL="dir_d1c65e8bcaac6dfd1371e34aa09fc306.html"]
+  dir_2a3b65a0903d46c575d534b6a5f591f0 [shape=box label="include" URL="dir_2a3b65a0903d46c575d534b6a5f591f0.html"];
+  dir_b835e69e8e1780cdba096b824d2519e1 [shape=box, label="src", style="filled", fillcolor="#eeeeff", pencolor="black", URL="dir_b835e69e8e1780cdba096b824d2519e1.html"];
+  }
+  dir_b835e69e8e1780cdba096b824d2519e1->dir_2a3b65a0903d46c575d534b6a5f591f0 [headlabel="2", labeldistance=1.5 headhref="dir_000005_000004.html"];
+}

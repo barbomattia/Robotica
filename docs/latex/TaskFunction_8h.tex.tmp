@@ -1,0 +1,289 @@
+\hypertarget{TaskFunction_8h}{}\doxysection{/home/mattia/trento\+\_\+lab\+\_\+home/ros\+\_\+ws/src/\+Robotica/task\+\_\+planner/include/\+Task\+Function.h File Reference}
+\label{TaskFunction_8h}\index{/home/mattia/trento\_lab\_home/ros\_ws/src/Robotica/task\_planner/include/TaskFunction.h@{/home/mattia/trento\_lab\_home/ros\_ws/src/Robotica/task\_planner/include/TaskFunction.h}}
+
+
+Header file containing the declarations of the functions necessary for the task planner.  
+
+
+{\ttfamily \#include $<$iostream$>$}\newline
+{\ttfamily \#include $<$ros/ros.\+h$>$}\newline
+{\ttfamily \#include $<$eigen3/\+Eigen/\+Core$>$}\newline
+{\ttfamily \#include $<$eigen3/\+Eigen/\+Dense$>$}\newline
+{\ttfamily \#include $<$eigen3/\+Eigen/\+Geometry$>$}\newline
+{\ttfamily \#include $<$vector$>$}\newline
+{\ttfamily \#include $<$iterator$>$}\newline
+{\ttfamily \#include $<$functional$>$}\newline
+Include dependency graph for Task\+Function.\+h\+:
+% FIG 0
+This graph shows which files directly or indirectly include this file\+:
+% FIG 1
+\doxysubsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \mbox{\hyperlink{structBlock}{Block}}
+\begin{DoxyCompactList}\small\item\em Struttura che rappresenta un blocco di dati. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\doxysubsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\Hypertarget{TaskFunction_8h_afec19c1440a6ca4d037948156e4b4482}\label{TaskFunction_8h_afec19c1440a6ca4d037948156e4b4482}} 
+\#define {\bfseries END\+\_\+\+EFFECTOR\+\_\+\+WIDTH}~0.\+5
+\item 
+\mbox{\Hypertarget{TaskFunction_8h_a291ca4a87d4f7f0509a37e2e9efd66d0}\label{TaskFunction_8h_a291ca4a87d4f7f0509a37e2e9efd66d0}} 
+\#define {\bfseries ONE\+\_\+\+WIDTH\+\_\+\+BLOCK}~0.\+31
+\item 
+\mbox{\Hypertarget{TaskFunction_8h_adf1f1cc17ca0cebd4a72e81a7c231c4f}\label{TaskFunction_8h_adf1f1cc17ca0cebd4a72e81a7c231c4f}} 
+\#define {\bfseries TWO\+\_\+\+WIDTH\+\_\+\+BLOCK}~0.\+63
+\item 
+\mbox{\Hypertarget{TaskFunction_8h_a38dc83ccb319eff97a2b806fb6ca5b2a}\label{TaskFunction_8h_a38dc83ccb319eff97a2b806fb6ca5b2a}} 
+\#define {\bfseries \+\_\+\+\_\+\+TASKFUNCTION\+\_\+\+H\+\_\+\+\_\+}
+\end{DoxyCompactItemize}
+\doxysubsection*{Functions}
+\begin{DoxyCompactItemize}
+\item 
+std\+::ostream \& \mbox{\hyperlink{TaskFunction_8h_a3fa810e8a3c5cc8786ee8e4bce10a031}{operator$<$$<$}} (std\+::ostream \&os, const \mbox{\hyperlink{structBlock}{Block}} \&block)
+\begin{DoxyCompactList}\small\item\em Overloaded insertion operator for outputting \mbox{\hyperlink{structBlock}{Block}} information. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{TaskFunction_8h_a4c815a01d28b1dd3d50669260db282a8}{go\+\_\+to\+\_\+start\+\_\+position}} (ros\+::\+Node\+Handle \&n)
+\begin{DoxyCompactList}\small\item\em Controls the UR5 robot arm in Gazebo to reach the start position. \end{DoxyCompactList}\item 
+std\+::vector$<$ \mbox{\hyperlink{structBlock}{Block}} $>$ \mbox{\hyperlink{TaskFunction_8h_af4667ffae31aba3ede7d9885ee2753f9}{ask\+\_\+object\+\_\+detection}} (ros\+::\+Node\+Handle \&n)
+\begin{DoxyCompactList}\small\item\em Requests object detection service and retrieves detected blocks. \end{DoxyCompactList}\item 
+Eigen\+::\+Matrix\+Xd \mbox{\hyperlink{TaskFunction_8h_a18574a746255e51f28c8c0a88ab78ad5}{ask\+\_\+inverse\+\_\+kinematic}} (ros\+::\+Node\+Handle \&n, double xef\mbox{[}3\mbox{]}, double phief\mbox{[}3\mbox{]}, std\+::string title, bool first, bool \mbox{\hyperlink{TaskFunction_8h_ac71dcff05f93d8555d46cb2ee368f9e4}{grasp}})
+\begin{DoxyCompactList}\small\item\em Requests inverse kinematics calculation service to compute joint configurations. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{TaskFunction_8h_ae0c736619af82e609987bb492e97087b}{control\+\_\+gazebo\+\_\+arm}} (ros\+::\+Node\+Handle \&n, std\+::vector$<$ double $>$ q)
+\begin{DoxyCompactList}\small\item\em Controls the UR5 robot arm in Gazebo simulation. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{TaskFunction_8h_a66c5835977831c7db966d819f702776a}{control\+\_\+gazebo\+\_\+arm\+\_\+2}} (ros\+::\+Node\+Handle \&n, Eigen\+::\+Matrix\+Xd q, bool going\+Back, bool \mbox{\hyperlink{TaskFunction_8h_ac71dcff05f93d8555d46cb2ee368f9e4}{grasp}})
+\begin{DoxyCompactList}\small\item\em Controls the UR5 robot arm in Gazebo simulation using a trajectory. \end{DoxyCompactList}\item 
+\mbox{\Hypertarget{TaskFunction_8h_a6138ca4da18ba164310f992d03c6f52d}\label{TaskFunction_8h_a6138ca4da18ba164310f992d03c6f52d}} 
+std\+::vector$<$ double $>$ {\bfseries define\+\_\+end\+\_\+position} (std\+::string block)
+\item 
+bool \mbox{\hyperlink{TaskFunction_8h_a3a9cc6036145d712062f90c03c4afe05}{is\+Zero}} (const std\+::vector$<$ double $>$ \&vettore)
+\begin{DoxyCompactList}\small\item\em Checks if all elements of a vector are zero. \end{DoxyCompactList}\item 
+double \mbox{\hyperlink{TaskFunction_8h_af402503c52262f913fbb08f81601b7df}{Gripper}} (std\+::string block\+Name)
+\begin{DoxyCompactList}\small\item\em Calculates the width adjustment for the gripper based on the provided block name. \end{DoxyCompactList}\item 
+void \mbox{\hyperlink{TaskFunction_8h_ac71dcff05f93d8555d46cb2ee368f9e4}{grasp}} (ros\+::\+Node\+Handle \&n, double xef\mbox{[}3\mbox{]}, double phief\mbox{[}3\mbox{]}, bool take, std\+::string block\+Name, std\+::string title)
+\begin{DoxyCompactList}\small\item\em Menage the action of graping. \end{DoxyCompactList}\item 
+std\+::stringstream \mbox{\hyperlink{TaskFunction_8h_ad6c9689ac3556cb5f5c34463912adbd9}{stampa\+Vector}} (const std\+::vector$<$ double $>$ \&vec)
+\begin{DoxyCompactList}\small\item\em Converts a vector of double values to a formatted string stream. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Header file containing the declarations of the functions necessary for the task planner. 
+
+
+
+\doxysubsection{Function Documentation}
+\mbox{\Hypertarget{TaskFunction_8h_a18574a746255e51f28c8c0a88ab78ad5}\label{TaskFunction_8h_a18574a746255e51f28c8c0a88ab78ad5}} 
+\index{TaskFunction.h@{TaskFunction.h}!ask\_inverse\_kinematic@{ask\_inverse\_kinematic}}
+\index{ask\_inverse\_kinematic@{ask\_inverse\_kinematic}!TaskFunction.h@{TaskFunction.h}}
+\doxysubsubsection{\texorpdfstring{ask\_inverse\_kinematic()}{ask\_inverse\_kinematic()}}
+{\footnotesize\ttfamily Eigen\+::\+Matrix\+Xd ask\+\_\+inverse\+\_\+kinematic (\begin{DoxyParamCaption}\item[{ros\+::\+Node\+Handle \&}]{n,  }\item[{double}]{xef\mbox{[}3\mbox{]},  }\item[{double}]{phief\mbox{[}3\mbox{]},  }\item[{std\+::string}]{title,  }\item[{bool}]{first,  }\item[{bool}]{grasp }\end{DoxyParamCaption})}
+
+
+
+Requests inverse kinematics calculation service to compute joint configurations. 
+
+This function calls the \textquotesingle{}calculate\+\_\+inverse\+\_\+kinematics\textquotesingle{} service provided by the motion\+\_\+planner package to compute the joint configurations required to reach a desired end effector position and orientation. It subscribes to the joint states topic to retrieve the current robot joint positions.
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & A reference to the ROS Node\+Handle object for communication. \\
+\hline
+{\em xef} & An array containing the x, y, z coordinates of the desired end effector position. \\
+\hline
+{\em phief} & An array containing the roll, pitch, yaw angles (in radians) of the desired end effector orientation. \\
+\hline
+{\em title} & The name of the output file in wich the motion part will save the debug print. \\
+\hline
+{\em first} & A boolean flag that indicate if it is the first ask for inverse kinematic. \\
+\hline
+{\em grasp} & A boolean flag that indicate if the arm is grasping a block. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A matrix containing the computed joint configurations. Each row represents a set of joint values corresponding to a valid configuration. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{TaskFunction_8h_af4667ffae31aba3ede7d9885ee2753f9}\label{TaskFunction_8h_af4667ffae31aba3ede7d9885ee2753f9}} 
+\index{TaskFunction.h@{TaskFunction.h}!ask\_object\_detection@{ask\_object\_detection}}
+\index{ask\_object\_detection@{ask\_object\_detection}!TaskFunction.h@{TaskFunction.h}}
+\doxysubsubsection{\texorpdfstring{ask\_object\_detection()}{ask\_object\_detection()}}
+{\footnotesize\ttfamily std\+::vector$<$\mbox{\hyperlink{structBlock}{Block}}$>$ ask\+\_\+object\+\_\+detection (\begin{DoxyParamCaption}\item[{ros\+::\+Node\+Handle \&}]{n }\end{DoxyParamCaption})}
+
+
+
+Requests object detection service and retrieves detected blocks. 
+
+This function calls the \textquotesingle{}object\+\_\+detection\textquotesingle{} service to detect blocks in the environment. It organizes the detected block data into a vector of \mbox{\hyperlink{structBlock}{Block}} objects and returns it.
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & A reference to the ROS Node\+Handle object for communication. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A vector of \mbox{\hyperlink{structBlock}{Block}} objects representing the detected blocks. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{TaskFunction_8h_ae0c736619af82e609987bb492e97087b}\label{TaskFunction_8h_ae0c736619af82e609987bb492e97087b}} 
+\index{TaskFunction.h@{TaskFunction.h}!control\_gazebo\_arm@{control\_gazebo\_arm}}
+\index{control\_gazebo\_arm@{control\_gazebo\_arm}!TaskFunction.h@{TaskFunction.h}}
+\doxysubsubsection{\texorpdfstring{control\_gazebo\_arm()}{control\_gazebo\_arm()}}
+{\footnotesize\ttfamily void control\+\_\+gazebo\+\_\+arm (\begin{DoxyParamCaption}\item[{ros\+::\+Node\+Handle \&}]{n,  }\item[{std\+::vector$<$ double $>$}]{q }\end{DoxyParamCaption})}
+
+
+
+Controls the UR5 robot arm in Gazebo simulation. 
+
+This function publishes joint positions to the UR5 robot arm\textquotesingle{}s controller in Gazebo simulation. It initializes the message with the desired joint positions and publishes it to the appropriate topic. It also subscribes to the joint states topic to receive the current joint positions of the UR5 arm. The function continuously publishes the desired joint positions until the current joint positions match the desired ones, indicating that the arm has reached the desired configuration.
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & A reference to the ROS Node\+Handle object for communication. \\
+\hline
+{\em q} & A vector containing the desired joint positions for the UR5 arm. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{TaskFunction_8h_a66c5835977831c7db966d819f702776a}\label{TaskFunction_8h_a66c5835977831c7db966d819f702776a}} 
+\index{TaskFunction.h@{TaskFunction.h}!control\_gazebo\_arm\_2@{control\_gazebo\_arm\_2}}
+\index{control\_gazebo\_arm\_2@{control\_gazebo\_arm\_2}!TaskFunction.h@{TaskFunction.h}}
+\doxysubsubsection{\texorpdfstring{control\_gazebo\_arm\_2()}{control\_gazebo\_arm\_2()}}
+{\footnotesize\ttfamily void control\+\_\+gazebo\+\_\+arm\+\_\+2 (\begin{DoxyParamCaption}\item[{ros\+::\+Node\+Handle \&}]{n,  }\item[{Eigen\+::\+Matrix\+Xd}]{q,  }\item[{bool}]{going\+Back,  }\item[{bool}]{grasp }\end{DoxyParamCaption})}
+
+
+
+Controls the UR5 robot arm in Gazebo simulation using a trajectory. 
+
+This function publishes joint positions to the UR5 robot arm\textquotesingle{}s controller in Gazebo simulation to follow a trajectory specified by the input matrix {\ttfamily q}. It initializes messages with the desired joint positions at each step of the trajectory and publishes them to the appropriate topic. The function can control the arm to follow the trajectory in the forward direction or move back along the trajectory, depending on the value of the {\ttfamily going\+Back} parameter.
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & A reference to the ROS Node\+Handle object for communication. \\
+\hline
+{\em q} & The matrix representing the trajectory, where each row contains the desired joint positions for a specific step of the trajectory. \\
+\hline
+{\em going\+Back} & A boolean flag indicating whether to move back along the trajectory (true) or follow it in the forward direction (false). \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{TaskFunction_8h_a4c815a01d28b1dd3d50669260db282a8}\label{TaskFunction_8h_a4c815a01d28b1dd3d50669260db282a8}} 
+\index{TaskFunction.h@{TaskFunction.h}!go\_to\_start\_position@{go\_to\_start\_position}}
+\index{go\_to\_start\_position@{go\_to\_start\_position}!TaskFunction.h@{TaskFunction.h}}
+\doxysubsubsection{\texorpdfstring{go\_to\_start\_position()}{go\_to\_start\_position()}}
+{\footnotesize\ttfamily void go\+\_\+to\+\_\+start\+\_\+position (\begin{DoxyParamCaption}\item[{ros\+::\+Node\+Handle \&}]{n }\end{DoxyParamCaption})}
+
+
+
+Controls the UR5 robot arm in Gazebo to reach the start position. 
+
+This function publishes joint positions to the UR5 robot arm\textquotesingle{}s controller in Gazebo simulation to reach the start position
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & A reference to the ROS Node\+Handle object for communication. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{TaskFunction_8h_ac71dcff05f93d8555d46cb2ee368f9e4}\label{TaskFunction_8h_ac71dcff05f93d8555d46cb2ee368f9e4}} 
+\index{TaskFunction.h@{TaskFunction.h}!grasp@{grasp}}
+\index{grasp@{grasp}!TaskFunction.h@{TaskFunction.h}}
+\doxysubsubsection{\texorpdfstring{grasp()}{grasp()}}
+{\footnotesize\ttfamily void grasp (\begin{DoxyParamCaption}\item[{ros\+::\+Node\+Handle \&}]{n,  }\item[{double}]{xef\mbox{[}3\mbox{]},  }\item[{double}]{phief\mbox{[}3\mbox{]},  }\item[{bool}]{take,  }\item[{std\+::string}]{block\+Name,  }\item[{std\+::string}]{title }\end{DoxyParamCaption})}
+
+
+
+Menage the action of graping. 
+
+This function menage the action of grasping, in both taken and release event. It open or close the gripper in case of taken or release action and request to the motion part the trajectory to reach the block.
+
+
+\begin{DoxyParams}{Parameters}
+{\em n} & A reference to the ROS Node\+Handle object for communication. \\
+\hline
+{\em xef} & An array containing the x, y, z coordinates of the desired end effector position. \\
+\hline
+{\em phief} & An array containing the roll, pitch, yaw angles (in radians) of the desired end effector orientation. \\
+\hline
+{\em take} & A boolean flag that indicate if it is a teken or release action. \\
+\hline
+{\em block\+Name} & The name of the block for which the gripper width adjustment is calculated. \\
+\hline
+{\em title} & The name of the output file in wich the motion part will save the debug print. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{TaskFunction_8h_af402503c52262f913fbb08f81601b7df}\label{TaskFunction_8h_af402503c52262f913fbb08f81601b7df}} 
+\index{TaskFunction.h@{TaskFunction.h}!Gripper@{Gripper}}
+\index{Gripper@{Gripper}!TaskFunction.h@{TaskFunction.h}}
+\doxysubsubsection{\texorpdfstring{Gripper()}{Gripper()}}
+{\footnotesize\ttfamily double Gripper (\begin{DoxyParamCaption}\item[{std\+::string}]{block\+Name }\end{DoxyParamCaption})}
+
+
+
+Calculates the width adjustment for the gripper based on the provided block name. 
+
+This function determines the gripper width adjustment according to the specified block name. If the block name matches any in the One\+Width vector, it computes half the difference between the end effector width and the width of a single-\/width block. If it matches any in the Two\+Width vector, it computes half the difference between the end effector width and the width of a double-\/width block. If the provided block name does not match any predefined block names, it prints a message indicating an unrecognized block name.
+
+
+\begin{DoxyParams}{Parameters}
+{\em block\+Name} & The name of the block for which the gripper width adjustment is calculated.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+The width adjustment for the gripper. If the block name is recognized\+: for single-\/width blocks\+: half the difference between the end effector width and the width of a single-\/width block. For double-\/width blocks\+: half the difference between the end effector widt and the width of a double-\/width block. If the block name is unrecognized returns 0. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{TaskFunction_8h_a3a9cc6036145d712062f90c03c4afe05}\label{TaskFunction_8h_a3a9cc6036145d712062f90c03c4afe05}} 
+\index{TaskFunction.h@{TaskFunction.h}!isZero@{isZero}}
+\index{isZero@{isZero}!TaskFunction.h@{TaskFunction.h}}
+\doxysubsubsection{\texorpdfstring{isZero()}{isZero()}}
+{\footnotesize\ttfamily bool is\+Zero (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ double $>$ \&}]{vettore }\end{DoxyParamCaption})}
+
+
+
+Checks if all elements of a vector are zero. 
+
+This function iterates through the elements of the input vector and checks if each element is equal to zero. If any element is non-\/zero, the function returns false, indicating that the vector is not composed entirely of zeros. Otherwise, if all elements are zero, the function returns true.
+
+
+\begin{DoxyParams}{Parameters}
+{\em vettore} & The vector of double values to be checked. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+true if all elements of the vector are zero, false otherwise. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{TaskFunction_8h_a3fa810e8a3c5cc8786ee8e4bce10a031}\label{TaskFunction_8h_a3fa810e8a3c5cc8786ee8e4bce10a031}} 
+\index{TaskFunction.h@{TaskFunction.h}!operator$<$$<$@{operator$<$$<$}}
+\index{operator$<$$<$@{operator$<$$<$}!TaskFunction.h@{TaskFunction.h}}
+\doxysubsubsection{\texorpdfstring{operator$<$$<$()}{operator<<()}}
+{\footnotesize\ttfamily std\+::ostream\& operator$<$$<$ (\begin{DoxyParamCaption}\item[{std\+::ostream \&}]{os,  }\item[{const \mbox{\hyperlink{structBlock}{Block}} \&}]{block }\end{DoxyParamCaption})}
+
+
+
+Overloaded insertion operator for outputting \mbox{\hyperlink{structBlock}{Block}} information. 
+
+This overload allows the insertion operator \textquotesingle{}$<$$<$\textquotesingle{} to be used with a \mbox{\hyperlink{structBlock}{Block}} object for outputting its information to an output stream.
+
+
+\begin{DoxyParams}{Parameters}
+{\em os} & The output stream to which the \mbox{\hyperlink{structBlock}{Block}} information will be written. \\
+\hline
+{\em block} & The \mbox{\hyperlink{structBlock}{Block}} object whose information will be outputted.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A reference to the output stream \textquotesingle{}os\textquotesingle{}. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{TaskFunction_8h_ad6c9689ac3556cb5f5c34463912adbd9}\label{TaskFunction_8h_ad6c9689ac3556cb5f5c34463912adbd9}} 
+\index{TaskFunction.h@{TaskFunction.h}!stampaVector@{stampaVector}}
+\index{stampaVector@{stampaVector}!TaskFunction.h@{TaskFunction.h}}
+\doxysubsubsection{\texorpdfstring{stampaVector()}{stampaVector()}}
+{\footnotesize\ttfamily std\+::stringstream stampa\+Vector (\begin{DoxyParamCaption}\item[{const std\+::vector$<$ double $>$ \&}]{vec }\end{DoxyParamCaption})}
+
+
+
+Converts a vector of double values to a formatted string stream. 
+
+This function takes a vector of double values and converts it into a formatted string stream. Each element of the vector is appended to the string stream, separated by spaces and enclosed within square brackets.
+
+
+\begin{DoxyParams}{Parameters}
+{\em vec} & The vector of double values to be converted.\\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A stringstream containing the formatted representation of the input vector. 
+\end{DoxyReturn}
