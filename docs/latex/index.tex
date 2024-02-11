@@ -47,7 +47,14 @@ Following this step, we should generate a new simulation world, following these 
 
 \end{DoxyEnumerate}
 
-And you should be able to find a new world with randomly placed blocks
+And you should be able to find a new world with randomly placed blocks.
+
+Then, since our code provides a default homing procedure that moves each joint singularly to make sure no collision with the table occurs, you should comment line 271 in $\sim$/ros\+\_\+ws/src/locosim/robot\+\_\+control/base\+\_\+controllers/ur5\+\_\+generic.py\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\#p.homing\_procedure(conf.robot\_params[p.robot\_name]['dt'], v\_des, conf.robot\_params[p.robot\_name]['q\_0'], rate)}
+
+\end{DoxyCode}
+
 
 Finally, open 3 other terminals and run\+: 
 \begin{DoxyCode}{0}
@@ -58,6 +65,12 @@ Finally, open 3 other terminals and run\+:
 \DoxyCodeLine{rosrun task\_planner state\_machine\_task\_node }
 \DoxyCodeLine{}
 \DoxyCodeLine{python3 -\/i \string~/ros\_ws/src/locosim/robot\_controller/base\_controllers/ur5\_generic.py}
+
+\end{DoxyCode}
+\hypertarget{index_autotoc_md2}{}\doxysubsection{Documentation}\label{index_autotoc_md2}
+To access the documentation you need to follow the path below to access the html folder and then open the index.\+html file in your browser\+: 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd \string~/ros\_ws/src/Robotica/docs/html/}
 
 \end{DoxyCode}
 
