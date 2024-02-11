@@ -51,4 +51,11 @@ rosrun task_planner state_machine_task_node
 python3 -i ~/ros_ws/src/locosim/robot_controller/base_controllers/ur5_generic.py
 ~~~
 
+## Documentation
+
+To access the documentation you need to follow the path below to access the html folder and then open the index.html file in your browser:
+~~~ bash
+cd ~/ros_ws/src/Robotica/docs/html/
+~~~
+
 <h5 align="center"> <a href="https://github.com/barbomattia/Robotica/blob/main/Report.pdf"> Read the full report </a> - <a href="https://drive.google.com/file/d/1hGNZJnl_iq87XpLlgdKWfP9evemomHeB/view?usp=drivesdk">Watch the demo</a></h5>
